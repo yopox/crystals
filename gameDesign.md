@@ -10,7 +10,7 @@ This document describes the features of the endless game mode.
 The game has three main states :
 
 - The "new game" state, where the player chooses their starting hero and job. Choosing a job grants a crystal of the corresponding job.
-- The "trip" state, where the player can check the inventory and the team status. The map is displayed and consists in a succession of vertical chunks. The player moves from chunk to chunk by choosing an icon per chunk. Each icon corresponds to a category of events.
+- The "trip" state, where the player can check the inventory and the team status. The map is displayed and consists in a succession of vertical chunks containing 3 icons. The player moves from chunk to chunk by choosing an icon. Each icon corresponds to a category of events.
 - The "event" state, triggered when the player chooses an event. These events can be regular battles, boss battles, visiting a mountain or a cave, entering in a house, in a shop, in a castle… Once the event is over, the "trip" state is restored and the player can choose the next event.
 
 The goal is to survive as long as possible and to have fun creating a team with the job crystals feature.
@@ -32,7 +32,7 @@ All events should have many variants, including bad and good ones. They should a
 During battles, one or more enemies can appear.
 Semi-bosses and bosses are indicated by a different icon on the map.
 
-At the end of the battle, the party earns EXP points loots, and coins.
+At the end of the battle, the party earns EXP, loots, and coins.
 Heroes aren't healed after battles.
 
 #### Inns
@@ -54,4 +54,7 @@ Random events can be one of the following:
 
 - A battle
 - A treasure
-- A shop
+- A trade
+- A choice
+- A misadventure
+- A hero asking to join the team
