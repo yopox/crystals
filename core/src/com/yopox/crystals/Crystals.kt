@@ -3,6 +3,7 @@ package com.yopox.crystals
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import ktx.app.KtxGame
 import ktx.freetype.registerFreeTypeFontLoaders
@@ -17,31 +18,39 @@ data class Assets(val assetManager: AssetManager, val titleFont: BitmapFont, val
  * Loads the fonts, initialize the different game states and start the title screen.
  *
  * TODO: Move assets loading elsewhere
+ * TODO: Move map creation
  */
 class Crystals : KtxGame<Screen>() {
 
-    private lateinit var assetManager: AssetManager
-    private lateinit var assets: Assets
+    companion object {
+        lateinit var assetManager: AssetManager
+        lateinit var events: Array<Array<Int>>
+    }
 
     override fun create() {
         assetManager = initiateAssetManager()
         with(assetManager) {
+            load("aseprite/icons.png", Texture::class.java)
             finishLoading()
         }
 
         val generator = FreeTypeFontGenerator(Gdx.files.internal("babyblocks.ttf"))
         val generator2 = FreeTypeFontGenerator(Gdx.files.internal("bubbleTime.ttf"))
         val parameter = FreeTypeFontParameter()
-        parameter.size = 16
+        parameter.size = 8
         val parameter2 = FreeTypeFontParameter()
-        parameter2.size = 42
-        assets = Assets(assetManager, generator2.generateFont(parameter2), generator.generateFont(parameter))
+        parameter2.size = 21
+        Util.font = generator.generateFont(parameter)
+        Util.bigFont = generator2.generateFont(parameter2)
 
         generator.dispose()
         generator2.dispose()
 
-        addScreen(TitleScreen(assets))
-        setScreen<TitleScreen>()
+        events = Array(5) { Array(3) {(Math.random() * 5).toInt()} }
+
+        addScreen(TitleScreen())
+        addScreen(Trip())
+        setScreen<Trip>()
     }
 
     private fun initiateAssetManager(): AssetManager {
