@@ -19,9 +19,10 @@ class Trip : KtxScreen {
     private val shapeRenderer = ShapeRenderer()
     private val camera = OrthographicCamera()
     private val viewport = FitViewport(Util.WIDTH, Util.HEIGHT, camera)
-    private val posX1 = Util.getPositionOffset(Util.font, Util.TEXT_BAG, 36)
-    private val posX2 = Util.getPositionOffset(Util.font, Util.TEXT_OPTIONS, 36)
+
     private val icons: Texture = Crystals.assetManager["aseprite/icons.png"]
+    private val posX1 = Util.buttonTextOffset(Util.TEXT_BAG)
+    private val posX2 = Util.buttonTextOffset(Util.TEXT_OPTIONS)
 
     override fun render(delta: Float) {
         batch.projectionMatrix = camera.combined

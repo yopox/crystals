@@ -49,8 +49,9 @@ class Crystals : KtxGame<Screen>() {
         events = Array(5) { Array(3) {(Math.random() * 5).toInt()} }
 
         addScreen(TitleScreen())
+        addScreen(CharacterSelection())
         addScreen(Trip())
-        setScreen<Trip>()
+        setScreen<CharacterSelection>()
     }
 
     private fun initiateAssetManager(): AssetManager {

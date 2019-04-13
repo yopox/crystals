@@ -16,8 +16,8 @@ class TitleScreen : KtxScreen {
     private val batch = SpriteBatch()
     private val camera = OrthographicCamera()
     private val viewport = FitViewport(Util.WIDTH, Util.HEIGHT, camera)
-    private var posX1 = Util.getPositionOffset(Util.bigFont, Util.TEXT_TITLE, Util.WIDTH.toInt())
-    private var posX2 = Util.getPositionOffset(Util.font, Util.TEXT_NEWGAME, Util.WIDTH.toInt())
+    private var posX1 = Util.textOffsetX(Util.bigFont, Util.TEXT_TITLE, Util.WIDTH.toInt())
+    private var posX2 = Util.textOffsetX(Util.font, Util.TEXT_NEWGAME, Util.WIDTH.toInt())
 
     override fun render(delta: Float) {
         batch.projectionMatrix = camera.combined
