@@ -9,6 +9,9 @@ import ktx.app.KtxGame
 import ktx.freetype.registerFreeTypeFontLoaders
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter
+import com.yopox.crystals.screens.CharacterSelection
+import com.yopox.crystals.screens.TitleScreen
+import com.yopox.crystals.screens.Trip
 
 data class Assets(val assetManager: AssetManager, val titleFont: BitmapFont, val font: BitmapFont)
 

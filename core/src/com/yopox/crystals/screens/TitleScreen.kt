@@ -1,8 +1,9 @@
-package com.yopox.crystals
+package com.yopox.crystals.screens
 
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.utils.viewport.FitViewport
+import com.yopox.crystals.Util
 import ktx.app.KtxScreen
 import ktx.graphics.use
 
@@ -16,8 +17,8 @@ class TitleScreen : KtxScreen {
     private val batch = SpriteBatch()
     private val camera = OrthographicCamera()
     private val viewport = FitViewport(Util.WIDTH, Util.HEIGHT, camera)
-    private var posX1 = Util.textOffsetX(Util.bigFont, Util.TEXT_TITLE, Util.WIDTH.toInt())
-    private var posX2 = Util.textOffsetX(Util.font, Util.TEXT_NEWGAME, Util.WIDTH.toInt())
+    private var posX1 = Util.textOffsetX(Util.bigFont, Util.TEXT_TITLE, Util.WIDTH)
+    private var posX2 = Util.textOffsetX(Util.font, Util.TEXT_NEWGAME, Util.WIDTH)
 
     override fun render(delta: Float) {
         batch.projectionMatrix = camera.combined

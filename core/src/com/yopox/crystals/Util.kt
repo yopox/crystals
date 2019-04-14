@@ -22,7 +22,6 @@ object Util {
     const val HEIGHT = 90f
     const val TEXT_TITLE = "Crystals"
     const val TEXT_NEWGAME = "Click to start"
-    const val TEXT_CLASS = "Priest"
     const val TEXT_NEXT = "Next"
     const val TEXT_PREVIOUS = "Previous"
     const val TEXT_CONTINUE = "Continue"
@@ -37,18 +36,20 @@ object Util {
      * @param value The text
      * @param targetW The text container width
      */
-    fun textOffsetX(bitmapFont: BitmapFont, value: String, targetW: Int): Float {
+    fun textOffsetX(bitmapFont: BitmapFont, value: String, targetW: Float): Float {
         val glyphLayout = GlyphLayout()
         glyphLayout.setText(bitmapFont, value)
         return (targetW - glyphLayout.width) / 2
     }
 
-    fun buttonTextOffset(value: String) = textOffsetX(font, value, 36)
+    fun buttonTextOffset(value: String) = textOffsetX(font, value, BUTTON_WIDTH)
 
-    const val BOXWIDTH = 1f
+    const val BOX_WIDTH = 1f
+    const val BUTTON_WIDTH = 36f
+    const val BUTTON_HEIGHT = 16f
 
     /**
-     * Draw a black rectangle with a white [Util.BOXWIDTH] px inner border.
+     * Draw a black rectangle with a white [Util.BOX_WIDTH] px inner border.
      *
      * @param x X position (bottom-left)
      * @param y Y position (bottom-left)
@@ -58,7 +59,20 @@ object Util {
             it.color = Color.WHITE
             it.rect(x, y, w, h)
             it.color = Color.BLACK
-            it.rect(x + BOXWIDTH, y + BOXWIDTH, w - 2 * BOXWIDTH, h - 2 * BOXWIDTH)
+            it.rect(x + BOX_WIDTH, y + BOX_WIDTH, w - 2 * BOX_WIDTH, h - 2 * BOX_WIDTH)
+        }
+    }
+
+    /**
+     * Draw a filled white rectangle.
+     *
+     * @param x X position (bottom-left)
+     * @param y Y position (bottom-left)
+     */
+    fun drawFilledRect(shapeRenderer: ShapeRenderer, x: Float, y: Float, w: Float, h: Float) {
+        shapeRenderer.use(ShapeRenderer.ShapeType.Filled) {
+            it.color = Color.WHITE
+            it.rect(x, y, w, h)
         }
     }
 
@@ -67,8 +81,20 @@ object Util {
         return Pair(pos.x.toInt(), pos.y.toInt())
     }
 
-    operator fun Vector3.component1(): Float = this.x
-    operator fun Vector3.component2(): Float = this.y
-    operator fun Vector3.component3(): Float = this.z
+    const val TRANSITION_TIME = 30 // Transition time (in frames)
+
+    /**
+     * Maps [0; 1] to [0; 1] with out cubic easing.
+     */
+    fun easeOutQuad(t: Float): Float {
+        return t * (2 - t)
+    }
+
+    fun signedInt(i: Int): String {
+        return when(i <= 0) {
+            true -> "$i"
+            else -> "+$i"
+        }
+    }
 
 }
