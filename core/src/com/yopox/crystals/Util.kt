@@ -1,9 +1,12 @@
 package com.yopox.crystals
 
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.GlyphLayout
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector3
 import ktx.graphics.use
@@ -30,6 +33,23 @@ object Util {
     const val TEXT_OPTIONS = "Options"
 
     /**
+     * Generates [BitmapFont] objects from `.ttf` files.
+     */
+    fun genFonts() {
+        val generator = FreeTypeFontGenerator(Gdx.files.internal("babyblocks.ttf"))
+        val generator2 = FreeTypeFontGenerator(Gdx.files.internal("bubbleTime.ttf"))
+        val parameter = FreeTypeFontGenerator.FreeTypeFontParameter()
+        parameter.size = 8
+        val parameter2 = FreeTypeFontGenerator.FreeTypeFontParameter()
+        parameter2.size = 21
+        font = generator.generateFont(parameter)
+        bigFont = generator2.generateFont(parameter2)
+
+        generator.dispose()
+        generator2.dispose()
+    }
+
+    /**
      * Returns the x position for the text to be centered.
      *
      * @param bitmapFont The desired font
@@ -44,6 +64,9 @@ object Util {
 
     fun buttonTextOffset(value: String) = textOffsetX(font, value, BUTTON_WIDTH)
 
+    /**
+     * Border width for boxes.
+     */
     const val BOX_WIDTH = 1f
     const val BUTTON_WIDTH = 36f
     const val BUTTON_HEIGHT = 16f
@@ -76,12 +99,15 @@ object Util {
         }
     }
 
-    fun unproject(camera: OrthographicCamera, screenX: Int, screenY: Int): Pair<Int, Int> {
+    fun unproject(camera: Camera, screenX: Int, screenY: Int): Pair<Int, Int> {
         val pos = camera.unproject(Vector3(screenX.toFloat(), screenY.toFloat(), 0f))
         return Pair(pos.x.toInt(), pos.y.toInt())
     }
 
-    const val TRANSITION_TIME = 30 // Transition time (in frames)
+    /**
+     * Transition time (in frames).
+     */
+    const val TRANSITION_TIME = 30
 
     /**
      * Maps [0; 1] to [0; 1] with out cubic easing.
@@ -90,6 +116,9 @@ object Util {
         return t * (2 - t)
     }
 
+    /**
+     * Maps an [Int] to a [String] including the sign (`+`/`-`).
+     */
     fun signedInt(i: Int): String {
         return when(i <= 0) {
             true -> "$i"

@@ -1,5 +1,6 @@
 package com.yopox.crystals.screens
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
@@ -7,7 +8,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.yopox.crystals.Crystals
+import com.yopox.crystals.InputScreen
 import com.yopox.crystals.Util
+import com.yopox.crystals.ui.Button
 import ktx.app.KtxScreen
 import ktx.graphics.use
 
@@ -16,15 +19,24 @@ import ktx.graphics.use
  *
  * TODO: Real chunk generation
  */
-class Trip : KtxScreen {
+class Trip : KtxScreen, InputScreen {
+
     private val batch = SpriteBatch()
     private val shapeRenderer = ShapeRenderer()
-    private val camera = OrthographicCamera()
+    override val camera = OrthographicCamera().also { it.position.set(Util.WIDTH / 2, Util.HEIGHT / 2, 0f) }
     private val viewport = FitViewport(Util.WIDTH, Util.HEIGHT, camera)
 
     private val icons: Texture = Crystals.assetManager["aseprite/icons.png"]
-    private val posX1 = Util.buttonTextOffset(Util.TEXT_BAG)
-    private val posX2 = Util.buttonTextOffset(Util.TEXT_OPTIONS)
+    private val buttons = ArrayList<Button>()
+
+    init {
+        buttons.add(Button(Util.WIDTH / 4 + 24f, 8f, Util.TEXT_BAG) {
+            Gdx.app.log("trip", "bag")
+        })
+        buttons.add(Button(Util.WIDTH / 4 + 24f + 40f, 8f, Util.TEXT_OPTIONS) {
+            Gdx.app.log("trip", "options")
+        })
+    }
 
     override fun render(delta: Float) {
         batch.projectionMatrix = camera.combined
@@ -37,7 +49,12 @@ class Trip : KtxScreen {
 
         drawStatus()
         drawChunks()
-        drawButtons()
+        buttons.map { it.draw(shapeRenderer, batch) }
+    }
+
+    override fun show() {
+        super.show()
+        Gdx.input.inputProcessor = this
     }
 
     override fun resize(width: Int, height: Int) {
@@ -81,14 +98,12 @@ class Trip : KtxScreen {
         }
     }
 
-    private fun drawButtons() {
-        Util.drawRect(shapeRenderer, Util.WIDTH / 4 + 24f, 8f, 36f, 16f)
-        Util.drawRect(shapeRenderer, Util.WIDTH / 4 + 32f + 36f, 8f, 36f, 16f)
+    override fun inputUp(x: Int, y: Int) {
+        buttons.map { it.lift(x, y) }
+    }
 
-        batch.use {
-            Util.font.draw(it, "Bag", Util.WIDTH / 4 + 24f + posX1, 19f)
-            Util.font.draw(it, "Options", Util.WIDTH / 4 + 32f + 36f + posX2, 19f)
-        }
+    override fun inputDown(x: Int, y: Int) {
+        buttons.map { it.touch(x, y) }
     }
 
 }

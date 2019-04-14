@@ -6,7 +6,9 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.utils.viewport.FitViewport
+import com.yopox.crystals.Crystals
 import com.yopox.crystals.Def
+import com.yopox.crystals.InputScreen
 import com.yopox.crystals.Util
 import com.yopox.crystals.data.Job
 import com.yopox.crystals.ui.Button
@@ -19,10 +21,10 @@ import ktx.graphics.use
  * TODO: Real nextJob / previousJob function
  * TODO: Change the state on click
  */
-class CharacterSelection : KtxScreen, InputProcessor {
+class CharacterSelection(private val game: Crystals) : KtxScreen, InputScreen {
 
     private val batch = SpriteBatch()
-    private val camera = OrthographicCamera()
+    override val camera = OrthographicCamera().also { it.position.set(Util.WIDTH / 2, Util.HEIGHT / 2, 0f) }
     private val viewport = FitViewport(Util.WIDTH, Util.HEIGHT, camera)
     private val shapeRenderer = ShapeRenderer()
 
@@ -39,7 +41,7 @@ class CharacterSelection : KtxScreen, InputProcessor {
         val y = 16f
 
         buttons.add(Button(x, y, Util.TEXT_CONTINUE) {
-            Gdx.app.log("CharSel", "Continue")
+            game.setScreen<Trip>()
         })
         buttons.add(Button(x, y + 21, Util.TEXT_PREVIOUS) {
             nextJob = when (job.name) {
@@ -141,39 +143,12 @@ class CharacterSelection : KtxScreen, InputProcessor {
 
     }
 
-    override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-        val (x, y) = Util.unproject(camera, screenX, screenY)
+    override fun inputUp(x: Int, y: Int) {
         if (!transition) buttons.map { it.lift(x, y) }
-        return true
     }
 
-    override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-        val (x, y) = Util.unproject(camera, screenX, screenY)
+    override fun inputDown(x: Int, y: Int) {
         if (!transition) buttons.map { it.touch(x, y) }
-        return true
     }
 
-    override fun mouseMoved(screenX: Int, screenY: Int): Boolean {
-        return false
-    }
-
-    override fun keyTyped(character: Char): Boolean {
-        return false
-    }
-
-    override fun scrolled(amount: Int): Boolean {
-        return false
-    }
-
-    override fun keyUp(keycode: Int): Boolean {
-        return false
-    }
-
-    override fun touchDragged(screenX: Int, screenY: Int, pointer: Int): Boolean {
-        return false
-    }
-
-    override fun keyDown(keycode: Int): Boolean {
-        return false
-    }
 }

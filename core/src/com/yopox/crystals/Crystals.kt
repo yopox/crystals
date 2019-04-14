@@ -1,19 +1,13 @@
 package com.yopox.crystals
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
-import ktx.app.KtxGame
-import ktx.freetype.registerFreeTypeFontLoaders
-import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter
 import com.yopox.crystals.screens.CharacterSelection
 import com.yopox.crystals.screens.TitleScreen
 import com.yopox.crystals.screens.Trip
-
-data class Assets(val assetManager: AssetManager, val titleFont: BitmapFont, val font: BitmapFont)
+import ktx.app.KtxGame
+import ktx.freetype.registerFreeTypeFontLoaders
 
 /**
  * Main class.
@@ -37,24 +31,14 @@ class Crystals : KtxGame<Screen>() {
             finishLoading()
         }
 
-        val generator = FreeTypeFontGenerator(Gdx.files.internal("babyblocks.ttf"))
-        val generator2 = FreeTypeFontGenerator(Gdx.files.internal("bubbleTime.ttf"))
-        val parameter = FreeTypeFontParameter()
-        parameter.size = 8
-        val parameter2 = FreeTypeFontParameter()
-        parameter2.size = 21
-        Util.font = generator.generateFont(parameter)
-        Util.bigFont = generator2.generateFont(parameter2)
-
-        generator.dispose()
-        generator2.dispose()
+        Util.genFonts()
 
         events = Array(5) { Array(3) {(Math.random() * 5).toInt()} }
 
-        addScreen(TitleScreen())
-        addScreen(CharacterSelection())
+        addScreen(TitleScreen(this))
+        addScreen(CharacterSelection(this))
         addScreen(Trip())
-        setScreen<CharacterSelection>()
+        setScreen<TitleScreen>()
     }
 
     private fun initiateAssetManager(): AssetManager {
