@@ -1,6 +1,5 @@
 package com.yopox.crystals
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputProcessor
 import com.badlogic.gdx.graphics.Camera
 
@@ -12,16 +11,17 @@ import com.badlogic.gdx.graphics.Camera
 interface InputScreen : InputProcessor {
 
     val camera: Camera
+    val blockInput: Boolean
 
     override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-        if (pointer > 0 || button > 0) return false
+        if (pointer > 0 || button > 0 || blockInput) return false
         val (x, y) = Util.unproject(camera, screenX, screenY)
         inputUp(x, y)
         return true
     }
 
     override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-        if (pointer > 0 || button > 0) return false
+        if (pointer > 0 || button > 0 || blockInput) return false
         val (x, y) = Util.unproject(camera, screenX, screenY)
         inputDown(x, y)
         return true

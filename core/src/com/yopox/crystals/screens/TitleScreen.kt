@@ -7,10 +7,12 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.yopox.crystals.Crystals
 import com.yopox.crystals.InputScreen
+import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
 import com.yopox.crystals.ui.Button
 import ktx.app.KtxScreen
 import ktx.graphics.use
+import kotlin.math.min
 
 /**
  * Title Screen.
@@ -20,13 +22,17 @@ class TitleScreen(private val game: Crystals) : KtxScreen, InputScreen {
     private val batch = SpriteBatch()
     private val shapeRenderer = ShapeRenderer()
     override val camera = OrthographicCamera().also { it.position.set(Util.WIDTH / 2, Util.HEIGHT / 2, 0f) }
+    override var blockInput = false
     private val viewport = FitViewport(Util.WIDTH, Util.HEIGHT, camera)
     private var posX1 = Util.textOffsetX(Util.bigFont, Util.TEXT_TITLE, Util.WIDTH)
     private val buttons = ArrayList<Button>()
 
+    private var state = ScreenState.MAIN
+
     init {
         buttons.add(Button(Util.WIDTH / 2 - Util.BUTTON_WIDTH, Util.HEIGHT / 4, Util.TEXT_NEWGAME, true) {
-            game.setScreen<CharacterSelection>()
+            blockInput = true
+            state = ScreenState.TRANSITION_EN
         })
     }
 
@@ -38,6 +44,12 @@ class TitleScreen(private val game: Crystals) : KtxScreen, InputScreen {
             Util.bigFont.draw(it, Util.TEXT_TITLE, posX1, Util.HEIGHT / 4 * 3)
         }
         buttons.map { it.draw(shapeRenderer, batch) }
+
+        if (state == ScreenState.TRANSITION_EN) {
+            if (Util.drawWipe(shapeRenderer)) {
+                game.setScreen<CharacterSelection>()
+            }
+        }
     }
 
     override fun show() {

@@ -1,15 +1,11 @@
 package com.yopox.crystals.screens
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.InputProcessor
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.utils.viewport.FitViewport
-import com.yopox.crystals.Crystals
-import com.yopox.crystals.Def
-import com.yopox.crystals.InputScreen
-import com.yopox.crystals.Util
+import com.yopox.crystals.*
 import com.yopox.crystals.data.Job
 import com.yopox.crystals.ui.Button
 import ktx.app.KtxScreen
@@ -25,6 +21,7 @@ class CharacterSelection(private val game: Crystals) : KtxScreen, InputScreen {
 
     private val batch = SpriteBatch()
     override val camera = OrthographicCamera().also { it.position.set(Util.WIDTH / 2, Util.HEIGHT / 2, 0f) }
+    override var blockInput = true
     private val viewport = FitViewport(Util.WIDTH, Util.HEIGHT, camera)
     private val shapeRenderer = ShapeRenderer()
 
@@ -33,6 +30,7 @@ class CharacterSelection(private val game: Crystals) : KtxScreen, InputScreen {
     private var nextJob = Def.Jobs.Warrior
     private var jobStats = job.statsDescription()
     private var transition = false
+    private var state = ScreenState.TRANSITION_OP
     var frame = 0
 
     init {
@@ -41,7 +39,8 @@ class CharacterSelection(private val game: Crystals) : KtxScreen, InputScreen {
         val y = 16f
 
         buttons.add(Button(x, y, Util.TEXT_CONTINUE) {
-            game.setScreen<Trip>()
+            blockInput = true
+            state = ScreenState.TRANSITION_EN
         })
         buttons.add(Button(x, y + 21, Util.TEXT_PREVIOUS) {
             nextJob = when (job.name) {
@@ -50,6 +49,7 @@ class CharacterSelection(private val game: Crystals) : KtxScreen, InputScreen {
                 else -> Def.Jobs.Warrior
             }
             transition = true
+            blockInput = true
         })
         buttons.add(Button(x, y + 2 * 21, Util.TEXT_NEXT) {
             nextJob = when (job.name) {
@@ -58,6 +58,7 @@ class CharacterSelection(private val game: Crystals) : KtxScreen, InputScreen {
                 else -> Def.Jobs.Warrior
             }
             transition = true
+            blockInput = true
         })
     }
 
@@ -74,6 +75,21 @@ class CharacterSelection(private val game: Crystals) : KtxScreen, InputScreen {
         drawClassDesc()
 
         drawClassTransition()
+
+        when (state) {
+            ScreenState.TRANSITION_OP -> {
+                if (Util.drawWipe(shapeRenderer, false, true)) {
+                    state = ScreenState.MAIN
+                    blockInput = false
+                }
+            }
+            ScreenState.TRANSITION_EN -> {
+                if (Util.drawWipe(shapeRenderer)) {
+                    game.setScreen<Trip>()
+                }
+            }
+            else -> Unit
+        }
 
     }
 
@@ -123,6 +139,7 @@ class CharacterSelection(private val game: Crystals) : KtxScreen, InputScreen {
                 }
                 else -> {
                     transition = false
+                    blockInput = false
                     frame = 0
                 }
             }
@@ -144,11 +161,11 @@ class CharacterSelection(private val game: Crystals) : KtxScreen, InputScreen {
     }
 
     override fun inputUp(x: Int, y: Int) {
-        if (!transition) buttons.map { it.lift(x, y) }
+        if (!blockInput) buttons.map { it.lift(x, y) }
     }
 
     override fun inputDown(x: Int, y: Int) {
-        if (!transition) buttons.map { it.touch(x, y) }
+        if (!blockInput) buttons.map { it.touch(x, y) }
     }
 
 }

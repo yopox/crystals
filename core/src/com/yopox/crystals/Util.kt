@@ -3,13 +3,19 @@ package com.yopox.crystals
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.GlyphLayout
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector3
 import ktx.graphics.use
+import kotlin.math.min
+
+enum class ScreenState {
+    MAIN,
+    TRANSITION_OP,
+    TRANSITION_EN
+}
 
 /**
  * Utilitary variables and functions.
@@ -62,8 +68,6 @@ object Util {
         return (targetW - glyphLayout.width) / 2
     }
 
-    fun buttonTextOffset(value: String) = textOffsetX(font, value, BUTTON_WIDTH)
-
     /**
      * Border width for boxes.
      */
@@ -108,12 +112,42 @@ object Util {
      * Transition time (in frames).
      */
     const val TRANSITION_TIME = 30
+    private const val TRANSITION_STUN = 2
+    private var TRANSITION_FRAME = 0
 
     /**
      * Maps [0; 1] to [0; 1] with out cubic easing.
      */
     fun easeOutQuad(t: Float): Float {
         return t * (2 - t)
+    }
+
+    /**
+     * Draws a white wipe transition.
+     */
+    fun drawWipe(sR: ShapeRenderer, leftToRight: Boolean = true, reverse: Boolean = false): Boolean {
+        var progress = min(TRANSITION_FRAME, TRANSITION_TIME)
+        if (reverse) progress = TRANSITION_TIME - progress
+
+        val width = easeOutQuad(progress.toFloat() / TRANSITION_TIME) * WIDTH
+        val offset = when (leftToRight) {
+            true -> 0f
+            else -> WIDTH - width
+        }
+
+        sR.use(ShapeRenderer.ShapeType.Filled) {
+            it.color = Color.WHITE
+            it.rect(offset, 0f, width, HEIGHT)
+        }
+
+        if (TRANSITION_FRAME == TRANSITION_TIME + TRANSITION_STUN) {
+            TRANSITION_FRAME = 0
+            return true
+        }
+
+        TRANSITION_FRAME++
+        return false
+
     }
 
     /**

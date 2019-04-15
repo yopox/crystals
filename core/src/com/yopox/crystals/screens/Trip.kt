@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.yopox.crystals.Crystals
 import com.yopox.crystals.InputScreen
+import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
 import com.yopox.crystals.ui.Button
 import ktx.app.KtxScreen
@@ -19,15 +20,17 @@ import ktx.graphics.use
  *
  * TODO: Real chunk generation
  */
-class Trip : KtxScreen, InputScreen {
+class Trip(private val game: Crystals) : KtxScreen, InputScreen {
 
     private val batch = SpriteBatch()
     private val shapeRenderer = ShapeRenderer()
     override val camera = OrthographicCamera().also { it.position.set(Util.WIDTH / 2, Util.HEIGHT / 2, 0f) }
+    override var blockInput = true
     private val viewport = FitViewport(Util.WIDTH, Util.HEIGHT, camera)
 
     private val icons: Texture = Crystals.assetManager["aseprite/icons.png"]
     private val buttons = ArrayList<Button>()
+    private var state = ScreenState.TRANSITION_OP
 
     init {
         buttons.add(Button(Util.WIDTH / 4 + 24f, 8f, Util.TEXT_BAG) {
@@ -50,6 +53,21 @@ class Trip : KtxScreen, InputScreen {
         drawStatus()
         drawChunks()
         buttons.map { it.draw(shapeRenderer, batch) }
+
+        when (state) {
+            ScreenState.TRANSITION_OP -> {
+                if (Util.drawWipe(shapeRenderer, false, reverse = true)) {
+                    state = ScreenState.MAIN
+                    blockInput = false
+                }
+            }
+            ScreenState.TRANSITION_EN -> {
+                if (Util.drawWipe(shapeRenderer)) {
+                }
+            }
+            else -> Unit
+        }
+
     }
 
     override fun show() {
