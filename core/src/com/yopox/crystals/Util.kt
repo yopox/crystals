@@ -38,6 +38,7 @@ object Util {
     const val TEXT_PREVIOUS = "Previous"
     const val TEXT_CONTINUE = "Continue"
     const val TEXT_TRIP = "Trip"
+    const val TEXT_STATUS = "Status"
     const val TEXT_BAG = "Bag"
     const val TEXT_OPTIONS = "Options"
 
@@ -157,7 +158,7 @@ object Util {
      * Maps an [Int] to a [String] including the sign (`+`/`-`).
      */
     fun signedInt(i: Int): String {
-        return when(i <= 0) {
+        return when (i <= 0) {
             true -> "$i"
             else -> "+$i"
         }

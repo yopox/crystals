@@ -20,6 +20,8 @@ import ktx.graphics.use
 
 /**
  * Trip Screen.
+ *
+ * TODO: "Continue" button reveal transition
  */
 class Trip(private val game: Crystals) : KtxScreen, InputScreen {
 
@@ -33,16 +35,23 @@ class Trip(private val game: Crystals) : KtxScreen, InputScreen {
     private val buttons = ArrayList<Button>()
     private val chunks = ArrayList<Chunk>()
     private var state = ScreenState.TRANSITION_OP
+    private var statusX = arrayOf(0f, 0f)
+    private var goldX = 0f
 
     init {
-        buttons.add(Button(Util.WIDTH / 4 + 24f, 8f, Util.TEXT_BAG) {
-            Gdx.app.log("trip", "bag")
+        val x = 16f
+        val y = 7f
+        buttons.add(Button(x, y, Util.TEXT_STATUS) {
+            Gdx.app.log("trip", "Status")
         })
-        buttons.add(Button(Util.WIDTH / 4 + 24f + 40f, 8f, Util.TEXT_OPTIONS) {
-            Gdx.app.log("trip", "options")
+        buttons.add(Button(x + 40, y, Util.TEXT_BAG) {
+            Gdx.app.log("trip", "Bag")
+        })
+        buttons.add(Button(x + 2 * 40, y, Util.TEXT_CONTINUE, clickable = false) {
+            Gdx.app.log("trip", "Continue " + chunks[0].selected)
         })
         for (i in 0..4)
-            chunks.add(Chunk(Util.WIDTH / 4 + 16f + i * 20, Util.HEIGHT / 3))
+            chunks.add(Chunk(Util.WIDTH / 4 + 16f + i * 20, Util.HEIGHT / 3 - 3))
     }
 
     override fun render(delta: Float) {
@@ -51,7 +60,7 @@ class Trip(private val game: Crystals) : KtxScreen, InputScreen {
 
         // Draw the title
         batch.use {
-            Util.bigFont.draw(it, Util.TEXT_TRIP, 10f, Util.HEIGHT - 10)
+            Util.bigFont.draw(it, Util.TEXT_TRIP, 10f, Util.HEIGHT - 13)
         }
 
         drawStatus()
@@ -77,6 +86,10 @@ class Trip(private val game: Crystals) : KtxScreen, InputScreen {
     override fun show() {
         super.show()
         Gdx.input.inputProcessor = this
+        statusX[0] = Util.textOffsetX(Util.font, "${Crystals.player.stats.hp} HP", 44f)
+        statusX[1] = Util.textOffsetX(Util.font, "${Crystals.player.stats.mp} MP", 44f)
+        goldX = Util.textOffsetX(Util.font, "${Crystals.player.gold} GOLD", Util.WIDTH)
+        goldX = 2 * goldX - 8f
     }
 
     override fun resize(width: Int, height: Int) {
@@ -90,7 +103,13 @@ class Trip(private val game: Crystals) : KtxScreen, InputScreen {
     }
 
     private fun drawStatus() {
-        Util.drawRect(shapeRenderer, 8f, 8f, Util.WIDTH / 4, Util.HEIGHT / 2)
+        Util.drawRect(shapeRenderer, 8f, Util.HEIGHT / 3 - 3, 44f, 24f)
+        batch.use {
+            val stats = Crystals.player.stats
+            Util.font.draw(it, "${stats.hp} HP", 8f + statusX[0], 46f)
+            Util.font.draw(it, "${stats.mp} MP", 8f + statusX[1], 38f)
+            Util.font.draw(it, "${Crystals.player.gold} GOLD", goldX, Util.HEIGHT - 7f)
+        }
     }
 
     override fun inputUp(x: Int, y: Int) {
@@ -100,6 +119,8 @@ class Trip(private val game: Crystals) : KtxScreen, InputScreen {
     override fun inputDown(x: Int, y: Int) {
         buttons.map { it.touch(x, y) }
         chunks[0].touch(x, y)
+        if (chunks[0].selected >= 0)
+            buttons[2].clickable = true
     }
 
 }

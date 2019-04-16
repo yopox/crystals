@@ -3,6 +3,7 @@ package com.yopox.crystals
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Texture
+import com.yopox.crystals.data.Entity
 import com.yopox.crystals.screens.CharacterSelection
 import com.yopox.crystals.screens.TitleScreen
 import com.yopox.crystals.screens.Trip
@@ -20,6 +21,7 @@ class Crystals : KtxGame<Screen>() {
 
     companion object {
         lateinit var assetManager: AssetManager
+        var player = Entity()
     }
 
     override fun create() {
