@@ -26,7 +26,7 @@ class Button(private val x: Float, private val y: Float, private val text: Strin
     }
 
     /**
-     * Called when the player begins to touch the screen.
+     * Called when the player begins touching the screen.
      */
     fun touch(x: Int, y: Int) {
         if (x >= this.x
@@ -40,12 +40,14 @@ class Button(private val x: Float, private val y: Float, private val text: Strin
      * Called when the player stops touching the screen.
      */
     fun lift(x: Int, y: Int) {
-        clicked = false
-        if (x >= this.x
-                && x <= this.x + width
-                && y >= this.y
-                && y <= this.y + Util.BUTTON_HEIGHT)
-            onClick()
+        if (clicked) {
+            clicked = false
+            if (x >= this.x
+                    && x <= this.x + width
+                    && y >= this.y
+                    && y <= this.y + Util.BUTTON_HEIGHT)
+                onClick()
+        }
     }
 
 }

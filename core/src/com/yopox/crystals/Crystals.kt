@@ -15,13 +15,11 @@ import ktx.freetype.registerFreeTypeFontLoaders
  * Loads the fonts, initialize the different game states and start the title screen.
  *
  * TODO: Move assets loading elsewhere
- * TODO: Move map creation
  */
 class Crystals : KtxGame<Screen>() {
 
     companion object {
         lateinit var assetManager: AssetManager
-        lateinit var events: Array<Array<Int>>
     }
 
     override fun create() {
@@ -32,8 +30,6 @@ class Crystals : KtxGame<Screen>() {
         }
 
         Util.genFonts()
-
-        events = Array(5) { Array(3) {(Math.random() * 5).toInt()} }
 
         addScreen(TitleScreen(this))
         addScreen(CharacterSelection(this))

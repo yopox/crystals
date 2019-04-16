@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.yopox.crystals.*
+import com.yopox.crystals.data.Def
 import com.yopox.crystals.data.Job
 import com.yopox.crystals.ui.Button
 import ktx.app.KtxScreen

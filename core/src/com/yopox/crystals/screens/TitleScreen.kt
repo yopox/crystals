@@ -42,6 +42,7 @@ class TitleScreen(private val game: Crystals) : KtxScreen, InputScreen {
 
         batch.use {
             Util.bigFont.draw(it, Util.TEXT_TITLE, posX1, Util.HEIGHT / 4 * 3)
+            Util.font.draw(it, Util.BUILD_NB, 2f, 8f)
         }
         buttons.map { it.draw(shapeRenderer, batch) }
 

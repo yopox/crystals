@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector3
+import com.yopox.crystals.data.EVENT_TYPE
 import ktx.graphics.use
 import kotlin.math.min
 
@@ -26,6 +27,8 @@ object Util {
 
     lateinit var font: BitmapFont
     lateinit var bigFont: BitmapFont
+
+    const val BUILD_NB = "build 0.1"
 
     const val WIDTH = 160f
     const val HEIGHT = 90f
