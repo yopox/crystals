@@ -14,9 +14,9 @@ import ktx.graphics.use
  *
  * TODO: Chunk types
  */
-class Chunk(private val x: Float, private val y: Float) {
+class Chunk(private var x: Float, private val y: Float) {
     var events = ArrayList<Event>()
-    var selected = -1
+    private var selected = -1
     private companion object {
         const val width = 16f
         const val height = 3 * 14 + 4f
@@ -58,6 +58,12 @@ class Chunk(private val x: Float, private val y: Float) {
     fun touch(tX: Int, tY: Int) {
         if (tX - x > 0 && tX - x < width && tY - y > 0 && tY - y < height)
             selected = ((tY - y) / 15).toInt()
+    }
+
+    fun getEvent(): Event? = if (selected >= 0) events[selected] else null
+
+    fun step() {
+        x -= Util.CHUNK_SEP
     }
 
 }

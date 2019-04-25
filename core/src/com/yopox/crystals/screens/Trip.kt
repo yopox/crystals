@@ -48,10 +48,12 @@ class Trip(private val game: Crystals) : KtxScreen, InputScreen {
             Gdx.app.log("trip", "Bag")
         })
         buttons.add(Button(x + 2 * 40, y, Util.TEXT_CONTINUE, clickable = false) {
-            Gdx.app.log("trip", "Continue " + chunks[0].selected)
+            Display.changeEvent(chunks[0].getEvent()!!)
+            state = ScreenState.TRANSITION_EN
+            blockInput = true
         })
         for (i in 0..4)
-            chunks.add(Chunk(Util.WIDTH / 4 + 16f + i * 20, Util.HEIGHT / 3 - 3))
+            chunks.add(Chunk(Util.WIDTH / 4 + 16f + i * Util.CHUNK_SEP, Util.HEIGHT / 3 - 3))
     }
 
     override fun render(delta: Float) {
@@ -76,6 +78,8 @@ class Trip(private val game: Crystals) : KtxScreen, InputScreen {
             }
             ScreenState.TRANSITION_EN -> {
                 if (Util.drawWipe(shapeRenderer)) {
+                    resetState()
+                    game.setScreen<Display>()
                 }
             }
             else -> Unit
@@ -119,8 +123,18 @@ class Trip(private val game: Crystals) : KtxScreen, InputScreen {
     override fun inputDown(x: Int, y: Int) {
         buttons.map { it.touch(x, y) }
         chunks[0].touch(x, y)
-        if (chunks[0].selected >= 0)
+        chunks[0].getEvent()?.let {
             buttons[2].clickable = true
+        }
+    }
+
+    private fun resetState() {
+        blockInput = true
+        chunks.removeAt(0)
+        chunks.map { it.step() }
+        chunks.add(Chunk(Util.WIDTH / 4 + 16f + 4 * Util.CHUNK_SEP, Util.HEIGHT / 3 - 3))
+        buttons[2].clickable = false
+        state = ScreenState.TRANSITION_OP
     }
 
 }

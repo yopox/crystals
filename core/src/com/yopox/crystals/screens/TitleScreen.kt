@@ -46,10 +46,18 @@ class TitleScreen(private val game: Crystals) : KtxScreen, InputScreen {
         }
         buttons.map { it.draw(shapeRenderer, batch) }
 
-        if (state == ScreenState.TRANSITION_EN) {
-            if (Util.drawWipe(shapeRenderer)) {
+        when (state) {
+            ScreenState.TRANSITION_EN -> if (Util.drawWipe(shapeRenderer)) {
+                resetState()
                 game.setScreen<CharacterSelection>()
             }
+            ScreenState.TRANSITION_OP -> {
+                if (Util.drawWipe(shapeRenderer, false, reverse = true)) {
+                    state = ScreenState.MAIN
+                    blockInput = false
+                }
+            }
+            else -> Unit
         }
     }
 
@@ -74,5 +82,10 @@ class TitleScreen(private val game: Crystals) : KtxScreen, InputScreen {
 
     override fun inputDown(x: Int, y: Int) {
         buttons.map { it.touch(x, y) }
+    }
+
+    private fun resetState() {
+        blockInput = true
+        state = ScreenState.TRANSITION_OP
     }
 }

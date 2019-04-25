@@ -78,6 +78,7 @@ object Util {
     const val BOX_WIDTH = 1f
     const val BUTTON_WIDTH = 36f
     const val BUTTON_HEIGHT = 16f
+    const val CHUNK_SEP = 20f
 
     /**
      * Draw a black rectangle with a white [Util.BOX_WIDTH] px inner border.
@@ -116,6 +117,7 @@ object Util {
      * Transition time (in frames).
      */
     const val TRANSITION_TIME = 30
+    const val DISPLAY_LEN = 30
     private const val TRANSITION_STUN = 2
     private var TRANSITION_FRAME = 0
 

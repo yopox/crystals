@@ -19,4 +19,21 @@ class Event(val type: EVENT_TYPE = EVENT_TYPE.BATTLE) {
             else -> 4 * 14
         }
 
+    val name: String
+    val id: Int = (Math.random() * 10).toInt()
+
+    init {
+        name = getTypeName(type) + " #$id"
+    }
+
+    companion object {
+        fun getTypeName(type: EVENT_TYPE): String = when(type) {
+            EVENT_TYPE.BATTLE -> "Battle"
+            EVENT_TYPE.INN -> "Inn"
+            EVENT_TYPE.HOUSE -> "House"
+            EVENT_TYPE.SHOP -> "Shop"
+            else -> "?"
+        }
+    }
+
 }

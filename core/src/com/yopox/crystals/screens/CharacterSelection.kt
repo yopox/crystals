@@ -86,6 +86,7 @@ class CharacterSelection(private val game: Crystals) : KtxScreen, InputScreen {
             }
             ScreenState.TRANSITION_EN -> {
                 if (Util.drawWipe(shapeRenderer)) {
+                    resetState()
                     game.setScreen<Trip>()
                 }
             }
@@ -167,6 +168,16 @@ class CharacterSelection(private val game: Crystals) : KtxScreen, InputScreen {
 
     override fun inputDown(x: Int, y: Int) {
         if (!blockInput) buttons.map { it.touch(x, y) }
+    }
+
+    private fun resetState() {
+        job = Def.Jobs.Warrior
+        nextJob = Def.Jobs.Warrior
+        jobStats = job.statsDescription()
+        transition = false
+        state = ScreenState.TRANSITION_OP
+        frame = 0
+        blockInput = true
     }
 
 }
