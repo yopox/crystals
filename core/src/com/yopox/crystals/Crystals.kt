@@ -22,7 +22,6 @@ class Crystals : KtxGame<Screen>() {
 
     companion object {
         lateinit var assetManager: AssetManager
-        var player = Entity()
     }
 
     override fun create() {

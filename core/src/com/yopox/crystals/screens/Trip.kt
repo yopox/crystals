@@ -13,6 +13,7 @@ import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
 import com.yopox.crystals.data.EVENT_TYPE
 import com.yopox.crystals.data.Event
+import com.yopox.crystals.data.Progress
 import com.yopox.crystals.ui.Button
 import com.yopox.crystals.ui.Chunk
 import ktx.app.KtxScreen
@@ -90,10 +91,9 @@ class Trip(private val game: Crystals) : KtxScreen, InputScreen {
     override fun show() {
         super.show()
         Gdx.input.inputProcessor = this
-        statusX[0] = Util.textOffsetX(Util.font, "${Crystals.player.stats.hp} HP", 44f)
-        statusX[1] = Util.textOffsetX(Util.font, "${Crystals.player.stats.mp} MP", 44f)
-        goldX = Util.textOffsetX(Util.font, "${Crystals.player.gold} GOLD", Util.WIDTH)
-        goldX = 2 * goldX - 8f
+        statusX[0] = Util.textOffsetX(Util.font, "${Progress.player.stats.hp} HP", 44f)
+        statusX[1] = Util.textOffsetX(Util.font, "${Progress.player.stats.mp} MP", 44f)
+        goldX = Util.WIDTH - 8f - Util.sizeX(Util.font, "${Progress.gold} GOLD")
     }
 
     override fun resize(width: Int, height: Int) {
@@ -109,10 +109,10 @@ class Trip(private val game: Crystals) : KtxScreen, InputScreen {
     private fun drawStatus() {
         Util.drawRect(shapeRenderer, 8f, Util.HEIGHT / 3 - 3, 44f, 24f)
         batch.use {
-            val stats = Crystals.player.stats
+            val stats = Progress.player.stats
             Util.font.draw(it, "${stats.hp} HP", 8f + statusX[0], 46f)
             Util.font.draw(it, "${stats.mp} MP", 8f + statusX[1], 38f)
-            Util.font.draw(it, "${Crystals.player.gold} GOLD", goldX, Util.HEIGHT - 7f)
+            Util.font.draw(it, "${Progress.gold} GOLD", goldX, Util.HEIGHT - 7f)
         }
     }
 
