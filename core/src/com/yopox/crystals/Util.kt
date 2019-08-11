@@ -41,6 +41,7 @@ object Util {
     const val TEXT_STATUS = "Status"
     const val TEXT_BAG = "Bag"
     const val TEXT_OPTIONS = "Options"
+    const val TEXT_FIGHT = "Fight"
 
     /**
      * Generates [BitmapFont] objects from `.ttf` files.

@@ -4,10 +4,7 @@ import com.badlogic.gdx.Screen
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Texture
 import com.yopox.crystals.data.Entity
-import com.yopox.crystals.screens.CharacterSelection
-import com.yopox.crystals.screens.Display
-import com.yopox.crystals.screens.TitleScreen
-import com.yopox.crystals.screens.Trip
+import com.yopox.crystals.screens.*
 import ktx.app.KtxGame
 import ktx.freetype.registerFreeTypeFontLoaders
 
@@ -37,6 +34,7 @@ class Crystals : KtxGame<Screen>() {
         addScreen(CharacterSelection(this))
         addScreen(Trip(this))
         addScreen(Display(this))
+        addScreen(Fight(this))
         setScreen<TitleScreen>()
     }
 
