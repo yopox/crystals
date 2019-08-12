@@ -27,7 +27,7 @@ class Event(val type: EVENT_TYPE = EVENT_TYPE.BATTLE) {
     }
 
     companion object {
-        fun getTypeName(type: EVENT_TYPE): String = when(type) {
+        fun getTypeName(type: EVENT_TYPE): String = when (type) {
             EVENT_TYPE.BATTLE -> "Battle"
             EVENT_TYPE.INN -> "Inn"
             EVENT_TYPE.HOUSE -> "House"

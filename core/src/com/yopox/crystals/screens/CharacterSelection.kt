@@ -9,6 +9,7 @@ import com.yopox.crystals.*
 import com.yopox.crystals.data.Def
 import com.yopox.crystals.data.Job
 import com.yopox.crystals.ui.Button
+import com.yopox.crystals.ui.TextButton
 import ktx.app.KtxScreen
 import ktx.graphics.use
 
@@ -39,11 +40,11 @@ class CharacterSelection(private val game: Crystals) : KtxScreen, InputScreen {
         val x = Util.WIDTH / 4 + 32f + 43
         val y = 16f
 
-        buttons.add(Button(x, y, Util.TEXT_CONTINUE) {
+        buttons.add(TextButton(x, y, Util.TEXT_CONTINUE) {
             blockInput = true
             state = ScreenState.TRANSITION_EN
         })
-        buttons.add(Button(x, y + 21, Util.TEXT_PREVIOUS) {
+        buttons.add(TextButton(x, y + 21, Util.TEXT_PREVIOUS) {
             nextJob = when (job.name) {
                 Def.Jobs.Warrior.name -> Def.Jobs.Priest
                 Def.Jobs.Priest.name -> Def.Jobs.Rogue
@@ -52,7 +53,7 @@ class CharacterSelection(private val game: Crystals) : KtxScreen, InputScreen {
             transition = true
             blockInput = true
         })
-        buttons.add(Button(x, y + 2 * 21, Util.TEXT_NEXT) {
+        buttons.add(TextButton(x, y + 2 * 21, Util.TEXT_NEXT) {
             nextJob = when (job.name) {
                 Def.Jobs.Warrior.name -> Def.Jobs.Rogue
                 Def.Jobs.Rogue.name -> Def.Jobs.Priest
@@ -116,7 +117,7 @@ class CharacterSelection(private val game: Crystals) : KtxScreen, InputScreen {
             Util.font.draw(it, jobStats[0], x0, 24f)
             Util.font.draw(it, jobStats[1], x0 + offset, 24f)
             Util.font.draw(it, jobStats[2], x0 + 2 * offset, 24f)
-            Util.bigFont.draw(it, job.name, 10f, Util.HEIGHT - 10f)
+            Util.bigFont.draw(it, job.name, 10f, Util.HEIGHT - Util.TITLE_OFFSET)
         }
     }
 

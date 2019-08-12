@@ -11,11 +11,11 @@ import com.yopox.crystals.Crystals
 import com.yopox.crystals.InputScreen
 import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
+import com.yopox.crystals.data.Def
 import com.yopox.crystals.data.EVENT_TYPE
 import com.yopox.crystals.data.Event
 import com.yopox.crystals.data.Progress
-import com.yopox.crystals.ui.Button
-import com.yopox.crystals.ui.Chunk
+import com.yopox.crystals.ui.*
 import ktx.app.KtxScreen
 import ktx.graphics.use
 
@@ -32,23 +32,35 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     override var blockInput = true
     private val viewport = FitViewport(Util.WIDTH, Util.HEIGHT, camera)
 
-    private val icons: Texture = Crystals.assetManager["aseprite/icons.png"]
     private val buttons = ArrayList<Button>()
-    private val chunks = ArrayList<Chunk>()
     private var state = ScreenState.TRANSITION_OP
-    private var statusX = arrayOf(0f, 0f)
-    private var goldX = 0f
+    private val icons = ArrayList<Icon>()
 
     init {
+        icons.add(Icon(Def.Icons.Priest, Pair(88f, 36f)))
+        icons.add(Icon(Def.Icons.Snake, Pair(56f, 36f)))
+
+        buttons.add(ActionButton(ACTIONS.ATTACK, Pair(10f, 5f)) { Gdx.app.log("Fight", "ATTACK") })
+        buttons.add(ActionButton(ACTIONS.DEFENSE, Pair(26f, 5f)) {})
+        buttons.add(ActionButton(ACTIONS.ITEMS, Pair(42f, 5f)) {})
+        buttons.add(ActionButton(ACTIONS.W_MAGIC, Pair(58f, 5f)) {})
+        buttons.add(ActionButton(ACTIONS.ROB, Pair(74f, 5f)) {})
+        buttons.add(ActionButton(ACTIONS.GEOMANCY, Pair(90f, 5f)) {})
     }
 
     override fun render(delta: Float) {
         batch.projectionMatrix = camera.combined
         shapeRenderer.projectionMatrix = camera.combined
 
+        // Draw the dialog box
+        Util.drawRect(shapeRenderer, -1f, -1f, 182f, 24f)
+
         // Draw the title
         batch.use {
-            Util.bigFont.draw(it, Util.TEXT_FIGHT, 10f, Util.HEIGHT - 13)
+            Util.bigFont.draw(it, Util.TEXT_FIGHT, 10f, Util.HEIGHT - Util.TITLE_OFFSET)
+            icons.map { icon -> icon.draw(it) }
+            Util.font.draw(it, Util.TEXT_ACTIONS, 10f, 31f)
+            buttons.map { it.draw(shapeRenderer, batch) }
         }
 
         when (state) {

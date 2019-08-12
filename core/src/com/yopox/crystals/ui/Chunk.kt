@@ -17,6 +17,7 @@ import ktx.graphics.use
 class Chunk(private var x: Float, private val y: Float) {
     var events = ArrayList<Event>()
     private var selected = -1
+
     private companion object {
         const val width = 16f
         const val height = 3 * 14 + 4f
@@ -41,7 +42,7 @@ class Chunk(private var x: Float, private val y: Float) {
             val iconX = events[i].iconX
             val iconY = if (selected == i) 14 else 0
             batch.use {
-                it.draw(icons, x + 1, y + 1 + 15*i, iconX, iconY, 14, 14)
+                it.draw(icons, x + 1, y + 1 + 15 * i, iconX, iconY, 14, 14)
             }
         }
 
