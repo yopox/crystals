@@ -32,6 +32,8 @@ object Util {
 
     const val WIDTH = 160f
     const val HEIGHT = 90f
+    const val TITLE_OFFSET = 8
+
     const val TEXT_TITLE = "Crystals"
     const val TEXT_NEWGAME = "Click to start"
     const val TEXT_NEXT = "Next"
@@ -42,7 +44,7 @@ object Util {
     const val TEXT_BAG = "Bag"
     const val TEXT_OPTIONS = "Options"
     const val TEXT_FIGHT = "Fight"
-
+    const val TEXT_ACTIONS = "Actions"
     /**
      * Generates [BitmapFont] objects from `.ttf` files.
      */

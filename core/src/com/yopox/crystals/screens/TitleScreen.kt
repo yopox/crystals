@@ -10,6 +10,7 @@ import com.yopox.crystals.InputScreen
 import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
 import com.yopox.crystals.ui.Button
+import com.yopox.crystals.ui.TextButton
 import ktx.app.KtxScreen
 import ktx.graphics.use
 import kotlin.math.min
@@ -30,7 +31,7 @@ class TitleScreen(private val game: Crystals) : KtxScreen, InputScreen {
     private var state = ScreenState.MAIN
 
     init {
-        buttons.add(Button(Util.WIDTH / 2 - Util.BUTTON_WIDTH, Util.HEIGHT / 4, Util.TEXT_NEWGAME, true) {
+        buttons.add(TextButton(Util.WIDTH / 2 - Util.BUTTON_WIDTH, Util.HEIGHT / 4, Util.TEXT_NEWGAME, true) {
             blockInput = true
             state = ScreenState.TRANSITION_EN
         })

@@ -16,6 +16,7 @@ import com.yopox.crystals.data.Event
 import com.yopox.crystals.data.Progress
 import com.yopox.crystals.ui.Button
 import com.yopox.crystals.ui.Chunk
+import com.yopox.crystals.ui.TextButton
 import ktx.app.KtxScreen
 import ktx.graphics.use
 
@@ -42,13 +43,13 @@ class Trip(private val game: Crystals) : KtxScreen, InputScreen {
     init {
         val x = 16f
         val y = 7f
-        buttons.add(Button(x, y, Util.TEXT_STATUS) {
+        buttons.add(TextButton(x, y, Util.TEXT_STATUS) {
             Gdx.app.log("trip", "Status")
         })
-        buttons.add(Button(x + 40, y, Util.TEXT_BAG) {
+        buttons.add(TextButton(x + 40, y, Util.TEXT_BAG) {
             Gdx.app.log("trip", "Bag")
         })
-        buttons.add(Button(x + 2 * 40, y, Util.TEXT_CONTINUE, clickable = false) {
+        buttons.add(TextButton(x + 2 * 40, y, Util.TEXT_CONTINUE, clickable = false) {
             Display.changeEvent(chunks[0].getEvent()!!)
             state = ScreenState.TRANSITION_EN
             blockInput = true
@@ -63,7 +64,7 @@ class Trip(private val game: Crystals) : KtxScreen, InputScreen {
 
         // Draw the title
         batch.use {
-            Util.bigFont.draw(it, Util.TEXT_TRIP, 10f, Util.HEIGHT - 13)
+            Util.bigFont.draw(it, Util.TEXT_TRIP, 10f, Util.HEIGHT - Util.TITLE_OFFSET)
         }
 
         drawStatus()
