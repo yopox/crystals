@@ -16,6 +16,8 @@ import ktx.graphics.use
 
 /**
  * Fight Screen.
+ *
+ * TODO: Fight setup function
  */
 class Fight(private val game: Crystals) : KtxScreen, InputScreen {
 
@@ -37,10 +39,10 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
      * Main state components. Useful to tell the fight.
      * TODO: Screen shaking
      * TODO: Animations
+     * TODO: Update HP/MP
      */
     private enum class BlockType {
-        TEXT,
-        TRANSITION
+        TEXT
     }
 
     private data class Block(val type: BlockType, var content: String)
@@ -51,7 +53,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     override var blockInput = true
     private val viewport = FitViewport(Util.WIDTH, Util.HEIGHT, camera)
 
-    private val buttons = ArrayList<Button>()
+    private val buttons = ArrayList<ActionIcon>()
     private var state = ScreenState.TRANSITION_OP
     private var subState = State.MAIN
     private val icons = ArrayList<Icon>()
@@ -59,33 +61,55 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     private val blocks = ArrayList<Block>()
     private var currentBlock: Block? = null
 
+    private object Navigation {
+        var state: State = State.MAIN
+        var frame = 0
+        var navigating = false
+        var oldStack = ArrayList<State>()
+
+        infix fun to(newState: State) {
+            oldStack.add(0, state)
+            state = newState
+            frame = 0
+            navigating = true
+        }
+
+        fun rewind() {
+            state = oldStack.removeAt(0)
+            frame = 0
+            navigating = true
+        }
+    }
+
     private object Dialog {
         const val BASE_COOLDOWN = 4
+        const val END_COOLDOWN = 32
         var line1 = ""
         var line2 = ""
         var cooldown = BASE_COOLDOWN
-        var newLine = true
     }
 
     init {
         // Adding fighters
         // TODO: Generate fights
-        icons.add(Icon(Def.Icons.Priest, Pair(88f, 36f)))
-        icons.add(Icon(Def.Icons.Snake, Pair(56f, 36f)))
+        icons.add(Icon(Def.Icons.Priest, Pair(88f, 40f)) { selectTarget(1) })
+        icons.add(Icon(Def.Icons.Snake, Pair(56f, 40f)) { selectTarget(0) })
 
-        buttons.add(ActionButton(ACTIONS.ATTACK, Pair(10f, 5f)) {})
-        buttons.add(ActionButton(ACTIONS.DEFENSE, Pair(26f, 5f)) {})
-        buttons.add(ActionButton(ACTIONS.ITEMS, Pair(42f, 5f)) {})
-        buttons.add(ActionButton(ACTIONS.W_MAGIC, Pair(58f, 5f)) {})
-        buttons.add(ActionButton(ACTIONS.ROB, Pair(74f, 5f)) {})
-        buttons.add(ActionButton(ACTIONS.GEOMANCY, Pair(90f, 5f)) {})
+        buttons.add(ActionIcon(ACTIONS.ATTACK, Pair(10f, 5f)) { selectIcon(0) })
+        buttons.add(ActionIcon(ACTIONS.DEFENSE, Pair(26f, 5f)) { selectIcon(1) })
+        buttons.add(ActionIcon(ACTIONS.ITEMS, Pair(42f, 5f)) { selectIcon(2) })
+        buttons.add(ActionIcon(ACTIONS.W_MAGIC, Pair(58f, 5f)) { selectIcon(3) })
+        buttons.add(ActionIcon(ACTIONS.ROB, Pair(74f, 5f)) { selectIcon(4) })
+        buttons.add(ActionIcon(ACTIONS.GEOMANCY, Pair(90f, 5f)) { selectIcon(5) })
     }
 
     override fun render(delta: Float) {
         batch.projectionMatrix = camera.combined
         shapeRenderer.projectionMatrix = camera.combined
 
-        update()
+        if (!blockInput) {
+            update()
+        }
 
         // Draw the Dialog box
         drawDialog()
@@ -96,6 +120,21 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
 
             // Draw characters
             icons.map { icon -> icon.draw(shapeRenderer, it) }
+        }
+
+        if (Navigation.navigating) {
+            Navigation.frame++
+            if (Navigation.frame <= Transition.TRANSITION_TIME) {
+                Transition.drawTransition(shapeRenderer,
+                        0f, 0f, 112f, 22f, Navigation.frame)
+                {
+                    subState = Navigation.state
+                    initState(subState)
+                }
+            } else {
+                Navigation.navigating = false
+                blockInput = false
+            }
         }
 
         when (state) {
@@ -121,11 +160,14 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
             State.MAIN -> {
 
                 if (currentBlock == null) {
-                    // New block
                     if (blocks.size > 0) {
+                        // New block
                         currentBlock = blocks.removeAt(0)
+                        initBlock(currentBlock!!.type)
                     } else {
-                        subState = State.CHOOSE_ACTION
+                        // No more blocks, [subState] set to [State.CHOOSE_ACTION] automatically
+                        Navigation to State.CHOOSE_ACTION
+                        blockInput = true
                     }
 
                 } else {
@@ -133,67 +175,148 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
                     when (currentBlock!!.type) {
 
                         BlockType.TEXT -> {
-                            if (Dialog.newLine) {
-                                // New line of text
-                                Dialog.line2 = Dialog.line1
-                                Dialog.newLine = false
+                            if (Dialog.cooldown > 0) {
+                                // Waiting
+                                Dialog.cooldown--
                             }
 
-                            if (Dialog.cooldown > 0) {
-                                // Waiting before displaying the next character
-                                Dialog.cooldown--
-                            } else {
+                            val len = currentBlock!!.content.length
+                            if (len > 0 && Dialog.cooldown == 0) {
                                 // Displaying the next character
                                 Dialog.line1 += currentBlock!!.content[0]
                                 currentBlock!!.content = currentBlock!!.content.substring(1)
-                                Dialog.cooldown = Dialog.BASE_COOLDOWN
+                                Dialog.cooldown = if (len == 1) Dialog.END_COOLDOWN else Dialog.BASE_COOLDOWN
                             }
 
-                            if (currentBlock!!.content == "") {
+                            if (len == 0 && Dialog.cooldown == 0) {
                                 // No more text to display
                                 currentBlock = null
-                                Dialog.newLine = true
                             }
-                        }
-
-                        BlockType.TRANSITION -> {
-                            subState = State.valueOf(currentBlock!!.content)
-                            currentBlock = null
                         }
                     }
                 }
             }
-            State.CHOOSE_ACTION -> {}
-            State.CHOOSE_SUBACTION -> {}
-            State.CHOOSE_TARGET -> {}
+            State.CHOOSE_ACTION -> {
+            }
+            State.CHOOSE_SUBACTION -> {
+            }
+            State.CHOOSE_TARGET -> {
+            }
+        }
+    }
+
+    /**
+     * Execute code when [currentBlock] changes.
+     */
+    private fun initBlock(blockType: BlockType) = when (blockType) {
+        BlockType.TEXT -> {
+            Dialog.line2 = Dialog.line1
+            Dialog.line1 = ""
+        }
+    }
+
+    private fun initState(state: State): Unit = when (state) {
+        State.MAIN -> {
+        }
+        State.CHOOSE_ACTION -> {
+            buttons[0].changeType(ACTIONS.ATTACK)
+            buttons.forEach { it.show() }
+        }
+        State.CHOOSE_SUBACTION -> {
+            buttons[0].changeType(ACTIONS.RETURN)
+            buttons[4].hide()
+            buttons[5].hide()
+        }
+        State.CHOOSE_TARGET -> {
+            buttons[0].changeType(ACTIONS.RETURN)
+            buttons[1].hide()
+            buttons[2].hide()
+            buttons[3].hide()
+            buttons[4].hide()
+            buttons[5].hide()
         }
     }
 
     private fun drawDialog() {
+        // Draw the dialog line
         Util.drawRect(shapeRenderer, -1f, -1f, 182f, 24f)
+
+        // Draw the hero status
+        // TODO: Real stats
+        batch.use {
+            Util.font.draw(it, "HP 23/40", 120f, 19f)
+            Util.font.draw(it, "MP 8/17", 120f, 9f)
+        }
+
         when (subState) {
             State.MAIN -> {
                 batch.use {
                     Util.font.draw(it, Dialog.line1, 10f, 19f)
-                    Util.font.draw(it, Dialog.line2, 10f, 10f)
+                    Util.font.draw(it, Dialog.line2, 10f, 9f)
+                    Util.font.draw(it, Util.TEXT_LOG, 10f, 32f)
+
                 }
             }
             State.CHOOSE_ACTION -> {
                 batch.use {
-                    Util.font.draw(it, Util.TEXT_ACTIONS, 10f, 31f)
+                    Util.font.draw(it, Util.TEXT_ACTIONS, 10f, 32f)
                 }
                 buttons.map { it.draw(shapeRenderer, batch) }
             }
             State.CHOOSE_SUBACTION -> TODO()
-            State.CHOOSE_TARGET -> TODO()
+            State.CHOOSE_TARGET -> {
+                batch.use {
+                    Util.font.draw(it, Util.TEXT_TARGET, 10f, 32f)
+                }
+                buttons.map { it.draw(shapeRenderer, batch) }
+            }
         }
+    }
+
+    private fun selectIcon(i: Int) {
+        if (!blockInput) {
+            Gdx.app.log("Selected", i.toString())
+            when (subState) {
+                State.MAIN -> {
+                }
+                State.CHOOSE_ACTION -> when (i) {
+                    0 -> {
+                        Navigation to State.CHOOSE_TARGET
+                        blockInput = true
+                    }
+                    else -> {
+                    }
+                }
+                State.CHOOSE_SUBACTION -> when (i) {
+                    0 -> {
+                        Navigation.rewind()
+                        blockInput = true
+                    }
+                    else -> {
+                    }
+                }
+                State.CHOOSE_TARGET -> when (i) {
+                    0 -> {
+                        Navigation.rewind()
+                        blockInput = true
+                    }
+                    else -> {
+                    }
+                }
+            }
+        }
+    }
+
+    private fun selectTarget(i: Int) {
+
     }
 
     override fun show() {
         super.show()
         Gdx.input.inputProcessor = this
+        // TODO: Remove test blocks
         blocks.add(Block(BlockType.TEXT, "Snake attacks!"))
-        blocks.add(Block(BlockType.TRANSITION, "CHOOSE_ACTION"))
+        blocks.add(Block(BlockType.TEXT, "Get ready!"))
     }
 
     override fun resize(width: Int, height: Int) {

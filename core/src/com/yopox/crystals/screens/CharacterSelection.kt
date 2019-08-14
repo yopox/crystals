@@ -32,9 +32,9 @@ class CharacterSelection(private val game: Crystals) : KtxScreen, InputScreen {
     private var job = Def.Jobs.Warrior
     private var nextJob = Def.Jobs.Warrior
     private var jobStats = job.statsDescription()
-    private var transition = false
     private var state = ScreenState.TRANSITION_OP
-    var frame = 0
+    private var transition = false
+    private var frame = 0
 
     init {
         // Buttons init

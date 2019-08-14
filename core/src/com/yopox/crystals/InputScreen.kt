@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.Camera
 interface InputScreen : InputProcessor {
 
     val camera: Camera
-    val blockInput: Boolean
+    var blockInput: Boolean
 
     override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
         if (pointer > 0 || button > 0 || blockInput) return false

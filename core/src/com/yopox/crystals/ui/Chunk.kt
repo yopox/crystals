@@ -27,9 +27,8 @@ class Chunk(private var x: Float, private val y: Float) {
      * TODO: Real event generation
      */
     init {
-        val eT = EVENT_TYPE.values()
         repeat(3) {
-            events.add(Event(eT.random()))
+            events.add(Event(EVENT_TYPE.BATTLE))
         }
     }
 
