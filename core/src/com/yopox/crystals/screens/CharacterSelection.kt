@@ -10,6 +10,7 @@ import com.yopox.crystals.data.Def
 import com.yopox.crystals.data.Job
 import com.yopox.crystals.ui.Button
 import com.yopox.crystals.ui.TextButton
+import com.yopox.crystals.ui.Transition
 import ktx.app.KtxScreen
 import ktx.graphics.use
 
@@ -80,13 +81,13 @@ class CharacterSelection(private val game: Crystals) : KtxScreen, InputScreen {
 
         when (state) {
             ScreenState.TRANSITION_OP -> {
-                if (Util.drawWipe(shapeRenderer, false, true)) {
+                if (Transition.drawWipe(shapeRenderer, false, reverse = true)) {
                     state = ScreenState.MAIN
                     blockInput = false
                 }
             }
             ScreenState.TRANSITION_EN -> {
-                if (Util.drawWipe(shapeRenderer)) {
+                if (Transition.drawWipe(shapeRenderer)) {
                     resetState()
                     game.setScreen<Trip>()
                 }
@@ -94,6 +95,24 @@ class CharacterSelection(private val game: Crystals) : KtxScreen, InputScreen {
             else -> Unit
         }
 
+    }
+
+    private fun drawClassTransition() {
+        if (transition) {
+            frame++
+            if (frame <= Transition.TRANSITION_TIME) {
+                Transition.drawTransition(shapeRenderer, 8f, 8f, 96f, 16f, frame) {
+                    job = nextJob
+                    jobStats = job.statsDescription()
+                }
+                Transition.drawTransition(shapeRenderer, 8f, 29f, 96f, 32f, frame)
+                Transition.drawTransition(shapeRenderer, 8f, Util.HEIGHT - Util.TITLE_OFFSET - Util.BIG_FONT_SIZE + 5f, 96f, 16f, frame)
+            } else {
+                frame = 0
+                transition = false
+                blockInput = false
+            }
+        }
     }
 
     override fun resize(width: Int, height: Int) {
@@ -119,48 +138,6 @@ class CharacterSelection(private val game: Crystals) : KtxScreen, InputScreen {
             Util.font.draw(it, jobStats[2], x0 + 2 * offset, 24f)
             Util.bigFont.draw(it, job.name, 10f, Util.HEIGHT - Util.TITLE_OFFSET)
         }
-    }
-
-    /**
-     * Draws a [Util.TRANSITION_TIME] frames transition, and changes the displayed [Job] to [nextJob].
-     */
-    private fun drawClassTransition() {
-        var x = 0f
-        var w = 0f
-
-        // Update
-        if (transition) {
-            frame++
-            when {
-                frame < Util.TRANSITION_TIME / 2 -> {
-                    x = 8f
-                    w = 96 * Util.easeOutQuad(frame.toFloat() / (Util.TRANSITION_TIME / 2))
-                }
-                frame < Util.TRANSITION_TIME -> {
-                    w = 96 * Util.easeOutQuad((Util.TRANSITION_TIME - frame).toFloat() / (Util.TRANSITION_TIME / 2))
-                    x = 8f + 96 - w
-                }
-                else -> {
-                    transition = false
-                    blockInput = false
-                    frame = 0
-                }
-            }
-        }
-
-        // Change displayed job in the middle of the transition
-        if (frame == Util.TRANSITION_TIME / 2) {
-            job = nextJob
-            jobStats = job.statsDescription()
-        }
-
-        // Draw
-        if (transition) {
-            Util.drawFilledRect(shapeRenderer, x, Util.HEIGHT - 26f, w, 16f)
-            Util.drawFilledRect(shapeRenderer, x, 29f, w, 32f)
-            Util.drawFilledRect(shapeRenderer, x, 8f, w, 16f)
-        }
-
     }
 
     override fun inputUp(x: Int, y: Int) {

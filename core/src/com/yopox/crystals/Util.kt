@@ -19,9 +19,9 @@ enum class ScreenState {
 }
 
 /**
- * Utilitary variables and functions.
+ * Utilitarian variables and functions.
  *
- * TODO: Move all texts in another object / file ?
+ * TODO: Move all texts in another file & translation support
  */
 object Util {
 
@@ -34,6 +34,8 @@ object Util {
     const val HEIGHT = 90f
     const val TITLE_OFFSET = 8
 
+    const val FONT_SIZE = 8
+    const val BIG_FONT_SIZE = 21
     const val TEXT_TITLE = "Crystals"
     const val TEXT_NEWGAME = "Click to start"
     const val TEXT_NEXT = "Next"
@@ -52,9 +54,9 @@ object Util {
         val generator = FreeTypeFontGenerator(Gdx.files.internal("babyblocks.ttf"))
         val generator2 = FreeTypeFontGenerator(Gdx.files.internal("bubbleTime.ttf"))
         val parameter = FreeTypeFontGenerator.FreeTypeFontParameter()
-        parameter.size = 8
+        parameter.size = FONT_SIZE
         val parameter2 = FreeTypeFontGenerator.FreeTypeFontParameter()
-        parameter2.size = 21
+        parameter2.size = BIG_FONT_SIZE
         font = generator.generateFont(parameter)
         bigFont = generator2.generateFont(parameter2)
 
@@ -123,56 +125,8 @@ object Util {
     }
 
     /**
-     * Transition time (in frames).
-     */
-    const val TRANSITION_TIME = 30
-    const val DISPLAY_LEN = 40
-    private const val TRANSITION_STUN = 2
-    private var TRANSITION_FRAME = 0
-
-    /**
-     * Maps [0; 1] to [0; 1] with out cubic easing.
-     */
-    fun easeOutQuad(t: Float): Float {
-        return t * (2 - t)
-    }
-
-    /**
-     * Draws a white wipe transition.
-     */
-    fun drawWipe(sR: ShapeRenderer, leftToRight: Boolean = true, reverse: Boolean = false): Boolean {
-        var progress = min(TRANSITION_FRAME, TRANSITION_TIME)
-        if (reverse) progress = TRANSITION_TIME - progress
-
-        val width = easeOutQuad(progress.toFloat() / TRANSITION_TIME) * WIDTH
-        val offset = when (leftToRight) {
-            true -> 0f
-            else -> WIDTH - width
-        }
-
-        sR.use(ShapeRenderer.ShapeType.Filled) {
-            it.color = Color.WHITE
-            it.rect(offset, 0f, width, HEIGHT)
-        }
-
-        if (TRANSITION_FRAME == TRANSITION_TIME + TRANSITION_STUN) {
-            TRANSITION_FRAME = 0
-            return true
-        }
-
-        TRANSITION_FRAME++
-        return false
-
-    }
-
-    /**
      * Maps an [Int] to a [String] including the sign (`+`/`-`).
      */
-    fun signedInt(i: Int): String {
-        return when (i <= 0) {
-            true -> "$i"
-            else -> "+$i"
-        }
-    }
+    fun signedInt(i: Int): String = if (i <= 0) "$i" else "+$i"
 
 }

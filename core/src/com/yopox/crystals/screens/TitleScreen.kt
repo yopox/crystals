@@ -11,6 +11,7 @@ import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
 import com.yopox.crystals.ui.Button
 import com.yopox.crystals.ui.TextButton
+import com.yopox.crystals.ui.Transition
 import ktx.app.KtxScreen
 import ktx.graphics.use
 import kotlin.math.min
@@ -48,12 +49,12 @@ class TitleScreen(private val game: Crystals) : KtxScreen, InputScreen {
         buttons.map { it.draw(shapeRenderer, batch) }
 
         when (state) {
-            ScreenState.TRANSITION_EN -> if (Util.drawWipe(shapeRenderer)) {
+            ScreenState.TRANSITION_EN -> if (Transition.drawWipe(shapeRenderer)) {
                 resetState()
                 game.setScreen<CharacterSelection>()
             }
             ScreenState.TRANSITION_OP -> {
-                if (Util.drawWipe(shapeRenderer, false, reverse = true)) {
+                if (Transition.drawWipe(shapeRenderer, false, reverse = true)) {
                     state = ScreenState.MAIN
                     blockInput = false
                 }

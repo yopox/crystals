@@ -1,9 +1,7 @@
 package com.yopox.crystals.screens
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.utils.viewport.FitViewport
@@ -12,9 +10,6 @@ import com.yopox.crystals.InputScreen
 import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
 import com.yopox.crystals.data.Def
-import com.yopox.crystals.data.EVENT_TYPE
-import com.yopox.crystals.data.Event
-import com.yopox.crystals.data.Progress
 import com.yopox.crystals.ui.*
 import ktx.app.KtxScreen
 import ktx.graphics.use
@@ -24,6 +19,13 @@ import ktx.graphics.use
  */
 class Fight(private val game: Crystals) : KtxScreen, InputScreen {
 
+    /**
+     * State of the fight :
+     * @property MAIN consumes [Block] objects from [blocks]
+     * @property CHOOSE_ACTION let the player choose the action for the turn
+     * @property CHOOSE_SUBACTION let the player choose a subaction
+     * @property CHOOSE_TARGET let the player choose a target
+     */
     private enum class State {
         MAIN,
         CHOOSE_ACTION,
@@ -31,6 +33,11 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
         CHOOSE_TARGET
     }
 
+    /**
+     * Main state components. Useful to tell the fight.
+     * TODO: Screen shaking
+     * TODO: Animations
+     */
     private enum class BlockType {
         TEXT,
         TRANSITION
@@ -52,7 +59,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     private val blocks = ArrayList<Block>()
     private var currentBlock: Block? = null
 
-    private object dialog {
+    private object Dialog {
         const val BASE_COOLDOWN = 4
         var line1 = ""
         var line2 = ""
@@ -61,10 +68,12 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     }
 
     init {
+        // Adding fighters
+        // TODO: Generate fights
         icons.add(Icon(Def.Icons.Priest, Pair(88f, 36f)))
         icons.add(Icon(Def.Icons.Snake, Pair(56f, 36f)))
 
-        buttons.add(ActionButton(ACTIONS.ATTACK, Pair(10f, 5f)) { Gdx.app.log("Fight", "ATTACK") })
+        buttons.add(ActionButton(ACTIONS.ATTACK, Pair(10f, 5f)) {})
         buttons.add(ActionButton(ACTIONS.DEFENSE, Pair(26f, 5f)) {})
         buttons.add(ActionButton(ACTIONS.ITEMS, Pair(42f, 5f)) {})
         buttons.add(ActionButton(ACTIONS.W_MAGIC, Pair(58f, 5f)) {})
@@ -78,7 +87,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
 
         update()
 
-        // Draw the dialog box
+        // Draw the Dialog box
         drawDialog()
 
         batch.use {
@@ -91,13 +100,13 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
 
         when (state) {
             ScreenState.TRANSITION_OP -> {
-                if (Util.drawWipe(shapeRenderer, false, reverse = true)) {
+                if (Transition.drawWipe(shapeRenderer, false, reverse = true)) {
                     state = ScreenState.MAIN
                     blockInput = false
                 }
             }
             ScreenState.TRANSITION_EN -> {
-                if (Util.drawWipe(shapeRenderer)) {
+                if (Transition.drawWipe(shapeRenderer)) {
                     resetState()
                     game.setScreen<Trip>()
                 }
@@ -110,31 +119,43 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     private fun update() {
         when (subState) {
             State.MAIN -> {
+
                 if (currentBlock == null) {
+                    // New block
                     if (blocks.size > 0) {
                         currentBlock = blocks.removeAt(0)
                     } else {
                         subState = State.CHOOSE_ACTION
                     }
+
                 } else {
+                    // Consume block
                     when (currentBlock!!.type) {
+
                         BlockType.TEXT -> {
-                            if (dialog.newLine) {
-                                dialog.line2 = dialog.line1
-                                dialog.newLine = false
+                            if (Dialog.newLine) {
+                                // New line of text
+                                Dialog.line2 = Dialog.line1
+                                Dialog.newLine = false
                             }
-                            if (dialog.cooldown > 0) {
-                                dialog.cooldown--
+
+                            if (Dialog.cooldown > 0) {
+                                // Waiting before displaying the next character
+                                Dialog.cooldown--
                             } else {
-                                dialog.line1 += currentBlock!!.content[0]
+                                // Displaying the next character
+                                Dialog.line1 += currentBlock!!.content[0]
                                 currentBlock!!.content = currentBlock!!.content.substring(1)
-                                dialog.cooldown = dialog.BASE_COOLDOWN
+                                Dialog.cooldown = Dialog.BASE_COOLDOWN
                             }
+
                             if (currentBlock!!.content == "") {
+                                // No more text to display
                                 currentBlock = null
-                                dialog.newLine = true
+                                Dialog.newLine = true
                             }
                         }
+
                         BlockType.TRANSITION -> {
                             subState = State.valueOf(currentBlock!!.content)
                             currentBlock = null
@@ -142,9 +163,9 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
                     }
                 }
             }
-            State.CHOOSE_ACTION -> TODO()
-            State.CHOOSE_SUBACTION -> TODO()
-            State.CHOOSE_TARGET -> TODO()
+            State.CHOOSE_ACTION -> {}
+            State.CHOOSE_SUBACTION -> {}
+            State.CHOOSE_TARGET -> {}
         }
     }
 
@@ -153,8 +174,8 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
         when (subState) {
             State.MAIN -> {
                 batch.use {
-                    Util.font.draw(it, dialog.line1, 10f, 19f)
-                    Util.font.draw(it, dialog.line2, 10f, 10f)
+                    Util.font.draw(it, Dialog.line1, 10f, 19f)
+                    Util.font.draw(it, Dialog.line2, 10f, 10f)
                 }
             }
             State.CHOOSE_ACTION -> {

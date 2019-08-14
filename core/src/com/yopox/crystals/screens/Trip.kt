@@ -17,6 +17,7 @@ import com.yopox.crystals.data.Progress
 import com.yopox.crystals.ui.Button
 import com.yopox.crystals.ui.Chunk
 import com.yopox.crystals.ui.TextButton
+import com.yopox.crystals.ui.Transition
 import ktx.app.KtxScreen
 import ktx.graphics.use
 
@@ -73,13 +74,13 @@ class Trip(private val game: Crystals) : KtxScreen, InputScreen {
 
         when (state) {
             ScreenState.TRANSITION_OP -> {
-                if (Util.drawWipe(shapeRenderer, false, reverse = true)) {
+                if (Transition.drawWipe(shapeRenderer, false, reverse = true)) {
                     state = ScreenState.MAIN
                     blockInput = false
                 }
             }
             ScreenState.TRANSITION_EN -> {
-                if (Util.drawWipe(shapeRenderer)) {
+                if (Transition.drawWipe(shapeRenderer)) {
                     resetState()
                     game.setScreen<Display>()
                 }

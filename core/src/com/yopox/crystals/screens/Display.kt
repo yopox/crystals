@@ -10,6 +10,7 @@ import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
 import com.yopox.crystals.data.EVENT_TYPE
 import com.yopox.crystals.data.Event
+import com.yopox.crystals.ui.Transition
 import ktx.app.KtxScreen
 import ktx.graphics.use
 
@@ -46,12 +47,12 @@ class Display(private val game: Crystals) : KtxScreen {
 
         when (state) {
             ScreenState.TRANSITION_OP -> {
-                if (Util.drawWipe(shapeRenderer, false, true)) {
+                if (Transition.drawWipe(shapeRenderer, false, true)) {
                     state = ScreenState.MAIN
                 }
             }
             ScreenState.TRANSITION_EN -> {
-                if (Util.drawWipe(shapeRenderer)) {
+                if (Transition.drawWipe(shapeRenderer)) {
                     resetState()
                     when (event.type) {
                         EVENT_TYPE.BATTLE -> game.setScreen<Fight>()
@@ -62,7 +63,7 @@ class Display(private val game: Crystals) : KtxScreen {
             }
             else -> {
                 frame++
-                if (frame == Util.DISPLAY_LEN) {
+                if (frame == Transition.DISPLAY_LEN) {
                     state = ScreenState.TRANSITION_EN
                 }
             }

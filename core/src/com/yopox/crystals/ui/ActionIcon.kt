@@ -20,6 +20,12 @@ enum class ACTIONS {
     GEOMANCY
 }
 
+/**
+ * ActionButton class.
+ * Used during [Fight] to select an action or subaction.
+ *
+ * TODO: Change type
+ */
 class ActionButton(type: ACTIONS, pos: Pair<Float, Float>, onClick: () -> Unit): Button(pos, true, onClick) {
 
     companion object {
