@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.yopox.crystals.Crystals
+import ktx.graphics.use
 
 enum class ACTIONS {
     ATTACK,
@@ -42,7 +43,9 @@ class ActionButton(type: ACTIONS, pos: Pair<Float, Float>, onClick: () -> Unit):
     val y = 0
 
     override fun draw(sR: ShapeRenderer, batch: SpriteBatch) {
-        batch.draw(icons, pos.first, pos.second, x, y, SIZE, SIZE)
+        batch.use {
+            it.draw(icons, pos.first, pos.second, x, y, SIZE, SIZE)
+        }
     }
 
 }

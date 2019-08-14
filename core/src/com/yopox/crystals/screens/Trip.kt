@@ -33,7 +33,7 @@ class Trip(private val game: Crystals) : KtxScreen, InputScreen {
     override var blockInput = true
     private val viewport = FitViewport(Util.WIDTH, Util.HEIGHT, camera)
 
-    private val icons: Texture = Crystals.assetManager["aseprite/icons.png"]
+    private val icons: Texture = Crystals.assetManager["icons.png"]
     private val buttons = ArrayList<Button>()
     private val chunks = ArrayList<Chunk>()
     private var state = ScreenState.TRANSITION_OP

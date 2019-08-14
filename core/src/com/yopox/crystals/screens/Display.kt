@@ -29,7 +29,7 @@ class Display(private val game: Crystals) : KtxScreen {
     private val camera = OrthographicCamera().also { it.position.set(Util.WIDTH / 2, Util.HEIGHT / 2, 0f) }
     private val shapeRenderer = ShapeRenderer()
     private val viewport = FitViewport(Util.WIDTH, Util.HEIGHT, camera)
-    private val icons: Texture = Crystals.assetManager["aseprite/icons.png"]
+    private val icons: Texture = Crystals.assetManager["icons.png"]
 
     private var state = ScreenState.TRANSITION_OP
     private var frame = 0

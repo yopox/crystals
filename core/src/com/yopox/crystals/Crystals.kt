@@ -24,7 +24,7 @@ class Crystals : KtxGame<Screen>() {
     override fun create() {
         assetManager = initiateAssetManager()
         with(assetManager) {
-            load("aseprite/icons.png", Texture::class.java)
+            load("icons.png", Texture::class.java)
             load("1BitPack.png", Texture::class.java)
             load("Base_Attacks.png", Texture::class.java)
             finishLoading()

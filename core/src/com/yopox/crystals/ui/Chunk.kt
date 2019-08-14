@@ -40,7 +40,8 @@ class Chunk(private var x: Float, private val y: Float) {
         // Icons
         for (i in 0 until events.size) {
             val iconX = events[i].iconX
-            val iconY = if (selected == i) 14 else 0
+            val iconY =  0
+            // TODO: Inverse shader if selected == i
             batch.use {
                 it.draw(icons, x + 1, y + 1 + 15 * i, iconX, iconY, 14, 14)
             }
