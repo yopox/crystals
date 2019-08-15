@@ -1,7 +1,6 @@
 package com.yopox.crystals.def
 
 import com.yopox.crystals.data.Job
-import com.yopox.crystals.ui.Actions
 
 object Jobs {
 
@@ -10,25 +9,48 @@ object Jobs {
         GEOMANCER,
         INVOKER,
         MAGE,
+        MONK,
         PRIEST,
         ROGUE,
         WARRIOR
     }
 
-    val warrior = Job("warrior", ID.WARRIOR, Actions.WARRIOR,
-            "warrior crystals give\nthe ability to boost\nattack.",
-            1, -2, 4, -2, 1, 1)
-    val priest = Job("priest", ID.PRIEST, Actions.W_MAGIC,
-            "priest crystals give\nthe ability to heal, but\nreduce attack.",
+    val bard = Job("Bard", ID.BARD, Actions.ID.SONGS,
+            "Bard crystals give\nthe ability to sing.",
+            -1, 1, 1, 0, -1, 4)
+    val geomancer = Job("Geomancer", ID.GEOMANCER, Actions.ID.GEOMANCY,
+            "Geomancer crystals give\nthe ability to turn\nnature into an ally.",
+            -1, 1, 1, 0, -1, 4)
+    val invoker = Job("Invoker", ID.INVOKER, Actions.ID.INVOKE,
+            "Invoker crystals give\nthe ability to summon\ncreatures.",
+            -1, 1, 1, 0, -1, 4)
+    val mage = Job("Mage", ID.MAGE, Actions.ID.D_MAGIC,
+            "Mage crystals give\nthe ability to use\ndark magic.",
+            -1, 1, 1, 0, -1, 4)
+    val monk = Job("Monk", ID.MONK, Actions.ID.MONK,
+            "Monk crystals let\nyou develop fighting\nskills.",
+            -1, 1, 1, 0, -1, 4)
+    val priest = Job("Priest", ID.PRIEST, Actions.ID.W_MAGIC,
+            "Priest crystals give\nthe ability to use\nwhite magic.",
             1, 4, -2, 2, -2, 0)
-    val rogue = Job("Robber", ID.ROGUE, Actions.ROB,
+    val rogue = Job("Robber", ID.ROGUE, Actions.ID.ROBBING,
             "Robber crystals give\nthe ability to steal\nitems.",
             -1, 1, 1, 0, -1, 4)
+    val warrior = Job("Warrior", ID.WARRIOR, Actions.ID.WARRIOR,
+            "Warrior crystals let\nyou develop war\nskills.",
+            1, -2, 4, -2, 1, 1)
+
+    val default = warrior
 
     val map = mapOf(
-            ID.WARRIOR to warrior,
+            ID.BARD to bard,
+            ID.GEOMANCER to geomancer,
+            ID.INVOKER to invoker,
+            ID.MAGE to mage,
+            ID.MONK to monk,
             ID.PRIEST to priest,
-            ID.ROGUE to rogue
+            ID.ROGUE to rogue,
+            ID.WARRIOR to warrior
     )
 
 }

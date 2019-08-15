@@ -16,7 +16,7 @@ import ktx.graphics.use
 /**
  * Character selection screen
  *
- * TODO: Real nextJob / previousJob function
+ * TODO: Real nextJobId / previousJob function
  * TODO: Change the state on click
  */
 class CharacterSelection(private val game: Crystals) : KtxScreen, InputScreen {
@@ -28,9 +28,9 @@ class CharacterSelection(private val game: Crystals) : KtxScreen, InputScreen {
     private val shapeRenderer = ShapeRenderer()
 
     private val buttons = ArrayList<Button>()
-    private var job = Jobs.warrior
-    private var nextJob = Jobs.warrior
-    private var jobStats = job.statsDescription()
+    private var jobId = Jobs.ID.WARRIOR
+    private var job = Jobs.map[Jobs.ID.WARRIOR]!!
+    private var nextJobId = Jobs.ID.WARRIOR
     private var state = ScreenState.TRANSITION_OP
     private var transition = false
     private var frame = 0
@@ -45,20 +45,12 @@ class CharacterSelection(private val game: Crystals) : KtxScreen, InputScreen {
             state = ScreenState.TRANSITION_EN
         })
         buttons.add(TextButton(x, y + 21, Util.TEXT_PREVIOUS) {
-            nextJob = when (job.name) {
-                Jobs.warrior.name -> Jobs.priest
-                Jobs.priest.name -> Jobs.rogue
-                else -> Jobs.warrior
-            }
+            nextJobId = Util.next(Jobs.map.keys, jobId)
             transition = true
             blockInput = true
         })
         buttons.add(TextButton(x, y + 2 * 21, Util.TEXT_NEXT) {
-            nextJob = when (job.name) {
-                Jobs.warrior.name -> Jobs.rogue
-                Jobs.rogue.name -> Jobs.priest
-                else -> Jobs.warrior
-            }
+            nextJobId = Util.previous(Jobs.map.keys, jobId)
             transition = true
             blockInput = true
         })
@@ -101,8 +93,8 @@ class CharacterSelection(private val game: Crystals) : KtxScreen, InputScreen {
             frame++
             if (frame <= Transition.TRANSITION_TIME) {
                 Transition.drawTransition(shapeRenderer, 8f, 8f, 96f, 16f, frame) {
-                    job = nextJob
-                    jobStats = job.statsDescription()
+                    jobId = nextJobId
+                    job = Jobs.map[jobId]!!
                 }
                 Transition.drawTransition(shapeRenderer, 8f, 29f, 96f, 32f, frame)
                 Transition.drawTransition(shapeRenderer, 8f, Util.HEIGHT - Util.TITLE_OFFSET - Util.BIG_FONT_SIZE + 5f, 96f, 16f, frame)
@@ -130,6 +122,8 @@ class CharacterSelection(private val game: Crystals) : KtxScreen, InputScreen {
         val x0 = 12f
         val offset = 32f
 
+        val jobStats = job.statsDescription()
+
         batch.use {
             Util.font.draw(it, job.desc, 12f, 56f)
             Util.font.draw(it, jobStats[0], x0, 24f)
@@ -148,9 +142,9 @@ class CharacterSelection(private val game: Crystals) : KtxScreen, InputScreen {
     }
 
     private fun resetState() {
-        job = Jobs.warrior
-        nextJob = Jobs.warrior
-        jobStats = job.statsDescription()
+        jobId = Jobs.ID.WARRIOR
+        nextJobId = Jobs.ID.WARRIOR
+        job = Jobs.default
         transition = false
         state = ScreenState.TRANSITION_OP
         frame = 0

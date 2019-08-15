@@ -2,9 +2,9 @@ package com.yopox.crystals.data
 
 import com.yopox.crystals.Util
 import com.yopox.crystals.def.Jobs
-import com.yopox.crystals.ui.Actions
+import com.yopox.crystals.def.Actions
 
-class Job(val name: String, val id: Jobs.ID, val iconId: Actions, val desc: String, val hp: Int, val mp: Int, val atk: Int, val wis: Int, val def: Int, val spd: Int) {
+class Job(val name: String, val id: Jobs.ID, val iconId: Actions.ID, val desc: String, val hp: Int, val mp: Int, val atk: Int, val wis: Int, val def: Int, val spd: Int) {
 
     fun statsDescription(): Array<String> {
         val stats = arrayOf(hp, mp, atk, wis, def, spd)
