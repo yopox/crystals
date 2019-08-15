@@ -8,7 +8,7 @@ import com.yopox.crystals.Crystals
 /**
  * Icon class : displays a 16*16 icon.
  *
- * @param id The icon id, see [Def.Icons]
+ * @param id The icon ID, see [Def.Icons]
  * @param pos The icon position
  * @param onClick optional click callback
  */

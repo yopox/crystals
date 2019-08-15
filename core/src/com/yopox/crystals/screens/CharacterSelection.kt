@@ -6,8 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.yopox.crystals.*
-import com.yopox.crystals.data.Def
-import com.yopox.crystals.data.Job
+import com.yopox.crystals.def.Jobs
 import com.yopox.crystals.ui.Button
 import com.yopox.crystals.ui.TextButton
 import com.yopox.crystals.ui.Transition
@@ -29,8 +28,8 @@ class CharacterSelection(private val game: Crystals) : KtxScreen, InputScreen {
     private val shapeRenderer = ShapeRenderer()
 
     private val buttons = ArrayList<Button>()
-    private var job = Def.Jobs.Warrior
-    private var nextJob = Def.Jobs.Warrior
+    private var job = Jobs.warrior
+    private var nextJob = Jobs.warrior
     private var jobStats = job.statsDescription()
     private var state = ScreenState.TRANSITION_OP
     private var transition = false
@@ -47,18 +46,18 @@ class CharacterSelection(private val game: Crystals) : KtxScreen, InputScreen {
         })
         buttons.add(TextButton(x, y + 21, Util.TEXT_PREVIOUS) {
             nextJob = when (job.name) {
-                Def.Jobs.Warrior.name -> Def.Jobs.Priest
-                Def.Jobs.Priest.name -> Def.Jobs.Rogue
-                else -> Def.Jobs.Warrior
+                Jobs.warrior.name -> Jobs.priest
+                Jobs.priest.name -> Jobs.rogue
+                else -> Jobs.warrior
             }
             transition = true
             blockInput = true
         })
         buttons.add(TextButton(x, y + 2 * 21, Util.TEXT_NEXT) {
             nextJob = when (job.name) {
-                Def.Jobs.Warrior.name -> Def.Jobs.Rogue
-                Def.Jobs.Rogue.name -> Def.Jobs.Priest
-                else -> Def.Jobs.Warrior
+                Jobs.warrior.name -> Jobs.rogue
+                Jobs.rogue.name -> Jobs.priest
+                else -> Jobs.warrior
             }
             transition = true
             blockInput = true
@@ -149,8 +148,8 @@ class CharacterSelection(private val game: Crystals) : KtxScreen, InputScreen {
     }
 
     private fun resetState() {
-        job = Def.Jobs.Warrior
-        nextJob = Def.Jobs.Warrior
+        job = Jobs.warrior
+        nextJob = Jobs.warrior
         jobStats = job.statsDescription()
         transition = false
         state = ScreenState.TRANSITION_OP

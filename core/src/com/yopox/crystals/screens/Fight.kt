@@ -9,7 +9,9 @@ import com.yopox.crystals.Crystals
 import com.yopox.crystals.InputScreen
 import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
-import com.yopox.crystals.data.Def
+import com.yopox.crystals.def.Icons
+import com.yopox.crystals.def.Jobs
+import com.yopox.crystals.logic.Fighter
 import com.yopox.crystals.ui.*
 import ktx.app.KtxScreen
 import ktx.graphics.use
@@ -58,11 +60,13 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     private var subState = State.MAIN
     private val icons = ArrayList<Icon>()
 
+    private var hero = Fighter(Jobs.ID.PRIEST, "yopox")
     private val blocks = ArrayList<Block>()
     private var currentBlock: Block? = null
 
     private object Navigation {
         var state: State = State.MAIN
+        var selected = 0
         var frame = 0
         var navigating = false
         var oldStack = ArrayList<State>()
@@ -92,15 +96,15 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     init {
         // Adding fighters
         // TODO: Generate fights
-        icons.add(Icon(Def.Icons.Priest, Pair(88f, 40f)) { selectTarget(1) })
-        icons.add(Icon(Def.Icons.Snake, Pair(56f, 40f)) { selectTarget(0) })
+        icons.add(Icon(Icons.Priest, Pair(88f, 40f)) { selectTarget(1) })
+        icons.add(Icon(Icons.Snake, Pair(56f, 40f)) { selectTarget(0) })
 
-        buttons.add(ActionIcon(ACTIONS.ATTACK, Pair(10f, 5f)) { selectIcon(0) })
-        buttons.add(ActionIcon(ACTIONS.DEFENSE, Pair(26f, 5f)) { selectIcon(1) })
-        buttons.add(ActionIcon(ACTIONS.ITEMS, Pair(42f, 5f)) { selectIcon(2) })
-        buttons.add(ActionIcon(ACTIONS.W_MAGIC, Pair(58f, 5f)) { selectIcon(3) })
-        buttons.add(ActionIcon(ACTIONS.ROB, Pair(74f, 5f)) { selectIcon(4) })
-        buttons.add(ActionIcon(ACTIONS.GEOMANCY, Pair(90f, 5f)) { selectIcon(5) })
+        buttons.add(ActionIcon(Actions.ATTACK, Pair(10f, 5f)) { selectIcon(0) })
+        buttons.add(ActionIcon(Actions.DEFENSE, Pair(26f, 5f)) { selectIcon(1) })
+        buttons.add(ActionIcon(Actions.ITEMS, Pair(42f, 5f)) { selectIcon(2) })
+        buttons.add(ActionIcon(Actions.W_MAGIC, Pair(58f, 5f)) { selectIcon(3) })
+        buttons.add(ActionIcon(Actions.ROB, Pair(74f, 5f)) { selectIcon(4) })
+        buttons.add(ActionIcon(Actions.GEOMANCY, Pair(90f, 5f)) { selectIcon(5) })
     }
 
     override fun render(delta: Float) {
@@ -217,18 +221,16 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
 
     private fun initState(state: State): Unit = when (state) {
         State.MAIN -> {
+            Navigation.oldStack.clear()
         }
         State.CHOOSE_ACTION -> {
-            buttons[0].changeType(ACTIONS.ATTACK)
-            buttons.forEach { it.show() }
+            hero.setActionsIcons(buttons)
         }
         State.CHOOSE_SUBACTION -> {
-            buttons[0].changeType(ACTIONS.RETURN)
-            buttons[4].hide()
-            buttons[5].hide()
+            hero.setSubactionIcons(Navigation.selected, buttons)
         }
         State.CHOOSE_TARGET -> {
-            buttons[0].changeType(ACTIONS.RETURN)
+            buttons[0].changeType(Actions.RETURN)
             buttons[1].hide()
             buttons[2].hide()
             buttons[3].hide()
@@ -275,7 +277,6 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
 
     private fun selectIcon(i: Int) {
         if (!blockInput) {
-            Gdx.app.log("Selected", i.toString())
             when (subState) {
                 State.MAIN -> {
                 }

@@ -13,6 +13,7 @@ import com.yopox.crystals.Util
  */
 abstract class Button(protected val pos: Pair<Float, Float>, var clickable: Boolean = true, val onClick: () -> Unit) {
     protected var clicked = false
+    var visible = true
     open val size = Pair(Util.BUTTON_WIDTH, Util.BUTTON_HEIGHT)
 
     abstract fun draw(sR: ShapeRenderer, batch: SpriteBatch)
@@ -33,7 +34,7 @@ abstract class Button(protected val pos: Pair<Float, Float>, var clickable: Bool
      * Called when the player stops touching the screen.
      */
     fun lift(x: Int, y: Int) {
-        if (clicked) {
+        if (clicked && visible) {
             clicked = false
             if (x > pos.first
                     && x < pos.first + size.first - 1
@@ -41,6 +42,14 @@ abstract class Button(protected val pos: Pair<Float, Float>, var clickable: Bool
                     && y < pos.second + size.second - 1)
                 onClick()
         }
+    }
+
+    fun hide() {
+        visible = false
+    }
+
+    fun show() {
+        visible = true
     }
 
 }

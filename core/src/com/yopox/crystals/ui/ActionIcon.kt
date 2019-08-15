@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.yopox.crystals.Crystals
 import ktx.graphics.use
 
-enum class ACTIONS {
+enum class Actions {
     ATTACK,
     DEFENSE,
     ITEMS,
@@ -27,7 +27,7 @@ enum class ACTIONS {
  *
  * TODO: Merge with [Icon]
  */
-class ActionIcon(private var type: ACTIONS, pos: Pair<Float, Float>, onClick: () -> Unit) : Button(pos, true, onClick) {
+class ActionIcon(private var type: Actions, pos: Pair<Float, Float>, onClick: () -> Unit) : Button(pos, true, onClick) {
 
     companion object {
         val icons: Texture = Crystals.assetManager["Base_Attacks.png"]
@@ -37,39 +37,30 @@ class ActionIcon(private var type: ACTIONS, pos: Pair<Float, Float>, onClick: ()
     private var x = getX()
     val y = 0
     override val size = Pair(SIZE.toFloat(), SIZE.toFloat())
-    private var visible = true
 
     override fun draw(sR: ShapeRenderer, batch: SpriteBatch) = batch.use {
         if (visible) it.draw(icons, pos.first, pos.second, x, y, SIZE, SIZE)
     }
 
-    fun changeType(action: ACTIONS) {
+    fun changeType(action: Actions) {
         type = action
         x = getX()
     }
 
-    fun hide() {
-        visible = false
-    }
-
-    fun show() {
-        visible = true
-    }
-
     private fun getX(): Int {
         return when (type) {
-            ACTIONS.ATTACK -> 12 * 2
-            ACTIONS.DEFENSE -> 12 * 1
-            ACTIONS.ITEMS -> 12 * 0
-            ACTIONS.W_MAGIC -> 12 * 3
-            ACTIONS.D_MAGIC -> 12 * 10
-            ACTIONS.MONK -> 12 * 17
-            ACTIONS.WARRIOR -> 12 * 27
-            ACTIONS.INVOKE -> 12 * 31
-            ACTIONS.ROB -> 12 * 38
-            ACTIONS.SING -> 12 * 45
-            ACTIONS.GEOMANCY -> 12 * 52
-            ACTIONS.RETURN -> 12 * 72
+            Actions.ATTACK -> 12 * 2
+            Actions.DEFENSE -> 12 * 1
+            Actions.ITEMS -> 12 * 0
+            Actions.W_MAGIC -> 12 * 3
+            Actions.D_MAGIC -> 12 * 10
+            Actions.MONK -> 12 * 17
+            Actions.WARRIOR -> 12 * 27
+            Actions.INVOKE -> 12 * 31
+            Actions.ROB -> 12 * 38
+            Actions.SING -> 12 * 45
+            Actions.GEOMANCY -> 12 * 52
+            Actions.RETURN -> 12 * 72
         }
     }
 }

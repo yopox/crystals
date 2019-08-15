@@ -24,6 +24,8 @@ object Transition {
 
     /**
      * Draws a white wipe transition.
+     *
+     * @return Boolean if the transition is over
      */
     fun drawWipe(sR: ShapeRenderer, leftToRight: Boolean = true, reverse: Boolean = false): Boolean {
         var progress = min(TRANSITION_FRAME, TRANSITION_TIME)
