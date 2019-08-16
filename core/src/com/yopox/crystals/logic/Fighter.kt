@@ -1,11 +1,13 @@
 package com.yopox.crystals.logic
 
 import com.badlogic.gdx.Gdx
+import com.yopox.crystals.data.Entity
 import com.yopox.crystals.def.Jobs
 import com.yopox.crystals.def.Actions
+import com.yopox.crystals.def.Icons
 import com.yopox.crystals.ui.ActionIcon
 
-class Fighter(val job: Jobs.ID, val name: String) {
+class Fighter(val job: Jobs.ID, val name: String): Entity() {
 
     var crystals = arrayListOf(Crystal.random(job))
 
@@ -50,6 +52,17 @@ class Fighter(val job: Jobs.ID, val name: String) {
             buttons[i].hide()
         }
 
+    }
+
+    fun getIcon(): Pair<Int, Int> = when (job) {
+        Jobs.ID.BARD -> Icons.Bard
+        Jobs.ID.GEOMANCER -> Icons.Geomancer
+        Jobs.ID.INVOKER -> Icons.Invoker
+        Jobs.ID.MAGE -> Icons.Mage
+        Jobs.ID.MONK -> Icons.Monk
+        Jobs.ID.PRIEST -> Icons.Priest
+        Jobs.ID.ROGUE -> Icons.Rogue
+        Jobs.ID.WARRIOR -> Icons.Warrior
     }
 
 }

@@ -6,7 +6,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.yopox.crystals.*
+import com.yopox.crystals.data.Progress
 import com.yopox.crystals.def.Jobs
+import com.yopox.crystals.logic.Crystal
+import com.yopox.crystals.logic.Fighter
 import com.yopox.crystals.ui.Button
 import com.yopox.crystals.ui.TextButton
 import com.yopox.crystals.ui.Transition
@@ -42,6 +45,8 @@ class CharacterSelection(private val game: Crystals) : KtxScreen, InputScreen {
 
         buttons.add(TextButton(x, y, Util.TEXT_CONTINUE) {
             blockInput = true
+            Progress.player = Fighter(jobId, "yopox")
+            Progress.player.crystals.add(Crystal.random())
             state = ScreenState.TRANSITION_EN
         })
         buttons.add(TextButton(x, y + 21, Util.TEXT_PREVIOUS) {

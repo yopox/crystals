@@ -7,7 +7,7 @@ data class Stats(var hp: Int = 40,
                  var def: Int = 10,
                  var spd: Int = 10)
 
-class Entity {
+open class Entity {
     var baseStats = Stats()
     var stats = Stats()
     var gold = 321

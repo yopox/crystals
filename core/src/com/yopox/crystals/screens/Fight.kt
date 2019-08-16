@@ -9,6 +9,7 @@ import com.yopox.crystals.Crystals
 import com.yopox.crystals.InputScreen
 import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
+import com.yopox.crystals.data.Progress
 import com.yopox.crystals.def.Actions
 import com.yopox.crystals.def.Icons
 import com.yopox.crystals.def.Jobs
@@ -62,7 +63,6 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     private var subState = State.MAIN
     private val icons = ArrayList<Icon>()
 
-    private var hero = Fighter(Jobs.ID.PRIEST, "yopox").also { it.crystals.add(Crystal.random(Jobs.ID.ROGUE)) }
     private val blocks = ArrayList<Block>()
     private var currentBlock: Block? = null
 
@@ -102,10 +102,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     }
 
     init {
-        // Adding fighters
         // TODO: Generate fights
-        icons.add(Icon(Icons.Priest, Pair(88f, 40f)) { selectTarget(1) })
-        icons.add(Icon(Icons.Snake, Pair(56f, 40f)) { selectTarget(0) })
 
         buttons.add(ActionIcon(Actions.ID.ATTACK, Pair(10f, 5f)) { selectIcon(0) })
         buttons.add(ActionIcon(Actions.ID.DEFENSE, Pair(26f, 5f)) { selectIcon(1) })
@@ -113,6 +110,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
         buttons.add(ActionIcon(Actions.ID.W_MAGIC, Pair(58f, 5f)) { selectIcon(3) })
         buttons.add(ActionIcon(Actions.ID.ROB, Pair(74f, 5f)) { selectIcon(4) })
         buttons.add(ActionIcon(Actions.ID.GEOMANCY, Pair(90f, 5f)) { selectIcon(5) })
+
     }
 
     override fun render(delta: Float) {
@@ -232,10 +230,10 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
             Navigation.oldStack.clear()
         }
         State.CHOOSE_ACTION -> {
-            hero.setActionsIcons(buttons)
+            Progress.player.setActionsIcons(buttons)
         }
         State.CHOOSE_SUBACTION -> {
-            hero.setSubactionIcons(Navigation.selected, buttons)
+            Progress.player.setSubactionIcons(Navigation.selected, buttons)
         }
         State.CHOOSE_TARGET -> {
             buttons[0].changeType(Actions.ID.RETURN)
@@ -298,7 +296,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
                         // Defense
                         Navigation to State.MAIN
                         Intent.action = Actions.ID.DEFENSE
-                        Intent.target.add(hero)
+                        Intent.target.add(Progress.player)
                         blockInput = true
                     }
                     i == 2 -> {
@@ -343,6 +341,8 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
         super.show()
         Gdx.input.inputProcessor = this
         // TODO: Remove test blocks
+        icons.add(Icon(Progress.player.getIcon(), Pair(88f, 40f)) { selectTarget(1) })
+        icons.add(Icon(Icons.Snake, Pair(56f, 40f)) { selectTarget(0) })
         blocks.add(Block(BlockType.TEXT, "Snake attacks!"))
         blocks.add(Block(BlockType.TEXT, "Get ready!"))
     }
