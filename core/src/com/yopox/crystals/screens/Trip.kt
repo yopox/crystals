@@ -1,7 +1,6 @@
 package com.yopox.crystals.screens
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
@@ -11,9 +10,7 @@ import com.yopox.crystals.Crystals
 import com.yopox.crystals.InputScreen
 import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
-import com.yopox.crystals.data.EVENT_TYPE
-import com.yopox.crystals.data.Event
-import com.yopox.crystals.data.Progress
+import com.yopox.crystals.logic.Progress
 import com.yopox.crystals.ui.Button
 import com.yopox.crystals.ui.Chunk
 import com.yopox.crystals.ui.TextButton

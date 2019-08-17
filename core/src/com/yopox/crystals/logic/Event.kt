@@ -1,4 +1,4 @@
-package com.yopox.crystals.data
+package com.yopox.crystals.logic
 
 enum class EVENT_TYPE {
     BATTLE,

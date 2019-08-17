@@ -8,8 +8,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport
 import com.yopox.crystals.Crystals
 import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
-import com.yopox.crystals.data.EVENT_TYPE
-import com.yopox.crystals.data.Event
+import com.yopox.crystals.logic.EVENT_TYPE
+import com.yopox.crystals.logic.Event
 import com.yopox.crystals.ui.Transition
 import ktx.app.KtxScreen
 import ktx.graphics.use
@@ -55,7 +55,10 @@ class Display(private val game: Crystals) : KtxScreen {
                 if (Transition.drawWipe(shapeRenderer)) {
                     resetState()
                     when (event.type) {
-                        EVENT_TYPE.BATTLE -> game.setScreen<Fight>()
+                        EVENT_TYPE.BATTLE -> {
+                            game.getScreen<Fight>().setupFight()
+                            game.setScreen<Fight>()
+                        }
                         else -> game.setScreen<Trip>()
                     }
 

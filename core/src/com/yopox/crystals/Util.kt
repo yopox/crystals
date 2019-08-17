@@ -8,9 +8,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector3
-import com.yopox.crystals.data.EVENT_TYPE
 import ktx.graphics.use
-import kotlin.math.min
 
 enum class ScreenState {
     MAIN,

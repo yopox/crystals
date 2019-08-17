@@ -3,7 +3,6 @@ package com.yopox.crystals
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Texture
-import com.yopox.crystals.data.Entity
 import com.yopox.crystals.screens.*
 import ktx.app.KtxGame
 import ktx.freetype.registerFreeTypeFontLoaders

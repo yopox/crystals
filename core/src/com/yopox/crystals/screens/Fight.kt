@@ -9,20 +9,16 @@ import com.yopox.crystals.Crystals
 import com.yopox.crystals.InputScreen
 import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
-import com.yopox.crystals.data.Progress
 import com.yopox.crystals.def.Actions
+import com.yopox.crystals.def.Fighters
 import com.yopox.crystals.def.Icons
-import com.yopox.crystals.def.Jobs
-import com.yopox.crystals.logic.Crystal
-import com.yopox.crystals.logic.Fighter
+import com.yopox.crystals.logic.*
 import com.yopox.crystals.ui.*
 import ktx.app.KtxScreen
 import ktx.graphics.use
 
 /**
  * Fight Screen.
- *
- * TODO: Fight setup function
  */
 class Fight(private val game: Crystals) : KtxScreen, InputScreen {
 
@@ -65,11 +61,12 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
 
     private val blocks = ArrayList<Block>()
     private var currentBlock: Block? = null
+    private val fighters = ArrayList<Entity>()
 
     private object Intent {
         var category = Actions.ID.WARRIOR
         var action = Actions.ID.DEFENSE
-        var target = ArrayList<Fighter>()
+        var target = ArrayList<Hero>()
     }
 
     private object Navigation {
@@ -102,15 +99,34 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     }
 
     init {
-        // TODO: Generate fights
-
         buttons.add(ActionIcon(Actions.ID.ATTACK, Pair(10f, 5f)) { selectIcon(0) })
         buttons.add(ActionIcon(Actions.ID.DEFENSE, Pair(26f, 5f)) { selectIcon(1) })
         buttons.add(ActionIcon(Actions.ID.ITEMS, Pair(42f, 5f)) { selectIcon(2) })
         buttons.add(ActionIcon(Actions.ID.W_MAGIC, Pair(58f, 5f)) { selectIcon(3) })
         buttons.add(ActionIcon(Actions.ID.ROB, Pair(74f, 5f)) { selectIcon(4) })
         buttons.add(ActionIcon(Actions.ID.GEOMANCY, Pair(90f, 5f)) { selectIcon(5) })
+    }
 
+    fun setupFight() {
+        // Add fighters
+        fighters.clear()
+        fighters.add(Entity(Fighters.ID.SNAKE, true))
+        fighters.add(Entity(Fighters.ID.BAT, true))
+        fighters.add(Progress.player)
+
+        // Add enemies icons
+        val enemies = fighters.filter { it.team == Team.ENEMIES }
+        for (i in 0..enemies.lastIndex)
+            icons.add(Icon(enemies[i].getIcon(), Pair(56f - 20*i, 40f)) { selectTarget(i) })
+
+        // Add allies icons
+        val allies = fighters.filter { it.team == Team.ALLIES }
+        for (i in 0..allies.lastIndex)
+            icons.add(Icon(allies[i].getIcon(), Pair(88f + 20*i, 40f)) { selectTarget(i + enemies.size) })
+
+        // Opening message
+        blocks.add(Block(BlockType.TEXT, "Snake attacks!"))
+        blocks.add(Block(BlockType.TEXT, "Get ready!"))
     }
 
     override fun render(delta: Float) {
@@ -301,7 +317,6 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
                     }
                     i == 2 -> {
                         // Item
-                        TODO()
                     }
                     i > 2 -> {
                         // Crystal
@@ -334,17 +349,15 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     }
 
     private fun selectTarget(i: Int) {
-
+        Gdx.app.log("touch", "$i")
+        if (!blockInput && subState == State.CHOOSE_TARGET) {
+            //Intent.target.add()
+        }
     }
 
     override fun show() {
         super.show()
         Gdx.input.inputProcessor = this
-        // TODO: Remove test blocks
-        icons.add(Icon(Progress.player.getIcon(), Pair(88f, 40f)) { selectTarget(1) })
-        icons.add(Icon(Icons.Snake, Pair(56f, 40f)) { selectTarget(0) })
-        blocks.add(Block(BlockType.TEXT, "Snake attacks!"))
-        blocks.add(Block(BlockType.TEXT, "Get ready!"))
     }
 
     override fun resize(width: Int, height: Int) {
@@ -359,10 +372,12 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
 
     override fun inputUp(x: Int, y: Int) {
         buttons.map { it.lift(x, y) }
+        icons.map { it.lift(x, y) }
     }
 
     override fun inputDown(x: Int, y: Int) {
         buttons.map { it.touch(x, y) }
+        icons.map { it.touch(x, y) }
     }
 
     private fun resetState() {

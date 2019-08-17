@@ -5,8 +5,8 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.yopox.crystals.Util
-import com.yopox.crystals.data.EVENT_TYPE
-import com.yopox.crystals.data.Event
+import com.yopox.crystals.logic.EVENT_TYPE
+import com.yopox.crystals.logic.Event
 import ktx.graphics.use
 
 /**

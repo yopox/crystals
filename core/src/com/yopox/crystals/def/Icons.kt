@@ -1,5 +1,8 @@
 package com.yopox.crystals.def
 
+import com.yopox.crystals.def.Fighters.ID.*
+import com.yopox.crystals.ui.Icon
+
 object Icons {
     val Priest = Pair(0, 32)
     val Mage = Pair(1, 32)
@@ -11,4 +14,5 @@ object Icons {
     val Geomancer = Pair(7, 32)
     val Snake = Pair(28, 8)
     val Bat = Pair(26, 8)
+
 }

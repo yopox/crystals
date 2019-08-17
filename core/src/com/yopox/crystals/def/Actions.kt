@@ -1,7 +1,5 @@
 package com.yopox.crystals.def
 
-import com.yopox.crystals.data.Job
-
 object Actions {
 
     enum class ID {

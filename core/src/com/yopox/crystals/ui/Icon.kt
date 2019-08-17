@@ -22,6 +22,7 @@ class Icon(id: Pair<Int, Int>, pos: Pair<Float, Float>, onClick: () -> Unit = {}
 
     private val x: Int = id.first * (SIZE + BORDER)
     private val y: Int = id.second * (SIZE + BORDER)
+    override val size = Pair(SIZE.toFloat(), SIZE.toFloat())
 
     override fun draw(sR: ShapeRenderer, batch: SpriteBatch) {
         batch.draw(icons, pos.first, pos.second, x, y, SIZE, SIZE)

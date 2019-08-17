@@ -1,6 +1,6 @@
 package com.yopox.crystals.def
 
-import com.yopox.crystals.data.Job
+import com.yopox.crystals.logic.Job
 
 object Jobs {
 

@@ -41,7 +41,7 @@ class ActionIcon(var type: Actions.ID, pos: Pair<Float, Float>, onClick: () -> U
             Actions.ID.W_MAGIC -> 12 * 3
             Actions.ID.D_MAGIC -> 12 * 10
             Actions.ID.MONK -> 12 * 17
-            Actions.ID.WARRIOR -> 12 * 27
+            Actions.ID.WARRIOR -> 12 * 24
             Actions.ID.INVOKE -> 12 * 31
             Actions.ID.ROBBING -> 12 * 38
             Actions.ID.SONGS -> 12 * 45
