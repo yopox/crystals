@@ -1,9 +1,22 @@
 package com.yopox.crystals.logic
 
-import com.yopox.crystals.def.Jobs
 import com.yopox.crystals.def.Actions
+import com.yopox.crystals.def.Jobs
 
-class Spell(val job: Jobs.ID, val name: String, val cost: Int, val id: Actions.ID, val effect: (Hero) -> Unit) {
+enum class Target {
+    SINGLE,
+    ALL,
+    SELF
+}
+
+class Spell(
+        val id: Actions.ID,
+        val name: String,
+        val job: Jobs.ID,
+        val cost: Int,
+        val target: Target,
+        val effect: (Hero) -> Unit
+) {
 
     fun use(targets: ArrayList<Hero>) {
         targets.forEach { effect(it) }

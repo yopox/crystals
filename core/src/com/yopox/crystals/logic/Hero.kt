@@ -1,14 +1,20 @@
 package com.yopox.crystals.logic
 
-import com.yopox.crystals.def.Jobs
-import com.yopox.crystals.def.Actions
-import com.yopox.crystals.def.Fighters
-import com.yopox.crystals.def.Icons
+import com.yopox.crystals.def.*
+import com.yopox.crystals.screens.Fight
 import com.yopox.crystals.ui.ActionIcon
 
-class Hero(val job: Jobs.ID, val name: String): Entity(Fighters.ID.HERO) {
+class Hero(val job: Jobs.ID, name: String) : Entity(Fighters.ID.HERO, name, false) {
 
     var crystals = arrayListOf(Crystal.random(job))
+
+    init {
+        stats.spd = 15
+    }
+
+    override fun getMove(fighters: ArrayList<Entity>): Fight.Move {
+        return Fight.Move(this, Spells.map.getValue(Fight.Intent.action), Fight.Intent.target)
+    }
 
     fun setActionsIcons(buttons: ArrayList<ActionIcon>) {
         // Show all buttons
@@ -30,7 +36,7 @@ class Hero(val job: Jobs.ID, val name: String): Entity(Fighters.ID.HERO) {
         }
     }
 
-    fun setSubactionIcons(action: Int, buttons: ArrayList<ActionIcon>): Unit {
+    fun setSubactionIcons(action: Int, buttons: ArrayList<ActionIcon>) {
 
         // Show all buttons
         buttons.forEach { it.show() }
@@ -62,6 +68,7 @@ class Hero(val job: Jobs.ID, val name: String): Entity(Fighters.ID.HERO) {
         Jobs.ID.PRIEST -> Icons.Priest
         Jobs.ID.ROGUE -> Icons.Rogue
         Jobs.ID.WARRIOR -> Icons.Warrior
+        else -> Icons.Snake
     }
 
 }

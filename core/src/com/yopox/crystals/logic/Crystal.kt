@@ -7,7 +7,6 @@ import com.yopox.crystals.def.Spells
 class Crystal(val job: Jobs.ID) {
 
     val spells = ArrayList<Spell>()
-    // TODO: Remove testing 3 -> 1 default
     var unlocked = 3
 
     companion object {

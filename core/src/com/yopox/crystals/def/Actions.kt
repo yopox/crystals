@@ -71,7 +71,8 @@ object Actions {
         PREDICT,
         TORNADO,
         // Misc
-        LOCKED
+        LOCKED,
+        WAIT
     }
 
     val categoryNames = mapOf(
@@ -83,6 +84,6 @@ object Actions {
             ID.GEOMANCY to "Geomancy Abilities",
             ID.ROBBING to "Rogue Abilities",
             ID.SONGS to "Bard Abilities"
-    )
+    ).withDefault { "Missing name" }
 
 }

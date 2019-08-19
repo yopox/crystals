@@ -130,12 +130,12 @@ object Util {
     fun signedInt(i: Int): String = if (i <= 0) "$i" else "+$i"
 
     fun <T> next(set: Set<T>, elem: T): T {
-        val nextPos = (set.indexOf(elem) + 1) % set.size
+        val nextPos = (set.indexOf(elem) - 1) % set.size
         return set.elementAt(nextPos)
     }
 
     fun <T> previous(set: Set<T>, elem: T): T {
-        val previousPos = (set.indexOf(elem) - 1 + set.size) % set.size
+        val previousPos = (set.indexOf(elem) + 1 + set.size) % set.size
         return set.elementAt(previousPos)
     }
 

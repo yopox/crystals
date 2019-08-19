@@ -11,9 +11,12 @@ import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
 import com.yopox.crystals.def.Actions
 import com.yopox.crystals.def.Fighters
-import com.yopox.crystals.def.Icons
 import com.yopox.crystals.logic.*
-import com.yopox.crystals.ui.*
+import com.yopox.crystals.logic.Target
+import com.yopox.crystals.screens.Fight.State.*
+import com.yopox.crystals.ui.ActionIcon
+import com.yopox.crystals.ui.Icon
+import com.yopox.crystals.ui.Transition
 import ktx.app.KtxScreen
 import ktx.graphics.use
 
@@ -62,12 +65,15 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     private val blocks = ArrayList<Block>()
     private var currentBlock: Block? = null
     private val fighters = ArrayList<Entity>()
+    private var hero = 1
 
-    private object Intent {
+    internal object Intent {
         var category = Actions.ID.WARRIOR
         var action = Actions.ID.DEFENSE
-        var target = ArrayList<Hero>()
+        var target = ArrayList<Entity>()
     }
+
+    data class Move(val fighter: Entity, val spell: Spell, val targets: ArrayList<Entity>)
 
     private object Navigation {
         var state: State = State.MAIN
@@ -76,6 +82,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
         var navigating = false
         var oldStack = ArrayList<State>()
 
+        // TODO: Find a way to set [blockInput] = true here
         infix fun to(newState: State) {
             oldStack.add(0, state)
             state = newState
@@ -95,7 +102,11 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
         const val END_COOLDOWN = 32
         var line1 = ""
         var line2 = ""
-        var cooldown = BASE_COOLDOWN
+        var cooldown = END_COOLDOWN
+
+        fun reset() {
+            line1 = ""; line2 = ""; cooldown = END_COOLDOWN
+        }
     }
 
     init {
@@ -110,22 +121,23 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     fun setupFight() {
         // Add fighters
         fighters.clear()
-        fighters.add(Entity(Fighters.ID.SNAKE, true))
-        fighters.add(Entity(Fighters.ID.BAT, true))
+        fighters.add(Fighters.map.getValue(Fighters.ID.SNAKE))
+        fighters.add(Fighters.map.getValue(Fighters.ID.BAT))
         fighters.add(Progress.player)
+        hero = fighters.lastIndex
 
         // Add enemies icons
         val enemies = fighters.filter { it.team == Team.ENEMIES }
         for (i in 0..enemies.lastIndex)
-            icons.add(Icon(enemies[i].getIcon(), Pair(56f - 20*i, 40f)) { selectTarget(i) })
+            icons.add(Icon(enemies[i].getIcon(), Pair(56f - 20 * i, 40f)) { selectTarget(i) })
 
         // Add allies icons
         val allies = fighters.filter { it.team == Team.ALLIES }
         for (i in 0..allies.lastIndex)
-            icons.add(Icon(allies[i].getIcon(), Pair(88f + 20*i, 40f)) { selectTarget(i + enemies.size) })
+            icons.add(Icon(allies[i].getIcon(), Pair(88f + 20 * i, 40f)) { selectTarget(i + enemies.size) })
 
         // Opening message
-        blocks.add(Block(BlockType.TEXT, "Snake attacks!"))
+        blocks.add(Block(BlockType.TEXT, "Snake and Bat attack!"))
         blocks.add(Block(BlockType.TEXT, "Get ready!"))
     }
 
@@ -244,6 +256,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     private fun initState(state: State): Unit = when (state) {
         State.MAIN -> {
             Navigation.oldStack.clear()
+            Dialog.reset()
         }
         State.CHOOSE_ACTION -> {
             Progress.player.setActionsIcons(buttons)
@@ -310,10 +323,8 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
                     }
                     i == 1 -> {
                         // Defense
-                        Navigation to State.MAIN
                         Intent.action = Actions.ID.DEFENSE
-                        Intent.target.add(Progress.player)
-                        blockInput = true
+                        computeTurn()
                     }
                     i == 2 -> {
                         // Item
@@ -334,25 +345,56 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
                         blockInput = true
                     }
                     else -> {
+                        // Get the corresponding action
+                        val crystal = (fighters[hero] as Hero).crystals[Navigation.selected]
+                        if (i - 1 < crystal.unlocked) {
+                            // The spell is unlocked
+                            val spell = crystal.spells[i - 1]
+                            Intent.action = spell.id
+                            when (spell.target) {
+                                Target.SINGLE -> {
+                                    // Choose a target
+                                    Navigation to State.CHOOSE_TARGET
+                                    blockInput = true
+                                }
+                                else -> {
+                                    // No need to choose a target
+                                    computeTurn()
+                                }
+                            }
+                        }
                     }
                 }
-                State.CHOOSE_TARGET -> when (i) {
-                    0 -> {
-                        Navigation.rewind()
-                        blockInput = true
-                    }
-                    else -> {
-                    }
-                }
+                State.CHOOSE_TARGET -> if (i == 0) {
+                    Navigation.rewind()
+                    blockInput = true
+                } else Unit
             }
         }
     }
 
     private fun selectTarget(i: Int) {
-        Gdx.app.log("touch", "$i")
         if (!blockInput && subState == State.CHOOSE_TARGET) {
-            //Intent.target.add()
+            Intent.target.add(fighters[i])
+            computeTurn()
         }
+    }
+
+    private fun computeTurn() {
+        blockInput = true
+
+        // Get fighters moves
+        val moves = fighters.map { it.getMove(fighters) }.toMutableList()
+        moves.sortBy { -it.fighter.stats.spd }
+
+        // Prepare blocks
+        for (move in moves) {
+            if (move.fighter.stats.hp > 0) {
+                blocks.add(Block(BlockType.TEXT, "${move.fighter.name} uses ${move.spell.name}!"))
+            }
+        }
+
+        Navigation to State.MAIN
     }
 
     override fun show() {

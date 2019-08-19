@@ -2,69 +2,75 @@ package com.yopox.crystals.def
 
 import com.yopox.crystals.def.Actions.ID.*
 import com.yopox.crystals.logic.Spell
+import com.yopox.crystals.logic.Target.*
 
 object Spells {
 
+    // Misc
+    private val wait = Spell(WAIT, "Wait", Jobs.ID.ANY, 0, SELF) {}
+    private val defense = Spell(DEFENSE, "Defend", Jobs.ID.ANY, 0, SELF) {}
+    private val attack = Spell(ATTACK, "Attack", Jobs.ID.ANY, 0, SINGLE) {}
+
     // Priest spells
-    private val heal = Spell(Jobs.ID.PRIEST, "Heal", 2, HEAL) {}
-    private val heal2 = Spell(Jobs.ID.PRIEST, "Heal +", 6, HEAL2) {}
-    private val cure = Spell(Jobs.ID.PRIEST, "Cure", 3, CURE) {}
-    private val barrier = Spell(Jobs.ID.PRIEST, "Barrier", 4, BARRIER) {}
-    private val beam = Spell(Jobs.ID.PRIEST, "Beam", 3, BEAMS) {}
-    private val ball = Spell(Jobs.ID.PRIEST, "Ball", 7, BALL) {}
+    private val heal = Spell(HEAL, "Heal", Jobs.ID.PRIEST, 2, SINGLE) {}
+    private val heal2 = Spell(HEAL2, "Heal +", Jobs.ID.PRIEST, 6, SINGLE) {}
+    private val cure = Spell(CURE, "Cure", Jobs.ID.PRIEST, 3, SINGLE) {}
+    private val barrier = Spell(BARRIER, "Barrier", Jobs.ID.PRIEST, 4, SINGLE) {}
+    private val beam = Spell(BEAMS, "Beam", Jobs.ID.PRIEST, 3, ALL) {}
+    private val ball = Spell(BALL, "Ball", Jobs.ID.PRIEST, 7, SINGLE) {}
 
     // Mage spells
-    private val wind = Spell(Jobs.ID.MAGE, "Wind", 2, WIND) {}
-    private val fire = Spell(Jobs.ID.MAGE, "Fire", 4, FIRE) {}
-    private val water = Spell(Jobs.ID.MAGE, "Water", 7, WATER) {}
-    private val poison = Spell(Jobs.ID.MAGE, "Poison", 3, POISON) {}
-    private val lightning = Spell(Jobs.ID.MAGE, "Lightning", 5, LIGHTNING) {}
-    private val energy = Spell(Jobs.ID.MAGE, "Energy", 8, ENERGY) {}
+    private val wind = Spell(WIND, "Wind", Jobs.ID.MAGE, 2, SINGLE) {}
+    private val fire = Spell(FIRE, "Fire", Jobs.ID.MAGE, 4, SINGLE) {}
+    private val water = Spell(WATER, "Water", Jobs.ID.MAGE, 7, ALL) {}
+    private val poison = Spell(POISON, "Poison", Jobs.ID.MAGE, 3, SINGLE) {}
+    private val lightning = Spell(LIGHTNING, "Lightning", Jobs.ID.MAGE, 5, SINGLE) {}
+    private val energy = Spell(ENERGY, "Energy", Jobs.ID.MAGE, 8, SINGLE) {}
 
     // Monk spells
-    private val meditation = Spell(Jobs.ID.MONK, "Meditation", 2, MEDITATION) {}
-    private val focus = Spell(Jobs.ID.MONK, "Focus", 2, FOCUS) {}
-    private val kick = Spell(Jobs.ID.MONK, "Kick", 2, KICK) {}
-    private val punch = Spell(Jobs.ID.MONK, "Punch", 2, PUNCH) {}
-    private val chains = Spell(Jobs.ID.MONK, "Chains", 2, CHAINS) {}
-    private val shuriken = Spell(Jobs.ID.MONK, "Shuriken", 2, SHURIKEN) {}
+    private val meditation = Spell(MEDITATION, "Meditation", Jobs.ID.MONK, 2, SELF) {}
+    private val focus = Spell(FOCUS, "Focus", Jobs.ID.MONK, 2, SELF) {}
+    private val kick = Spell(KICK, "Kick", Jobs.ID.MONK, 2, SINGLE) {}
+    private val punch = Spell(PUNCH, "Punch", Jobs.ID.MONK, 2, SINGLE) {}
+    private val chains = Spell(CHAINS, "Chains", Jobs.ID.MONK, 2, SINGLE) {}
+    private val shuriken = Spell(SHURIKEN, "Shuriken", Jobs.ID.MONK, 2, SINGLE) {}
 
     // Warrior spells
-    private val double = Spell(Jobs.ID.WARRIOR, "Double Hit", 4, DOUBLE) {}
-    private val massive = Spell(Jobs.ID.WARRIOR, "Massive Hit", 8, MASSIVE) {}
-    private val shield = Spell(Jobs.ID.WARRIOR, "Shield", 4, SHIELD) {}
-    private val insult = Spell(Jobs.ID.WARRIOR, "Insult", 1, INSULT) {}
-    private val storm = Spell(Jobs.ID.WARRIOR, "Storm", 10, STORM) {}
-    private val jump = Spell(Jobs.ID.WARRIOR, "Aerial Hit", 7, JUMP) {}
+    private val double = Spell(DOUBLE, "Double Hit", Jobs.ID.WARRIOR, 4, SINGLE) {}
+    private val massive = Spell(MASSIVE, "Massive Hit", Jobs.ID.WARRIOR, 8, SINGLE) {}
+    private val shield = Spell(SHIELD, "Shield", Jobs.ID.WARRIOR, 4, SELF) {}
+    private val insult = Spell(INSULT, "Insult", Jobs.ID.WARRIOR, 1, SINGLE) {}
+    private val storm = Spell(STORM, "Storm", Jobs.ID.WARRIOR, 10, ALL) {}
+    private val jump = Spell(JUMP, "Aerial Hit", Jobs.ID.WARRIOR, 7, SINGLE) {}
 
     // Invoker spells
-    private val fairy = Spell(Jobs.ID.INVOKER, "Fairy", 3, FAIRY) {}
-    private val tame = Spell(Jobs.ID.INVOKER, "Tame", 1, TAME) {}
-    private val golem = Spell(Jobs.ID.INVOKER, "Golem", 6, GOLEM) {}
-    private val raiku = Spell(Jobs.ID.INVOKER, "Raiku", 8, RAIKU) {}
-    private val wendigo = Spell(Jobs.ID.INVOKER, "Wendigo", 5, WENDIGO) {}
-    private val deadKing = Spell(Jobs.ID.INVOKER, "Dead King", 12, DEAD_KING) {}
+    private val fairy = Spell(FAIRY, "Fairy", Jobs.ID.INVOKER, 3, SELF) {}
+    private val tame = Spell(TAME, "Tame", Jobs.ID.INVOKER, 1, SINGLE) {}
+    private val golem = Spell(GOLEM, "Golem", Jobs.ID.INVOKER, 6, SELF) {}
+    private val raiku = Spell(RAIKU, "Raiku", Jobs.ID.INVOKER, 8, SELF) {}
+    private val wendigo = Spell(WENDIGO, "Wendigo", Jobs.ID.INVOKER, 5, SELF) {}
+    private val deadKing = Spell(DEAD_KING, "Dead King", Jobs.ID.INVOKER, 12, SELF) {}
 
     // Rogue spells
-    private val dagger = Spell(Jobs.ID.ROGUE, "Dagger", 5, DAGGER) {}
-    private val escape = Spell(Jobs.ID.ROGUE, "Escape", 0, ESCAPE) {}
-    private val rob = Spell(Jobs.ID.ROGUE, "Rob", 3, ROB) {}
-    private val burgle = Spell(Jobs.ID.ROGUE, "Burgle", 3, BURGLE) {}
-    private val bomb = Spell(Jobs.ID.ROGUE, "Bomb", 6, BOMB) {}
-    private val bribe = Spell(Jobs.ID.ROGUE, "Bribe", 1, BRIBE) {}
+    private val dagger = Spell(DAGGER, "Dagger", Jobs.ID.ROGUE, 5, SINGLE) {}
+    private val escape = Spell(ESCAPE, "Escape", Jobs.ID.ROGUE, 0, SELF) {}
+    private val rob = Spell(ROB, "Rob", Jobs.ID.ROGUE, 3, SINGLE) {}
+    private val burgle = Spell(BURGLE, "Burgle", Jobs.ID.ROGUE, 3, SINGLE) {}
+    private val bomb = Spell(BOMB, "Bomb", Jobs.ID.ROGUE, 6, SINGLE) {}
+    private val bribe = Spell(BRIBE, "Bribe", Jobs.ID.ROGUE, 1, SINGLE) {}
 
     // Bard spells
-    private val sing = Spell(Jobs.ID.BARD, "Sing", 2, SING) {}
-    private val bewitch = Spell(Jobs.ID.BARD, "Bewitch", 2, BEWITCH) {}
-    private val hide = Spell(Jobs.ID.BARD, "Hide", 2, HIDE) {}
-    private val fireworks = Spell(Jobs.ID.BARD, "Fireworks", 8, FIREWORKS) {}
-    private val wine = Spell(Jobs.ID.BARD, "Wine", 2, WINE) {}
-    private val sausage = Spell(Jobs.ID.BARD, "Sausage", 2, SAUSAGE) {}
+    private val sing = Spell(SING, "Sing", Jobs.ID.BARD, 2, SINGLE) {}
+    private val bewitch = Spell(BEWITCH, "Bewitch", Jobs.ID.BARD, 2, SINGLE) {}
+    private val hide = Spell(HIDE, "Hide", Jobs.ID.BARD, 2, SELF) {}
+    private val fireworks = Spell(FIREWORKS, "Fireworks", Jobs.ID.BARD, 8, ALL) {}
+    private val wine = Spell(WINE, "Wine", Jobs.ID.BARD, 2, SINGLE) {}
+    private val sausage = Spell(SAUSAGE, "Sausage", Jobs.ID.BARD, 2, SINGLE) {}
 
     // Geomancer spells
-    private val earthquake = Spell(Jobs.ID.GEOMANCER, "Earthquake", 6, EARTHQUAKE) {}
-    private val predict = Spell(Jobs.ID.GEOMANCER, "Predict", 1, PREDICT) {}
-    private val tornado = Spell(Jobs.ID.GEOMANCER, "Tornado", 5, TORNADO) {}
+    private val earthquake = Spell(EARTHQUAKE, "Earthquake", Jobs.ID.GEOMANCER, 6, ALL) {}
+    private val predict = Spell(PREDICT, "Predict", Jobs.ID.GEOMANCER, 1, SINGLE) {}
+    private val tornado = Spell(TORNADO, "Tornado", Jobs.ID.GEOMANCER, 5, SINGLE) {}
 
     val map = mapOf(
             HEAL to heal,
@@ -118,17 +124,21 @@ object Spells {
 
             EARTHQUAKE to earthquake,
             PREDICT to predict,
-            TORNADO to tornado
-    )
+            TORNADO to tornado,
+
+            ATTACK to attack,
+            DEFENSE to defense
+    ).withDefault { wait }
 
     fun baseSpell(job: Jobs.ID): Spell = when (job) {
-        Jobs.ID.BARD -> map[SING]!!
-        Jobs.ID.GEOMANCER -> map[TORNADO]!!
-        Jobs.ID.INVOKER -> map[FAIRY]!!
-        Jobs.ID.MAGE -> map[FIRE]!!
-        Jobs.ID.MONK -> map[FOCUS]!!
-        Jobs.ID.PRIEST -> map[HEAL]!!
-        Jobs.ID.ROGUE -> map[ROB]!!
-        Jobs.ID.WARRIOR -> map[DOUBLE]!!
+        Jobs.ID.BARD -> map.getValue(SING)
+        Jobs.ID.GEOMANCER -> map.getValue(TORNADO)
+        Jobs.ID.INVOKER -> map.getValue(FAIRY)
+        Jobs.ID.MAGE -> map.getValue(FIRE)
+        Jobs.ID.MONK -> map.getValue(FOCUS)
+        Jobs.ID.PRIEST -> map.getValue(HEAL)
+        Jobs.ID.ROGUE -> map.getValue(ROB)
+        Jobs.ID.WARRIOR -> map.getValue(DOUBLE)
+        else -> map.getValue(WAIT)
     }
 }

@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.yopox.crystals.Crystals
 import com.yopox.crystals.def.Actions
+import com.yopox.crystals.def.Actions.ID.*
 import ktx.graphics.use
 
 /**
@@ -35,64 +36,65 @@ class ActionIcon(var type: Actions.ID, pos: Pair<Float, Float>, onClick: () -> U
 
     private fun getX(): Int {
         return when (type) {
-            Actions.ID.ATTACK -> 12 * 2
-            Actions.ID.DEFENSE -> 12 * 1
-            Actions.ID.ITEMS -> 12 * 0
-            Actions.ID.W_MAGIC -> 12 * 3
-            Actions.ID.D_MAGIC -> 12 * 10
-            Actions.ID.MONK -> 12 * 17
-            Actions.ID.WARRIOR -> 12 * 24
-            Actions.ID.INVOKE -> 12 * 31
-            Actions.ID.ROBBING -> 12 * 38
-            Actions.ID.SONGS -> 12 * 45
-            Actions.ID.GEOMANCY -> 12 * 52
-            Actions.ID.RETURN -> 12 * 72
-            Actions.ID.HEAL -> 12 * 4
-            Actions.ID.HEAL2 -> 12 * 5
-            Actions.ID.CURE -> 12 * 6
-            Actions.ID.BARRIER -> 12 * 7
-            Actions.ID.BEAMS -> 12 * 8
-            Actions.ID.BALL -> 12 * 9
-            Actions.ID.WIND -> 12 * 11
-            Actions.ID.FIRE -> 12 * 12
-            Actions.ID.WATER -> 12 * 13
-            Actions.ID.POISON -> 12 * 14
-            Actions.ID.LIGHTNING -> 12 * 15
-            Actions.ID.ENERGY -> 12 * 16
-            Actions.ID.MEDITATION -> 12 * 18
-            Actions.ID.FOCUS -> 12 * 19
-            Actions.ID.KICK -> 12 * 20
-            Actions.ID.PUNCH -> 12 * 21
-            Actions.ID.CHAINS -> 12 * 22
-            Actions.ID.SHURIKEN -> 12 * 23
-            Actions.ID.DOUBLE -> 12 * 25
-            Actions.ID.MASSIVE -> 12 * 26
-            Actions.ID.SHIELD -> 12 * 27
-            Actions.ID.INSULT -> 12 * 28
-            Actions.ID.STORM -> 12 * 29
-            Actions.ID.JUMP -> 12 * 30
-            Actions.ID.FAIRY -> 12 * 32
-            Actions.ID.TAME -> 12 * 33
-            Actions.ID.GOLEM -> 12 * 34
-            Actions.ID.RAIKU -> 12 * 35
-            Actions.ID.WENDIGO -> 12 * 36
-            Actions.ID.DEAD_KING -> 12 * 37
-            Actions.ID.DAGGER -> 12 * 39
-            Actions.ID.ESCAPE -> 12 * 40
-            Actions.ID.ROB -> 12 * 41
-            Actions.ID.BURGLE -> 12 * 42
-            Actions.ID.BOMB -> 12 * 43
-            Actions.ID.BRIBE -> 12 * 44
-            Actions.ID.SING -> 12 * 46
-            Actions.ID.BEWITCH -> 12 * 47
-            Actions.ID.HIDE -> 12 * 48
-            Actions.ID.FIREWORKS -> 12 * 49
-            Actions.ID.WINE -> 12 * 50
-            Actions.ID.SAUSAGE -> 12 * 51
-            Actions.ID.EARTHQUAKE -> 12 * 53
-            Actions.ID.PREDICT -> 12 * 54
-            Actions.ID.TORNADO -> 12 * 55
-            Actions.ID.LOCKED -> 12 * 63
+            ATTACK -> 12 * 2
+            DEFENSE -> 12 * 1
+            ITEMS -> 12 * 0
+            W_MAGIC -> 12 * 3
+            D_MAGIC -> 12 * 10
+            MONK -> 12 * 17
+            WARRIOR -> 12 * 24
+            INVOKE -> 12 * 31
+            ROBBING -> 12 * 38
+            SONGS -> 12 * 45
+            GEOMANCY -> 12 * 52
+            RETURN -> 12 * 72
+            HEAL -> 12 * 4
+            HEAL2 -> 12 * 5
+            CURE -> 12 * 6
+            BARRIER -> 12 * 7
+            BEAMS -> 12 * 8
+            BALL -> 12 * 9
+            WIND -> 12 * 11
+            FIRE -> 12 * 12
+            WATER -> 12 * 13
+            POISON -> 12 * 14
+            LIGHTNING -> 12 * 15
+            ENERGY -> 12 * 16
+            MEDITATION -> 12 * 18
+            FOCUS -> 12 * 19
+            KICK -> 12 * 20
+            PUNCH -> 12 * 21
+            CHAINS -> 12 * 22
+            SHURIKEN -> 12 * 23
+            DOUBLE -> 12 * 25
+            MASSIVE -> 12 * 26
+            SHIELD -> 12 * 27
+            INSULT -> 12 * 28
+            STORM -> 12 * 29
+            JUMP -> 12 * 30
+            FAIRY -> 12 * 32
+            TAME -> 12 * 33
+            GOLEM -> 12 * 34
+            RAIKU -> 12 * 35
+            WENDIGO -> 12 * 36
+            DEAD_KING -> 12 * 37
+            DAGGER -> 12 * 39
+            ESCAPE -> 12 * 40
+            ROB -> 12 * 41
+            BURGLE -> 12 * 42
+            BOMB -> 12 * 43
+            BRIBE -> 12 * 44
+            SING -> 12 * 46
+            BEWITCH -> 12 * 47
+            HIDE -> 12 * 48
+            FIREWORKS -> 12 * 49
+            WINE -> 12 * 50
+            SAUSAGE -> 12 * 51
+            EARTHQUAKE -> 12 * 53
+            PREDICT -> 12 * 54
+            TORNADO -> 12 * 55
+            LOCKED -> 12 * 63
+            WAIT -> 12 * 62
         }
     }
 }
