@@ -11,6 +11,7 @@ import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
 import com.yopox.crystals.def.Actions
 import com.yopox.crystals.def.Fighters
+import com.yopox.crystals.def.Spells
 import com.yopox.crystals.logic.*
 import com.yopox.crystals.logic.Target
 import com.yopox.crystals.screens.Fight.State.*
@@ -30,7 +31,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
      * @property MAIN consumes [Block] objects from [blocks]
      * @property CHOOSE_ACTION let the player choose the action for the turn
      * @property CHOOSE_SUBACTION let the player choose a subaction
-     * @property CHOOSE_TARGET let the player choose a target
+     * @property CHOOSE_TARGET let the player choose a targets
      */
     private enum class State {
         MAIN,
@@ -45,11 +46,13 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
      * TODO: Animations
      * TODO: Update HP/MP
      */
-    private enum class BlockType {
-        TEXT
+    enum class BlockType {
+        TEXT,
+        DAMAGE,
+        KO
     }
 
-    private data class Block(val type: BlockType, var content: String)
+    data class Block(val type: BlockType, var content: String = "", var int1: Int = 0, var int2: Int = 0)
 
     private val batch = SpriteBatch()
     private val shapeRenderer = ShapeRenderer()
@@ -59,24 +62,25 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
 
     private val buttons = ArrayList<ActionIcon>()
     private var state = ScreenState.TRANSITION_OP
-    private var subState = State.MAIN
+    private var subState = MAIN
     private val icons = ArrayList<Icon>()
 
     private val blocks = ArrayList<Block>()
     private var currentBlock: Block? = null
-    private val fighters = ArrayList<Entity>()
+    private val fighters = ArrayList<Fighter>()
+    private var stats = mutableListOf("", "")
     private var hero = 1
 
     internal object Intent {
         var category = Actions.ID.WARRIOR
         var action = Actions.ID.DEFENSE
-        var target = ArrayList<Entity>()
+        var targets = ArrayList<Fighter>()
     }
 
-    data class Move(val fighter: Entity, val spell: Spell, val targets: ArrayList<Entity>)
+    data class Move(val fighter: Fighter, val spell: Spell, val targets: ArrayList<Fighter>)
 
     private object Navigation {
-        var state: State = State.MAIN
+        var state: State = MAIN
         var selected = 0
         var frame = 0
         var navigating = false
@@ -124,7 +128,14 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
         fighters.add(Fighters.map.getValue(Fighters.ID.SNAKE))
         fighters.add(Fighters.map.getValue(Fighters.ID.BAT))
         fighters.add(Progress.player)
+
+        // Set battleId
+        fighters.withIndex().forEach { it.value.battleId = it.index }
+
+        // Get the hero
         hero = fighters.lastIndex
+        stats[0] = "HP ${fighters[hero].stats.hp}/${fighters[hero].baseStats.hp}"
+        stats[1] = "MP ${fighters[hero].stats.mp}/${fighters[hero].baseStats.mp}"
 
         // Add enemies icons
         val enemies = fighters.filter { it.team == Team.ENEMIES }
@@ -135,6 +146,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
         val allies = fighters.filter { it.team == Team.ALLIES }
         for (i in 0..allies.lastIndex)
             icons.add(Icon(allies[i].getIcon(), Pair(88f + 20 * i, 40f)) { selectTarget(i + enemies.size) })
+        icons.forEach { it.clickable = false }
 
         // Opening message
         blocks.add(Block(BlockType.TEXT, "Snake and Bat attack!"))
@@ -144,6 +156,9 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     override fun render(delta: Float) {
         batch.projectionMatrix = camera.combined
         shapeRenderer.projectionMatrix = camera.combined
+
+        // Draw characters
+        icons.map { icon -> icon.draw(shapeRenderer, batch) }
 
         if (!blockInput) {
             update()
@@ -155,9 +170,6 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
         batch.use {
             // Draw the title
             Util.bigFont.draw(it, Util.TEXT_FIGHT, 10f, Util.HEIGHT - Util.TITLE_OFFSET)
-
-            // Draw characters
-            icons.map { icon -> icon.draw(shapeRenderer, it) }
         }
 
         if (Navigation.navigating) {
@@ -195,7 +207,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
 
     private fun update() {
         when (subState) {
-            State.MAIN -> {
+            MAIN -> {
 
                 if (currentBlock == null) {
                     if (blocks.size > 0) {
@@ -204,14 +216,13 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
                         initBlock(currentBlock!!.type)
                     } else {
                         // No more blocks, [subState] set to [State.CHOOSE_ACTION] automatically
-                        Navigation to State.CHOOSE_ACTION
+                        Navigation to CHOOSE_ACTION
                         blockInput = true
                     }
 
                 } else {
                     // Consume block
                     when (currentBlock!!.type) {
-
                         BlockType.TEXT -> {
                             if (Dialog.cooldown > 0) {
                                 // Waiting
@@ -231,14 +242,30 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
                                 currentBlock = null
                             }
                         }
+                        BlockType.KO -> {
+                            val icon = icons[currentBlock!!.int1]
+                            currentBlock!!.int2 += 1
+                            Transition.drawTransition(
+                                    shapeRenderer, icon.pos.first, icon.pos.second,
+                                    icon.size.first, icon.size.second, currentBlock!!.int2)
+                            { icon.hide() }
+                            if (currentBlock!!.int2 == Transition.TRANSITION_TIME)
+                                currentBlock = null
+                        }
+                        BlockType.DAMAGE -> {
+                            currentBlock!!.int2 += 1
+                            icons[currentBlock!!.int1].visible = (currentBlock!!.int2 / 8) % 2 == 0
+                            if (currentBlock!!.int2 == 8 * 4)
+                                currentBlock = null
+                        }
                     }
                 }
             }
-            State.CHOOSE_ACTION -> {
+            CHOOSE_ACTION -> {
             }
-            State.CHOOSE_SUBACTION -> {
+            CHOOSE_SUBACTION -> {
             }
-            State.CHOOSE_TARGET -> {
+            CHOOSE_TARGET -> {
             }
         }
     }
@@ -251,20 +278,23 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
             Dialog.line2 = Dialog.line1
             Dialog.line1 = ""
         }
+        else -> Unit
     }
 
     private fun initState(state: State): Unit = when (state) {
-        State.MAIN -> {
+        MAIN -> {
             Navigation.oldStack.clear()
+            Intent.targets.clear()
             Dialog.reset()
         }
-        State.CHOOSE_ACTION -> {
+        CHOOSE_ACTION -> {
             Progress.player.setActionsIcons(buttons)
         }
-        State.CHOOSE_SUBACTION -> {
+        CHOOSE_SUBACTION -> {
             Progress.player.setSubactionIcons(Navigation.selected, buttons)
         }
-        State.CHOOSE_TARGET -> {
+        CHOOSE_TARGET -> {
+            icons.forEach { it.clickable = true }
             buttons[0].changeType(Actions.ID.RETURN)
             for (i in 1..5) buttons[i].hide()
         }
@@ -277,31 +307,31 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
         // Draw the hero status
         // TODO: Real stats
         batch.use {
-            Util.font.draw(it, "HP 23/40", 120f, 19f)
-            Util.font.draw(it, "MP 8/17", 120f, 9f)
+            Util.font.draw(it, stats[0], 120f, 19f)
+            Util.font.draw(it, stats[1], 120f, 9f)
         }
 
         when (subState) {
-            State.MAIN -> {
+            MAIN -> {
                 batch.use {
                     Util.font.draw(it, Dialog.line1, 10f, 19f)
                     Util.font.draw(it, Dialog.line2, 10f, 9f)
                     Util.font.draw(it, Util.TEXT_LOG, 10f, 32f)
                 }
             }
-            State.CHOOSE_ACTION -> {
+            CHOOSE_ACTION -> {
                 batch.use {
                     Util.font.draw(it, Util.TEXT_ACTIONS, 10f, 32f)
                 }
                 buttons.map { it.draw(shapeRenderer, batch) }
             }
-            State.CHOOSE_SUBACTION -> {
+            CHOOSE_SUBACTION -> {
                 batch.use {
                     Util.font.draw(it, Actions.categoryNames[Intent.category], 10f, 32f)
                 }
                 buttons.map { it.draw(shapeRenderer, batch) }
             }
-            State.CHOOSE_TARGET -> {
+            CHOOSE_TARGET -> {
                 batch.use {
                     Util.font.draw(it, Util.TEXT_TARGET, 10f, 32f)
                 }
@@ -313,11 +343,11 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     private fun selectIcon(i: Int) {
         if (!blockInput) {
             when (subState) {
-                State.MAIN -> Unit
-                State.CHOOSE_ACTION -> when {
+                MAIN -> Unit
+                CHOOSE_ACTION -> when {
                     i == 0 -> {
                         // Attack
-                        Navigation to State.CHOOSE_TARGET
+                        Navigation to CHOOSE_TARGET
                         Intent.action = Actions.ID.ATTACK
                         blockInput = true
                     }
@@ -331,7 +361,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
                     }
                     i > 2 -> {
                         // Crystal
-                        Navigation to State.CHOOSE_SUBACTION
+                        Navigation to CHOOSE_SUBACTION
                         Navigation.selected = i - 3
                         Intent.category = buttons[i].type
                         blockInput = true
@@ -339,7 +369,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
                     else -> {
                     }
                 }
-                State.CHOOSE_SUBACTION -> when (i) {
+                CHOOSE_SUBACTION -> when (i) {
                     0 -> {
                         Navigation.rewind()
                         blockInput = true
@@ -353,19 +383,27 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
                             Intent.action = spell.id
                             when (spell.target) {
                                 Target.SINGLE -> {
-                                    // Choose a target
-                                    Navigation to State.CHOOSE_TARGET
+                                    Navigation to CHOOSE_TARGET
                                     blockInput = true
                                 }
-                                else -> {
-                                    // No need to choose a target
+                                Target.ENEMIES -> {
+                                    val enemies = fighters.filter { it.team != fighters[hero].team }
+                                    Intent.targets.addAll(enemies)
+                                    computeTurn()
+                                }
+                                Target.ALL -> {
+                                    Intent.targets.addAll(fighters)
+                                    computeTurn()
+                                }
+                                Target.SELF -> {
+                                    Intent.targets.add(fighters[hero])
                                     computeTurn()
                                 }
                             }
                         }
                     }
                 }
-                State.CHOOSE_TARGET -> if (i == 0) {
+                CHOOSE_TARGET -> if (i == 0) {
                     Navigation.rewind()
                     blockInput = true
                 } else Unit
@@ -374,27 +412,30 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     }
 
     private fun selectTarget(i: Int) {
-        if (!blockInput && subState == State.CHOOSE_TARGET) {
-            Intent.target.add(fighters[i])
+        if (!blockInput && subState == CHOOSE_TARGET) {
+            Intent.targets.add(fighters[i])
             computeTurn()
         }
     }
 
     private fun computeTurn() {
+        icons.forEach { it.clickable = false }
         blockInput = true
 
         // Get fighters moves
-        val moves = fighters.map { it.getMove(fighters) }.toMutableList()
+        val alive = fighters.filter { it.alive }
+        val moves = alive.map { it.getMove(fighters) }.toMutableList()
         moves.sortBy { -it.fighter.stats.spd }
 
-        // Prepare blocks
+        // Execute moves
         for (move in moves) {
-            if (move.fighter.stats.hp > 0) {
-                blocks.add(Block(BlockType.TEXT, "${move.fighter.name} uses ${move.spell.name}!"))
+            if (move.fighter.alive) {
+                blocks.add(Block(BlockType.TEXT, Spells.text(move)))
+                blocks.addAll(move.spell.use(move))
             }
         }
 
-        Navigation to State.MAIN
+        Navigation to MAIN
     }
 
     override fun show() {

@@ -7,7 +7,7 @@ import com.yopox.crystals.def.Spells
 class Crystal(val job: Jobs.ID) {
 
     val spells = ArrayList<Spell>()
-    var unlocked = 3
+    var unlocked = 2
 
     companion object {
 

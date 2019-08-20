@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.yopox.crystals.Crystals
+import com.yopox.crystals.Util
 import com.yopox.crystals.def.Actions
 import com.yopox.crystals.def.Actions.ID.*
 import ktx.graphics.use
@@ -26,7 +27,10 @@ class ActionIcon(var type: Actions.ID, pos: Pair<Float, Float>, onClick: () -> U
     override val size = Pair(SIZE.toFloat(), SIZE.toFloat())
 
     override fun draw(sR: ShapeRenderer, batch: SpriteBatch) = batch.use {
-        if (visible) it.draw(icons, pos.first, pos.second, x, y, SIZE, SIZE)
+        if (visible) when (clicked) {
+            true -> Util.drawFilledRect(sR, pos.first, pos.second, size.first, size.second)
+            else -> it.draw(icons, pos.first, pos.second, x, y, SIZE, SIZE)
+        }
     }
 
     fun changeType(action: Actions.ID) {

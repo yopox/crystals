@@ -54,7 +54,15 @@ object Transition {
     /**
      * Draws a [TRANSITION_TIME] frames wipe transition.
      */
-    fun drawTransition(sR: ShapeRenderer, x0: Float, y0: Float, width: Float, height: Float, frame: Int, onMid: () -> Unit = {}) {
+    fun drawTransition(
+            sR: ShapeRenderer,
+            x0: Float,
+            y0: Float,
+            width: Float,
+            height: Float,
+            frame: Int,
+            onMid: () -> Unit = {}
+    ) {
         var x = 0f
         var w = 0f
 

@@ -4,7 +4,7 @@ import com.yopox.crystals.def.*
 import com.yopox.crystals.screens.Fight
 import com.yopox.crystals.ui.ActionIcon
 
-class Hero(val job: Jobs.ID, name: String) : Entity(Fighters.ID.HERO, name, false) {
+class Hero(val job: Jobs.ID, name: String) : Fighter(Fighters.ID.HERO, name, false) {
 
     var crystals = arrayListOf(Crystal.random(job))
 
@@ -12,8 +12,8 @@ class Hero(val job: Jobs.ID, name: String) : Entity(Fighters.ID.HERO, name, fals
         stats.spd = 15
     }
 
-    override fun getMove(fighters: ArrayList<Entity>): Fight.Move {
-        return Fight.Move(this, Spells.map.getValue(Fight.Intent.action), Fight.Intent.target)
+    override fun getMove(fighters: ArrayList<Fighter>): Fight.Move {
+        return Fight.Move(this, Spells.map.getValue(Fight.Intent.action), Fight.Intent.targets)
     }
 
     fun setActionsIcons(buttons: ArrayList<ActionIcon>) {

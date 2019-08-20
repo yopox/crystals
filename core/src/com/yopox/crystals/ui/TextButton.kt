@@ -19,7 +19,7 @@ class TextButton(x: Float, y: Float, private val text: String, xl: Boolean = fal
 
     override fun draw(sR: ShapeRenderer, batch: SpriteBatch) {
         when (clicked) {
-            true -> Util.drawFilledRect(sR, pos.first, pos.second, width, Util.BUTTON_HEIGHT)
+            true -> Util.drawFilledRect(sR, pos.first, pos.second, size.first, size.second)
             else -> {
                 Util.drawRect(sR, pos.first, pos.second, width, Util.BUTTON_HEIGHT)
                 batch.use {
