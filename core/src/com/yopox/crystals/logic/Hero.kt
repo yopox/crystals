@@ -10,6 +10,7 @@ class Hero(val job: Jobs.ID, name: String) : Fighter(Fighters.ID.HERO, name, fal
 
     init {
         stats.spd = 15
+        stats.atk = 20
     }
 
     override fun getMove(fighters: ArrayList<Fighter>): Fight.Move {

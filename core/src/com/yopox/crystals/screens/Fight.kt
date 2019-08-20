@@ -49,7 +49,9 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     enum class BlockType {
         TEXT,
         DAMAGE,
-        KO
+        KO,
+        FAINT,
+        WIN
     }
 
     data class Block(val type: BlockType, var content: String = "", var int1: Int = 0, var int2: Int = 0)
@@ -70,6 +72,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     private val fighters = ArrayList<Fighter>()
     private var stats = mutableListOf("", "")
     private var hero = 1
+    private var victory = false
 
     internal object Intent {
         var category = Actions.ID.WARRIOR
@@ -150,7 +153,6 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
 
         // Opening message
         blocks.add(Block(BlockType.TEXT, "Snake and Bat attack!"))
-        blocks.add(Block(BlockType.TEXT, "Get ready!"))
     }
 
     override fun render(delta: Float) {
@@ -197,7 +199,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
             ScreenState.TRANSITION_EN -> {
                 if (Transition.drawWipe(shapeRenderer)) {
                     resetState()
-                    game.setScreen<Trip>()
+                    game.setScreen<GameOver>()
                 }
             }
             else -> Unit
@@ -277,6 +279,11 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
         BlockType.TEXT -> {
             Dialog.line2 = Dialog.line1
             Dialog.line1 = ""
+        }
+        BlockType.WIN -> Unit
+        BlockType.FAINT -> {
+            victory = false
+            state = ScreenState.TRANSITION_EN
         }
         else -> Unit
     }
@@ -432,6 +439,14 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
             if (move.fighter.alive) {
                 blocks.add(Block(BlockType.TEXT, Spells.text(move)))
                 blocks.addAll(move.spell.use(move))
+
+                // Game Over condition
+                if (!fighters.filter { it.team == Team.ALLIES }.map { it.alive }.contains(true))
+                    blocks.add(Block(BlockType.FAINT))
+
+                // Win condition
+                if (!fighters.filter { it.team == Team.ENEMIES }.map { it.alive }.contains(true))
+                    blocks.add(Block(BlockType.WIN))
             }
         }
 
@@ -466,6 +481,12 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     private fun resetState() {
         blockInput = true
         state = ScreenState.TRANSITION_OP
+        blocks.clear()
+        subState = MAIN
+        icons.clear()
+        fighters.clear()
+        currentBlock = null
+        Dialog.reset()
     }
 
 }

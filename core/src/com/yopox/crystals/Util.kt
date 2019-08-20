@@ -47,6 +47,8 @@ object Util {
     const val TEXT_ACTIONS = "Actions"
     const val TEXT_LOG = "Battle log"
     const val TEXT_TARGET = "Choose a target"
+    const val TEXT_GAME_OVER = "Game Over"
+    const val TEXT_RETURN_TITLE = "Return to title"
     /**
      * Generates [BitmapFont] objects from `.ttf` files.
      */
