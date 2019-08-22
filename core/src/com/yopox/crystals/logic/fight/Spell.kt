@@ -1,4 +1,4 @@
-package com.yopox.crystals.logic
+package com.yopox.crystals.logic.fight
 
 import com.yopox.crystals.def.Actions
 import com.yopox.crystals.def.Jobs
@@ -17,17 +17,18 @@ class Spell(
         val job: Jobs.ID,
         val cost: Int,
         val target: Target,
-        val effect: (f1: Fighter, f2: Fighter) -> ArrayList<Fight.Block> = { _, _ -> ArrayList<Fight.Block>() }
+        val effect: (f1: Fighter, f2: Fighter) -> List<Fight.Block> = { _, _ -> ArrayList() }
 ) {
 
     fun use(move: Fight.Move): ArrayList<Fight.Block> {
+        move.fighter.stats.mp -= move.spell.cost
         val blocks = ArrayList<Fight.Block>()
-        move.targets.forEach { blocks.addAll(effect(move.fighter, it)) }
+        if (move.targets.isEmpty()) blocks.addAll(effect(move.fighter, move.fighter))
+        else move.targets.forEach { blocks.addAll(effect(move.fighter, it)) }
         return blocks
     }
 
 }
-
 
 
 

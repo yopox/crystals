@@ -1,6 +1,7 @@
 package com.yopox.crystals.logic
 
 import com.yopox.crystals.def.*
+import com.yopox.crystals.logic.fight.Fighter
 import com.yopox.crystals.screens.Fight
 import com.yopox.crystals.ui.ActionIcon
 
@@ -9,8 +10,8 @@ class Hero(val job: Jobs.ID, name: String) : Fighter(Fighters.ID.HERO, name, fal
     var crystals = arrayListOf(Crystal.random(job))
 
     init {
-        stats.spd = 15
-        stats.atk = 20
+        baseStats.spd = 5
+        baseStats.def = 0
     }
 
     override fun getMove(fighters: ArrayList<Fighter>): Fight.Move {

@@ -1,8 +1,12 @@
 package com.yopox.crystals.def
 
+import com.yopox.crystals.def.Actions.ID.*
 import com.yopox.crystals.def.Fighters.ID.BAT
 import com.yopox.crystals.def.Fighters.ID.SNAKE
-import com.yopox.crystals.logic.Fighter
+import com.yopox.crystals.def.Spells.getSpell
+import com.yopox.crystals.logic.fight.Fighter
+import com.yopox.crystals.logic.fight.Monster
+import com.yopox.crystals.logic.fight.Stats
 
 object Fighters {
 
@@ -12,8 +16,12 @@ object Fighters {
         BAT
     }
 
-    private val snake = Fighter(SNAKE, "Snake")
-    private val bat = Fighter(BAT, "Bat")
+    private val snake = Monster(SNAKE, "Snake",
+            Stats(8, 4, 3, 0, 0, 2),
+            arrayListOf(getSpell(ATTACK), getSpell(WAIT)))
+    private val bat = Monster(BAT, "Bat",
+            Stats(6, 3, 2, 0, 0, 8),
+            arrayListOf(getSpell(ATTACK), getSpell(ULTRASOUND)))
 
     val map = mapOf(
             SNAKE to snake,

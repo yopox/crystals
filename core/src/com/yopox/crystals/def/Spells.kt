@@ -1,24 +1,33 @@
 package com.yopox.crystals.def
 
 import com.yopox.crystals.def.Actions.ID.*
-import com.yopox.crystals.logic.Spell
-import com.yopox.crystals.logic.Target.*
+import com.yopox.crystals.logic.fight.Spell
+import com.yopox.crystals.logic.fight.Stat
+import com.yopox.crystals.logic.fight.Target.*
 import com.yopox.crystals.screens.Fight
 
 object Spells {
 
+    fun noText(): ArrayList<Fight.Block> = ArrayList()
+    fun text(t: String): ArrayList<Fight.Block> = arrayListOf(Fight.Block(Fight.BlockType.TEXT, t))
+
     // Misc
     private val wait = Spell(WAIT, "Wait", Jobs.ID.ANY, 0, SELF)
-    private val defense = Spell(DEFENSE, "Defend", Jobs.ID.ANY, 0, SELF)
-    private val attack = Spell(ATTACK, "Attack", Jobs.ID.ANY, 0, SINGLE) {
-        f1, f2 ->  f1.attack(f2)
+    private val defense = Spell(DEFENSE, "Defend", Jobs.ID.ANY, 0, SELF) { f1, _ ->
+        f1.buff(Stat.DEF, 25); noText()
+    }
+    private val attack = Spell(ATTACK, "Attack", Jobs.ID.ANY, 0, SINGLE) { f1, f2 ->
+        f1.attack(f2)
     }
 
     // Priest spells
     private val heal = Spell(HEAL, "Heal", Jobs.ID.PRIEST, 2, SINGLE)
     private val heal2 = Spell(HEAL2, "Heal +", Jobs.ID.PRIEST, 6, SINGLE)
     private val cure = Spell(CURE, "Cure", Jobs.ID.PRIEST, 3, SINGLE)
-    private val barrier = Spell(BARRIER, "Barrier", Jobs.ID.PRIEST, 4, SINGLE)
+    private val barrier = Spell(BARRIER, "Barrier", Jobs.ID.PRIEST, 4, SINGLE) { f1, f2 ->
+        f1.addBuff(Stat.DEF, 10, 2, f2) +
+                text("${f2.name} is protected!")
+    }
     private val beam = Spell(BEAMS, "Beam", Jobs.ID.PRIEST, 3, ALL)
     private val ball = Spell(BALL, "Ball", Jobs.ID.PRIEST, 7, SINGLE)
 
@@ -39,9 +48,15 @@ object Spells {
     private val shuriken = Spell(SHURIKEN, "Shuriken", Jobs.ID.MONK, 2, SINGLE)
 
     // Warrior spells
-    private val double = Spell(DOUBLE, "Double Hit", Jobs.ID.WARRIOR, 4, SINGLE)
-    private val massive = Spell(MASSIVE, "Massive Hit", Jobs.ID.WARRIOR, 8, SINGLE)
-    private val shield = Spell(SHIELD, "Shield", Jobs.ID.WARRIOR, 4, SELF)
+    private val double = Spell(DOUBLE, "Double Hit", Jobs.ID.WARRIOR, 4, SINGLE) { f1, f2 ->
+        f1.attack(f2) + f1.attack(f2)
+    }
+    private val massive = Spell(MASSIVE, "Massive Hit", Jobs.ID.WARRIOR, 8, SINGLE) { f1, f2 ->
+        f1.buff(Stat.ATK, 25); f1.attack(f2)
+    }
+    private val shield = Spell(SHIELD, "Shield", Jobs.ID.WARRIOR, 4, SINGLE) { f1, f2 ->
+        f1.addBuff(Stat.DEF, 120, 0, f2)
+    }
     private val insult = Spell(INSULT, "Insult", Jobs.ID.WARRIOR, 1, SINGLE)
     private val storm = Spell(STORM, "Storm", Jobs.ID.WARRIOR, 10, ALL)
     private val jump = Spell(JUMP, "Aerial Hit", Jobs.ID.WARRIOR, 7, SINGLE)
@@ -74,6 +89,13 @@ object Spells {
     private val earthquake = Spell(EARTHQUAKE, "Earthquake", Jobs.ID.GEOMANCER, 6, ALL)
     private val predict = Spell(PREDICT, "Predict", Jobs.ID.GEOMANCER, 1, SINGLE)
     private val tornado = Spell(TORNADO, "Tornado", Jobs.ID.GEOMANCER, 5, SINGLE)
+
+    // Monster spells
+    private val ultrasound = Spell(ULTRASOUND, "Ultrasound", Jobs.ID.NONE, 3, SINGLE) { f1, f2 ->
+        f1.attack(f2) +
+                f1.addBuff(Stat.DEF, -4, 1, f2) +
+                text("${f2.name}'s defense fell.")
+    }
 
     val map = mapOf(
             HEAL to heal,
@@ -129,9 +151,13 @@ object Spells {
             PREDICT to predict,
             TORNADO to tornado,
 
+            ULTRASOUND to ultrasound,
+
             ATTACK to attack,
             DEFENSE to defense
     ).withDefault { wait }
+
+    fun getSpell(spell: Actions.ID): Spell = map.getValue(spell)
 
     fun baseSpell(job: Jobs.ID): Spell = when (job) {
         Jobs.ID.BARD -> map.getValue(SING)

@@ -12,8 +12,12 @@ import com.yopox.crystals.Util
 import com.yopox.crystals.def.Actions
 import com.yopox.crystals.def.Fighters
 import com.yopox.crystals.def.Spells
-import com.yopox.crystals.logic.*
-import com.yopox.crystals.logic.Target
+import com.yopox.crystals.logic.Hero
+import com.yopox.crystals.logic.Progress
+import com.yopox.crystals.logic.fight.Fighter
+import com.yopox.crystals.logic.fight.Spell
+import com.yopox.crystals.logic.fight.Target
+import com.yopox.crystals.logic.fight.Team
 import com.yopox.crystals.screens.Fight.State.*
 import com.yopox.crystals.ui.ActionIcon
 import com.yopox.crystals.ui.Icon
@@ -51,6 +55,8 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
         DAMAGE,
         KO,
         FAINT,
+        UPDATE_HP,
+        UPDATE_MP,
         WIN
     }
 
@@ -135,6 +141,9 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
         // Set battleId
         fighters.withIndex().forEach { it.value.battleId = it.index }
 
+        // Heal fighters
+        fighters.forEach { it.stats = it.baseStats.copy() }
+
         // Get the hero
         hero = fighters.lastIndex
         stats[0] = "HP ${fighters[hero].stats.hp}/${fighters[hero].baseStats.hp}"
@@ -199,7 +208,9 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
             ScreenState.TRANSITION_EN -> {
                 if (Transition.drawWipe(shapeRenderer)) {
                     resetState()
-                    game.setScreen<GameOver>()
+                    if (victory) game.setScreen<Trip>()
+                    else game.setScreen<GameOver>()
+
                 }
             }
             else -> Unit
@@ -260,6 +271,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
                             if (currentBlock!!.int2 == 8 * 4)
                                 currentBlock = null
                         }
+                        else -> currentBlock = null
                     }
                 }
             }
@@ -280,11 +292,17 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
             Dialog.line2 = Dialog.line1
             Dialog.line1 = ""
         }
-        BlockType.WIN -> Unit
+        BlockType.WIN -> {
+            victory = true
+            state = ScreenState.TRANSITION_EN
+        }
         BlockType.FAINT -> {
             victory = false
             state = ScreenState.TRANSITION_EN
         }
+        BlockType.UPDATE_HP -> stats[0] = "HP ${currentBlock!!.int1}/${fighters[hero].baseStats.hp}"
+        BlockType.UPDATE_MP -> stats[1] = "MP ${currentBlock!!.int1}/${fighters[hero].baseStats.mp}"
+
         else -> Unit
     }
 
@@ -384,9 +402,9 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
                     else -> {
                         // Get the corresponding action
                         val crystal = (fighters[hero] as Hero).crystals[Navigation.selected]
-                        if (i - 1 < crystal.unlocked) {
+                        val spell = crystal.spells[i - 1]
+                        if (i - 1 < crystal.unlocked && spell.cost < fighters[hero].stats.mp) {
                             // The spell is unlocked
-                            val spell = crystal.spells[i - 1]
                             Intent.action = spell.id
                             when (spell.target) {
                                 Target.SINGLE -> {
@@ -434,9 +452,14 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
         val moves = alive.map { it.getMove(fighters) }.toMutableList()
         moves.sortBy { -it.fighter.stats.spd }
 
+        moves.forEach { Gdx.app.log(it.fighter.name, "${it.fighter.stats.hp} HP") }
+
         // Execute moves
         for (move in moves) {
             if (move.fighter.alive) {
+                move.fighter.beginTurn()
+
+                if (move.fighter.type == Fighters.ID.HERO) blocks.add(Block(BlockType.UPDATE_MP, int1 = move.fighter.stats.mp))
                 blocks.add(Block(BlockType.TEXT, Spells.text(move)))
                 blocks.addAll(move.spell.use(move))
 

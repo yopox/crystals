@@ -3,6 +3,7 @@ package com.yopox.crystals.logic
 import com.yopox.crystals.def.Actions
 import com.yopox.crystals.def.Jobs
 import com.yopox.crystals.def.Spells
+import com.yopox.crystals.logic.fight.Spell
 
 class Crystal(val job: Jobs.ID) {
 

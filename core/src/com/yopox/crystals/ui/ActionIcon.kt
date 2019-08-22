@@ -98,7 +98,7 @@ class ActionIcon(var type: Actions.ID, pos: Pair<Float, Float>, onClick: () -> U
             PREDICT -> 12 * 54
             TORNADO -> 12 * 55
             LOCKED -> 12 * 63
-            WAIT -> 12 * 62
+            else -> 12 * 62
         }
     }
 }

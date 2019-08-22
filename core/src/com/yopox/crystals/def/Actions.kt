@@ -72,7 +72,9 @@ object Actions {
         TORNADO,
         // Misc
         LOCKED,
-        WAIT
+        WAIT,
+        // Monsters
+        ULTRASOUND
     }
 
     val categoryNames = mapOf(

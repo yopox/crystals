@@ -11,11 +11,10 @@ enum class EVENT_TYPE {
 class Event(val type: EVENT_TYPE = EVENT_TYPE.BATTLE) {
 
     val name: String
-    val id: Int = (Math.random() * 10).toInt()
     val iconX: Int
 
     init {
-        name = getTypeName(type) + " #$id"
+        name = getTypeName(type)
         iconX = when (type) {
             EVENT_TYPE.BATTLE -> 0
             EVENT_TYPE.INN -> 14

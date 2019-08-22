@@ -13,7 +13,8 @@ object Jobs {
         PRIEST,
         ROGUE,
         WARRIOR,
-        ANY
+        ANY,
+        NONE
     }
 
     val bard = Job("Bard", ID.BARD, Actions.ID.SONGS,
@@ -52,6 +53,6 @@ object Jobs {
             ID.PRIEST to priest,
             ID.ROGUE to rogue,
             ID.WARRIOR to warrior
-    ).withDefault { warrior }
+    ).withDefault { mage }
 
 }
