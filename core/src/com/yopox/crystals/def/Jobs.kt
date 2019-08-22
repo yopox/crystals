@@ -17,28 +17,28 @@ object Jobs {
         NONE
     }
 
-    val bard = Job("Bard", ID.BARD, Actions.ID.SONGS,
+    private val bard = Job("Bard", ID.BARD, Actions.ID.SONGS,
             "Bard crystals give\nthe ability to sing.",
             -1, 1, 1, 0, -1, 4)
-    val geomancer = Job("Geomancer", ID.GEOMANCER, Actions.ID.GEOMANCY,
+    private val geomancer = Job("Geomancer", ID.GEOMANCER, Actions.ID.GEOMANCY,
             "Geomancer crystals give\nthe ability to turn\nnature into an ally.",
             -1, 1, 1, 0, -1, 4)
-    val invoker = Job("Invoker", ID.INVOKER, Actions.ID.INVOKE,
+    private val invoker = Job("Invoker", ID.INVOKER, Actions.ID.INVOKE,
             "Invoker crystals give\nthe ability to summon\ncreatures.",
             -1, 1, 1, 0, -1, 4)
-    val mage = Job("Mage", ID.MAGE, Actions.ID.D_MAGIC,
+    private val mage = Job("Mage", ID.MAGE, Actions.ID.D_MAGIC,
             "Mage crystals give\nthe ability to use\ndark magic.",
             -1, 1, 1, 0, -1, 4)
-    val monk = Job("Monk", ID.MONK, Actions.ID.MONK,
+    private val monk = Job("Monk", ID.MONK, Actions.ID.MONK,
             "Monk crystals let\nyou develop fighting\nskills.",
             -1, 1, 1, 0, -1, 4)
-    val priest = Job("Priest", ID.PRIEST, Actions.ID.W_MAGIC,
+    private val priest = Job("Priest", ID.PRIEST, Actions.ID.W_MAGIC,
             "Priest crystals give\nthe ability to use\nwhite magic.",
             1, 4, -2, 2, -2, 0)
-    val rogue = Job("Robber", ID.ROGUE, Actions.ID.ROBBING,
+    private val rogue = Job("Robber", ID.ROGUE, Actions.ID.ROBBING,
             "Robber crystals give\nthe ability to steal\nitems.",
             -1, 1, 1, 0, -1, 4)
-    val warrior = Job("Warrior", ID.WARRIOR, Actions.ID.WARRIOR,
+    private val warrior = Job("Warrior", ID.WARRIOR, Actions.ID.WARRIOR,
             "Warrior crystals let\nyou develop war\nskills.",
             1, -2, 4, -2, 1, 1)
 
@@ -54,5 +54,7 @@ object Jobs {
             ID.ROGUE to rogue,
             ID.WARRIOR to warrior
     ).withDefault { mage }
+
+    fun getJob(id: ID) = map.getValue(id)
 
 }

@@ -1,6 +1,5 @@
 package com.yopox.crystals.logic.fight
 
-import com.badlogic.gdx.Gdx
 import com.yopox.crystals.def.Fighters
 import com.yopox.crystals.def.Fighters.ID.*
 import com.yopox.crystals.def.Icons
@@ -37,6 +36,7 @@ open class Fighter(val type: Fighters.ID, val name: String, enemy: Boolean = tru
     var baseStats = Stats()
     var stats = Stats()
     var buffs = ArrayList<Buff>()
+    var poison = ArrayList<Buff>()
     var gold = 1
     var team = if (enemy) Team.ENEMIES else Team.ALLIES
     var battleId = 0
@@ -49,8 +49,8 @@ open class Fighter(val type: Fighters.ID, val name: String, enemy: Boolean = tru
         BAT -> Icons.Bat
     }
 
-    fun beginTurn() {
-        Gdx.app.log(name, "Turn")
+    fun beginTurn(): List<Fight.Block> {
+        val blocks = ArrayList<Fight.Block>()
         stats.atk = baseStats.atk
         stats.def = baseStats.def
         stats.wis = baseStats.wis
@@ -58,6 +58,29 @@ open class Fighter(val type: Fighters.ID, val name: String, enemy: Boolean = tru
         for (i in buffs.lastIndex downTo 0)
             if (buffs[i].duration == 0) buffs.removeAt(i)
         buffs.forEach { it.target.buff(it.stat, it.amount); it.duration-- }
+
+        // Poison management
+        if (poison.any()) {
+            var damage = 0
+
+            // Calculate poison damage
+            poison.forEach { damage += it.amount ; it.duration-- }
+
+            // Remove old poisons
+            for (i in poison.lastIndex downTo 0)
+                if (poison[i].duration == 0) poison.removeAt(i)
+
+            // Display
+            blocks.add(Fight.Block(Fight.BlockType.TEXT, "$name is hit by poison!"))
+
+            // Remove HP
+            stats.hp -= damage
+            if (damage > 0) blocks.add(Fight.Block(Fight.BlockType.DAMAGE, int1 = battleId))
+            if (type == HERO) blocks.add(Fight.Block(Fight.BlockType.UPDATE_HP, int1 = stats.hp))
+
+            blocks.addAll(checkKO(this))
+        }
+        return blocks
     }
 
     internal open fun getMove(fighters: ArrayList<Fighter>): Fight.Move {
@@ -69,21 +92,31 @@ open class Fighter(val type: Fighters.ID, val name: String, enemy: Boolean = tru
 
         val blocks = ArrayList<Fight.Block>()
 
-        // Damage calculation
-        var damage = round(stats.atk * 60.0 / (60.0 + f.stats.def)).toInt()
-        damage = min(damage, f.stats.hp)
-
         // Attack
+        val damage = calcPhysicalDamage(this, f)
         f.stats.hp -= damage
         if (damage > 0) blocks.add(Fight.Block(Fight.BlockType.DAMAGE, int1 = f.battleId))
         if (f.type == HERO) blocks.add(Fight.Block(Fight.BlockType.UPDATE_HP, int1 = f.stats.hp))
         blocks.add(Fight.Block(Fight.BlockType.TEXT, "${f.name} lost $damage HP."))
 
-        // K.O. condition
-        if (!f.alive) {
-            blocks.add(Fight.Block(Fight.BlockType.KO, int1 = f.battleId))
-            blocks.add(Fight.Block(Fight.BlockType.TEXT, "${f.name} is defeated!"))
-        }
+        blocks.addAll(checkKO(f))
+
+        return blocks
+    }
+
+    fun magicalAttack(f: Fighter, power: Int): ArrayList<Fight.Block> {
+        if (!f.alive) return ArrayList()
+
+        val blocks = ArrayList<Fight.Block>()
+
+        // Attack
+        val damage = calcMagicalDamage(this, f, power)
+        f.stats.hp -= damage
+        if (damage > 0) blocks.add(Fight.Block(Fight.BlockType.DAMAGE, int1 = f.battleId))
+        if (f.type == HERO) blocks.add(Fight.Block(Fight.BlockType.UPDATE_HP, int1 = f.stats.hp))
+        blocks.add(Fight.Block(Fight.BlockType.TEXT, "${f.name} lost $damage HP."))
+
+        blocks.addAll(checkKO(f))
 
         return blocks
     }
@@ -110,4 +143,54 @@ open class Fighter(val type: Fighters.ID, val name: String, enemy: Boolean = tru
     private fun healMP(amount: Int) {
         stats.mp = min(stats.mp + amount, baseStats.mp)
     }
+
+    private fun calcPhysicalDamage(from: Fighter, to: Fighter): Int {
+        // Damage calculation
+        val damage = round(from.stats.atk * 60.0 / (60.0 + to.stats.def)).toInt()
+        return min(damage, to.stats.hp)
+    }
+
+    private fun calcMagicalDamage(from: Fighter, to: Fighter, power: Int): Int {
+        // Damage calculation
+        val powerCoeff = 1 + from.stats.wis / 10.0
+        val defCoeff = 80.0 / (80.0 + to.stats.def / 3.0 + to.stats.wis * 2.0 / 3.0)
+        val damage = round(power * powerCoeff * defCoeff).toInt()
+        return min(damage, to.stats.hp)
+    }
+
+    private fun checkKO(f: Fighter): List<Fight.Block> {
+        val blocks = ArrayList<Fight.Block>()
+
+        // K.O. condition
+        if (!f.alive) {
+            blocks.add(Fight.Block(Fight.BlockType.KO, int1 = f.battleId))
+            blocks.add(Fight.Block(Fight.BlockType.TEXT, "${f.name} is defeated!"))
+        }
+
+        return blocks
+    }
+
+    fun heal(f: Fighter, i: Int): List<Fight.Block> {
+        val blocks = ArrayList<Fight.Block>()
+
+        // Heal amount calculation
+        var h = round(i * stats.wis / 20.0).toInt()
+        h = min(f.baseStats.hp - f.stats.hp, h)
+
+        if (h > 0) {
+            f.healHP(h)
+            blocks.add(Fight.Block(Fight.BlockType.MAGICAL, int1 = f.battleId))
+            blocks.add(Fight.Block(Fight.BlockType.TEXT, "${f.name} recovered $h HP."))
+        }
+        return blocks
+    }
+
+    fun poison(f: Fighter, power: Int, duration: Int): List<Fight.Block> {
+        val blocks = ArrayList<Fight.Block>()
+        blocks.add(Fight.Block(Fight.BlockType.MAGICAL, int1 = f.battleId))
+        blocks.add(Fight.Block(Fight.BlockType.TEXT, "${f.name} is poisoned."))
+        f.poison.add(Buff(Stat.HP, calcMagicalDamage(this, f, power), duration, f))
+        return blocks
+    }
+
 }

@@ -53,6 +53,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     enum class BlockType {
         TEXT,
         DAMAGE,
+        MAGICAL,
         KO,
         FAINT,
         UPDATE_HP,
@@ -111,8 +112,8 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     }
 
     private object Dialog {
-        const val BASE_COOLDOWN = 4
-        const val END_COOLDOWN = 32
+        const val BASE_COOLDOWN = 3
+        const val END_COOLDOWN = 40
         var line1 = ""
         var line2 = ""
         var cooldown = END_COOLDOWN
@@ -269,6 +270,12 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
                             currentBlock!!.int2 += 1
                             icons[currentBlock!!.int1].visible = (currentBlock!!.int2 / 8) % 2 == 0
                             if (currentBlock!!.int2 == 8 * 4)
+                                currentBlock = null
+                        }
+                        BlockType.MAGICAL -> {
+                            currentBlock!!.int2 += 1
+                            icons[currentBlock!!.int1].visible = (currentBlock!!.int2 / 4) % 2 == 0
+                            if (currentBlock!!.int2 == 4 * 4)
                                 currentBlock = null
                         }
                         else -> currentBlock = null
@@ -452,25 +459,23 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
         val moves = alive.map { it.getMove(fighters) }.toMutableList()
         moves.sortBy { -it.fighter.stats.spd }
 
-        moves.forEach { Gdx.app.log(it.fighter.name, "${it.fighter.stats.hp} HP") }
-
         // Execute moves
         for (move in moves) {
-            if (move.fighter.alive) {
-                move.fighter.beginTurn()
+            if (move.fighter.alive)
+                blocks.addAll(move.fighter.beginTurn())
 
-                if (move.fighter.type == Fighters.ID.HERO) blocks.add(Block(BlockType.UPDATE_MP, int1 = move.fighter.stats.mp))
+            if (move.fighter.alive) {
                 blocks.add(Block(BlockType.TEXT, Spells.text(move)))
                 blocks.addAll(move.spell.use(move))
-
-                // Game Over condition
-                if (!fighters.filter { it.team == Team.ALLIES }.map { it.alive }.contains(true))
-                    blocks.add(Block(BlockType.FAINT))
-
-                // Win condition
-                if (!fighters.filter { it.team == Team.ENEMIES }.map { it.alive }.contains(true))
-                    blocks.add(Block(BlockType.WIN))
             }
+
+            // Game Over condition
+            if (!fighters.filter { it.team == Team.ALLIES }.map { it.alive }.contains(true))
+                blocks.add(Block(BlockType.FAINT))
+
+            // Win condition
+            if (!fighters.filter { it.team == Team.ENEMIES }.map { it.alive }.contains(true))
+                blocks.add(Block(BlockType.WIN))
         }
 
         Navigation to MAIN

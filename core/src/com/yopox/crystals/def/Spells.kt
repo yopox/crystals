@@ -5,11 +5,12 @@ import com.yopox.crystals.logic.fight.Spell
 import com.yopox.crystals.logic.fight.Stat
 import com.yopox.crystals.logic.fight.Target.*
 import com.yopox.crystals.screens.Fight
+import kotlin.random.Random
 
 object Spells {
 
-    fun noText(): ArrayList<Fight.Block> = ArrayList()
-    fun text(t: String): ArrayList<Fight.Block> = arrayListOf(Fight.Block(Fight.BlockType.TEXT, t))
+    private fun noText(): ArrayList<Fight.Block> = ArrayList()
+    private fun text(t: String): ArrayList<Fight.Block> = arrayListOf(Fight.Block(Fight.BlockType.TEXT, t))
 
     // Misc
     private val wait = Spell(WAIT, "Wait", Jobs.ID.ANY, 0, SELF)
@@ -21,23 +22,43 @@ object Spells {
     }
 
     // Priest spells
-    private val heal = Spell(HEAL, "Heal", Jobs.ID.PRIEST, 2, SINGLE)
-    private val heal2 = Spell(HEAL2, "Heal +", Jobs.ID.PRIEST, 6, SINGLE)
-    private val cure = Spell(CURE, "Cure", Jobs.ID.PRIEST, 3, SINGLE)
+    private val heal = Spell(HEAL, "Heal", Jobs.ID.PRIEST, 2, SINGLE) { f1, f2 ->
+        f1.heal(f2, 5)
+    }
+    private val heal2 = Spell(HEAL2, "Heal +", Jobs.ID.PRIEST, 6, SINGLE) { f1, f2 ->
+        f1.heal(f2, 20)
+    }
+    private val cure = Spell(CURE, "Cure", Jobs.ID.PRIEST, 4, SINGLE)
     private val barrier = Spell(BARRIER, "Barrier", Jobs.ID.PRIEST, 4, SINGLE) { f1, f2 ->
-        f1.addBuff(Stat.DEF, 10, 2, f2) +
+        f1.addBuff(Stat.DEF, 40, 2, f2) +
                 text("${f2.name} is protected!")
     }
-    private val beam = Spell(BEAMS, "Beam", Jobs.ID.PRIEST, 3, ALL)
-    private val ball = Spell(BALL, "Ball", Jobs.ID.PRIEST, 7, SINGLE)
+    private val beam = Spell(BEAMS, "Beam", Jobs.ID.PRIEST, 3, ENEMIES) { f1, f2 ->
+        f1.magicalAttack(f2, 3)
+    }
+    private val ball = Spell(BALL, "Ball", Jobs.ID.PRIEST, 6, SINGLE) { f1, f2 ->
+        f1.magicalAttack(f2, 7)
+    }
 
     // Mage spells
-    private val wind = Spell(WIND, "Wind", Jobs.ID.MAGE, 2, SINGLE)
-    private val fire = Spell(FIRE, "Fire", Jobs.ID.MAGE, 4, SINGLE)
-    private val water = Spell(WATER, "Water", Jobs.ID.MAGE, 7, ALL)
-    private val poison = Spell(POISON, "Poison", Jobs.ID.MAGE, 3, SINGLE)
-    private val lightning = Spell(LIGHTNING, "Lightning", Jobs.ID.MAGE, 5, SINGLE)
-    private val energy = Spell(ENERGY, "Energy", Jobs.ID.MAGE, 8, SINGLE)
+    private val wind = Spell(WIND, "Wind", Jobs.ID.MAGE, 2, SINGLE) { f1, f2 ->
+        f1.magicalAttack(f2, 3)
+    }
+    private val fire = Spell(FIRE, "Fire", Jobs.ID.MAGE, 4, SINGLE) { f1, f2 ->
+        f1.magicalAttack(f2, 5)
+    }
+    private val lightning = Spell(LIGHTNING, "Lightning", Jobs.ID.MAGE, 5, SINGLE) { f1, f2 ->
+        f1.magicalAttack(f2, 7)
+    }
+    private val water = Spell(WATER, "Water", Jobs.ID.MAGE, 7, ENEMIES) { f1, f2 ->
+        f1.magicalAttack(f2, 7)
+    }
+    private val energy = Spell(ENERGY, "Energy", Jobs.ID.MAGE, 8, SINGLE) { f1, f2 ->
+        f1.magicalAttack(f2, 10)
+    }
+    private val poison = Spell(POISON, "Poison", Jobs.ID.MAGE, 3, SINGLE) { f1, f2 ->
+        f1.poison(f2, 4, 3)
+    }
 
     // Monk spells
     private val meditation = Spell(MEDITATION, "Meditation", Jobs.ID.MONK, 2, SELF)
@@ -57,9 +78,24 @@ object Spells {
     private val shield = Spell(SHIELD, "Shield", Jobs.ID.WARRIOR, 4, SINGLE) { f1, f2 ->
         f1.addBuff(Stat.DEF, 120, 0, f2)
     }
-    private val insult = Spell(INSULT, "Insult", Jobs.ID.WARRIOR, 1, SINGLE)
-    private val storm = Spell(STORM, "Storm", Jobs.ID.WARRIOR, 10, ALL)
-    private val jump = Spell(JUMP, "Aerial Hit", Jobs.ID.WARRIOR, 7, SINGLE)
+    private val insult = Spell(INSULT, "Insult", Jobs.ID.WARRIOR, 1, SINGLE) { f1, f2 ->
+        when (Random.nextInt(2)) {
+            0 -> {
+                f1.addBuff(Stat.DEF, -15, 2, f2) +
+                        text("${f2.name} is frightened!")
+            }
+            else -> {
+                f1.addBuff(Stat.ATK, 15, 2, f2) +
+                        text("${f2.name} is upset!")
+            }
+        }
+    }
+    private val storm = Spell(STORM, "Storm", Jobs.ID.WARRIOR, 10, ENEMIES) { f1, f2 ->
+        f1.buff(Stat.ATK, 10); f1.attack(f2)
+    }
+    private val jump = Spell(JUMP, "Aerial Hit", Jobs.ID.WARRIOR, 5, SINGLE)  { f1, f2 ->
+        f1.buff(Stat.ATK, 5); f1.attack(f2)
+    }
 
     // Invoker spells
     private val fairy = Spell(FAIRY, "Fairy", Jobs.ID.INVOKER, 3, SELF)
@@ -81,12 +117,12 @@ object Spells {
     private val sing = Spell(SING, "Sing", Jobs.ID.BARD, 2, SINGLE)
     private val bewitch = Spell(BEWITCH, "Bewitch", Jobs.ID.BARD, 2, SINGLE)
     private val hide = Spell(HIDE, "Hide", Jobs.ID.BARD, 2, SELF)
-    private val fireworks = Spell(FIREWORKS, "Fireworks", Jobs.ID.BARD, 8, ALL)
+    private val fireworks = Spell(FIREWORKS, "Fireworks", Jobs.ID.BARD, 8, ENEMIES)
     private val wine = Spell(WINE, "Wine", Jobs.ID.BARD, 2, SINGLE)
     private val sausage = Spell(SAUSAGE, "Sausage", Jobs.ID.BARD, 2, SINGLE)
 
     // Geomancer spells
-    private val earthquake = Spell(EARTHQUAKE, "Earthquake", Jobs.ID.GEOMANCER, 6, ALL)
+    private val earthquake = Spell(EARTHQUAKE, "Earthquake", Jobs.ID.GEOMANCER, 6, ENEMIES)
     private val predict = Spell(PREDICT, "Predict", Jobs.ID.GEOMANCER, 1, SINGLE)
     private val tornado = Spell(TORNADO, "Tornado", Jobs.ID.GEOMANCER, 5, SINGLE)
 
@@ -163,7 +199,7 @@ object Spells {
         Jobs.ID.BARD -> map.getValue(SING)
         Jobs.ID.GEOMANCER -> map.getValue(TORNADO)
         Jobs.ID.INVOKER -> map.getValue(FAIRY)
-        Jobs.ID.MAGE -> map.getValue(FIRE)
+        Jobs.ID.MAGE -> map.getValue(POISON)
         Jobs.ID.MONK -> map.getValue(FOCUS)
         Jobs.ID.PRIEST -> map.getValue(HEAL)
         Jobs.ID.ROGUE -> map.getValue(ROB)

@@ -2,16 +2,17 @@ package com.yopox.crystals.logic
 
 import com.yopox.crystals.def.*
 import com.yopox.crystals.logic.fight.Fighter
+import com.yopox.crystals.logic.fight.Stats
 import com.yopox.crystals.screens.Fight
 import com.yopox.crystals.ui.ActionIcon
 
-class Hero(val job: Jobs.ID, name: String) : Fighter(Fighters.ID.HERO, name, false) {
+class Hero(val job: Jobs.ID, name: String, initStats: Stats, val desc: String) : Fighter(Fighters.ID.HERO, name, false) {
 
-    var crystals = arrayListOf(Crystal.random(job))
+    var crystals = arrayListOf(Crystal.baseCrystal(job))
 
     init {
-        baseStats.spd = 5
-        baseStats.def = 0
+        baseStats = initStats.copy()
+        stats = baseStats.copy()
     }
 
     override fun getMove(fighters: ArrayList<Fighter>): Fight.Move {
@@ -31,7 +32,7 @@ class Hero(val job: Jobs.ID, name: String) : Fighter(Fighters.ID.HERO, name, fal
         for (i in 0..2) {
             val cr = crystals.getOrNull(i)
             if (cr != null) {
-                buttons[3 + i].changeType(Jobs.map.getOrElse(cr.job) { Jobs.warrior }.iconId)
+                buttons[3 + i].changeType(Jobs.getJob(cr.job).iconId)
             } else {
                 buttons[3 + i].hide()
             }

@@ -8,7 +8,7 @@ import com.yopox.crystals.logic.fight.Spell
 class Crystal(val job: Jobs.ID) {
 
     val spells = ArrayList<Spell>()
-    var unlocked = 2
+    var unlocked = 3
 
     companion object {
 

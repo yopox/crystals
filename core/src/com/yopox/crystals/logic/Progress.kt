@@ -1,8 +1,9 @@
 package com.yopox.crystals.logic
 
+import com.yopox.crystals.def.Fighters
 import com.yopox.crystals.def.Jobs
 
 object Progress {
-    var player = Hero(Jobs.ID.WARRIOR, "yopox")
+    var player = Fighters.heroes.get(0)
     var gold = 1
 }

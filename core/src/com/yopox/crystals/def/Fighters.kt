@@ -4,6 +4,7 @@ import com.yopox.crystals.def.Actions.ID.*
 import com.yopox.crystals.def.Fighters.ID.BAT
 import com.yopox.crystals.def.Fighters.ID.SNAKE
 import com.yopox.crystals.def.Spells.getSpell
+import com.yopox.crystals.logic.Hero
 import com.yopox.crystals.logic.fight.Fighter
 import com.yopox.crystals.logic.fight.Monster
 import com.yopox.crystals.logic.fight.Stats
@@ -16,6 +17,13 @@ object Fighters {
         BAT
     }
 
+    // Heroes
+    private val warrior = Hero(Jobs.ID.WARRIOR, "Xavier", Stats(35, 8, 6, 0, 5, 4), "Xavier has powerful\nfighting skills. He's called\n'Xavier le guerrier'.")
+    private val mage = Hero(Jobs.ID.MAGE, "Faroo", Stats(20, 15, 2, 10, 4, 4), "Faroo is a mage.")
+
+    val heroes = listOf(warrior, mage)
+
+    // Monsters
     private val snake = Monster(SNAKE, "Snake",
             Stats(8, 4, 3, 0, 0, 2),
             arrayListOf(getSpell(ATTACK), getSpell(WAIT)))
