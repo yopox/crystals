@@ -143,7 +143,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
         fighters.withIndex().forEach { it.value.battleId = it.index }
 
         // Heal fighters
-        fighters.forEach { it.stats = it.baseStats.copy() }
+        fighters.forEach { it.prepare() }
 
         // Get the hero
         hero = fighters.lastIndex

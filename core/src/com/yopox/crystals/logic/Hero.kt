@@ -15,6 +15,10 @@ class Hero(val job: Jobs.ID, name: String, initStats: Stats, val desc: String) :
         stats = baseStats.copy()
     }
 
+    override fun prepare() {
+        stats to baseStats
+    }
+
     override fun getMove(fighters: ArrayList<Fighter>): Fight.Move {
         return Fight.Move(this, Spells.map.getValue(Fight.Intent.action), Fight.Intent.targets)
     }

@@ -1,5 +1,6 @@
 package com.yopox.crystals.ui
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
@@ -39,11 +40,17 @@ class Chunk(private var x: Float, private val y: Float) {
         // Icons
         for (i in 0 until events.size) {
             val iconX = events[i].iconX
-            val iconY =  0
-            // TODO: Inverse shader if selected == i
+            val iconY = 0
+
+            // Inverse shader if selected == i
+            if (selected == i) {
+                Util.drawFilledRect(sR, x, y + 15 * i, 16f, 16f)
+                batch.shader = Util.invertShader
+            }
             batch.use {
                 it.draw(icons, x + 1, y + 1 + 15 * i, iconX, iconY, 14, 14)
             }
+            batch.shader = Util.defaultShader
         }
 
         // Separation lines

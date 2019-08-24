@@ -5,10 +5,13 @@ import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.GlyphLayout
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
+import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector3
 import ktx.graphics.use
+
 
 enum class ScreenState {
     MAIN,
@@ -140,5 +143,11 @@ object Util {
         val previousPos = (set.indexOf(elem) + 1 + set.size) % set.size
         return set.elementAt(previousPos)
     }
+
+    val invertShader = ShaderProgram(
+            Gdx.files.internal("shader/invertVert.vs").readString(),
+            Gdx.files.internal("shader/invertFrag.vs").readString())
+    val defaultShader: ShaderProgram? = SpriteBatch.createDefaultShader()
+
 
 }

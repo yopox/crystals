@@ -3,6 +3,7 @@ package com.yopox.crystals
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.yopox.crystals.screens.*
 import ktx.app.KtxGame
 import ktx.freetype.registerFreeTypeFontLoaders
@@ -30,6 +31,7 @@ class Crystals : KtxGame<Screen>() {
         }
 
         Util.genFonts()
+        ShaderProgram.pedantic = false
 
         addScreen(TitleScreen(this))
         addScreen(CharacterSelection(this))

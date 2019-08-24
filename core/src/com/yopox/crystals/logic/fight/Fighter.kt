@@ -14,7 +14,14 @@ data class Stats(var hp: Int = 20,
                  var atk: Int = 5,
                  var wis: Int = 5,
                  var def: Int = 5,
-                 var spd: Int = 5)
+                 var spd: Int = 5) {
+    infix fun to(stats: Stats) {
+        atk = stats.atk
+        wis = stats.wis
+        def = stats.def
+        spd = stats.spd
+    }
+}
 
 enum class Team {
     ALLIES,
@@ -49,12 +56,13 @@ open class Fighter(val type: Fighters.ID, val name: String, enemy: Boolean = tru
         BAT -> Icons.Bat
     }
 
+    open fun prepare() {
+        stats = baseStats.copy()
+    }
+
     fun beginTurn(): List<Fight.Block> {
         val blocks = ArrayList<Fight.Block>()
-        stats.atk = baseStats.atk
-        stats.def = baseStats.def
-        stats.wis = baseStats.wis
-        stats.spd = baseStats.spd
+        stats to baseStats
         for (i in buffs.lastIndex downTo 0)
             if (buffs[i].duration == 0) buffs.removeAt(i)
         buffs.forEach { it.target.buff(it.stat, it.amount); it.duration-- }
