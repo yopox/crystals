@@ -29,7 +29,7 @@ class Chunk(private var x: Float, private val y: Float) {
      */
     init {
         repeat(3) {
-            events.add(Event(EVENT_TYPE.BATTLE))
+            events.add(Event(EVENT_TYPE.values().random()))
         }
     }
 
@@ -44,7 +44,6 @@ class Chunk(private var x: Float, private val y: Float) {
 
             // Inverse shader if selected == i
             if (selected == i) {
-                Util.drawFilledRect(sR, x, y + 15 * i, 16f, 16f)
                 batch.shader = Util.invertShader
             }
             batch.use {
