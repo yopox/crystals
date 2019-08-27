@@ -27,10 +27,11 @@ class Icon(id: Pair<Int, Int>, pos: Pair<Float, Float>, onClick: () -> Unit = {}
     override val size = Pair(SIZE.toFloat(), SIZE.toFloat())
 
     override fun draw(sR: ShapeRenderer, batch: SpriteBatch) {
-        if (visible) when (clicked) {
-                true -> Util.drawFilledRect(sR, pos.first, pos.second, size.first, size.second)
-                else -> batch.use { it.draw(icons, pos.first, pos.second, x, y, SIZE, SIZE) }
-            }
+        if (visible) {
+            if (clicked) batch.shader = Util.invertShader
+            batch.use { it.draw(icons, pos.first, pos.second, x, y, SIZE, SIZE) }
+            batch.shader = Util.defaultShader
+        }
     }
 
 }

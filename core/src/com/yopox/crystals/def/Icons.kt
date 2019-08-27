@@ -4,6 +4,7 @@ import com.yopox.crystals.def.Fighters.ID.*
 import com.yopox.crystals.ui.Icon
 
 object Icons {
+    // Characters
     val Priest = Pair(0, 32)
     val Mage = Pair(1, 32)
     val Monk = Pair(2, 32)
@@ -15,4 +16,9 @@ object Icons {
     val Snake = Pair(28, 8)
     val Bat = Pair(26, 8)
 
+    // Furniture
+    val ChestClosed = Pair(8, 6)
+    val ChestOpened = Pair(9, 6)
+    val Bed = Pair(5, 8)
+    val Bookshelf = Pair(3, 7)
 }

@@ -56,8 +56,12 @@ class Display(private val game: Crystals) : KtxScreen {
                     resetState()
                     when (event.type) {
                         EVENT_TYPE.BATTLE -> {
-                            game.getScreen<Fight>().setupFight()
+                            game.getScreen<Fight>().setup()
                             game.setScreen<Fight>()
+                        }
+                        EVENT_TYPE.INN -> {
+                            game.getScreen<Inn>().setup(event)
+                            game.setScreen<Inn>()
                         }
                         else -> game.setScreen<Trip>()
                     }

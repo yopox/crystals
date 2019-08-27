@@ -132,7 +132,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
         buttons.add(ActionIcon(Actions.ID.GEOMANCY, Pair(90f, 5f)) { selectIcon(5) })
     }
 
-    fun setupFight() {
+    fun setup() {
         // Add fighters
         fighters.clear()
         fighters.add(Fighters.map.getValue(Fighters.ID.SNAKE))

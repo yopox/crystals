@@ -26,10 +26,11 @@ class ActionIcon(var type: Actions.ID, pos: Pair<Float, Float>, onClick: () -> U
     val y = 0
     override val size = Pair(SIZE.toFloat(), SIZE.toFloat())
 
-    override fun draw(sR: ShapeRenderer, batch: SpriteBatch) = batch.use {
-        if (visible) when (clicked) {
-            true -> Util.drawFilledRect(sR, pos.first, pos.second, size.first, size.second)
-            else -> it.draw(icons, pos.first, pos.second, x, y, SIZE, SIZE)
+    override fun draw(sR: ShapeRenderer, batch: SpriteBatch) {
+        if (visible) {
+            if (clicked) batch.shader = Util.invertShader
+            batch.use { it.draw(icons, pos.first, pos.second, x, y, SIZE, SIZE) }
+            batch.shader = Util.defaultShader
         }
     }
 

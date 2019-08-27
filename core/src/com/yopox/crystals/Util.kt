@@ -52,6 +52,8 @@ object Util {
     const val TEXT_TARGET = "Choose a target"
     const val TEXT_GAME_OVER = "Game Over"
     const val TEXT_RETURN_TITLE = "Return to title"
+    const val TEXT_INN = "Inn"
+    const val TEXT_SLEEP = "Sleep"
     /**
      * Generates [BitmapFont] objects from `.ttf` files.
      */
