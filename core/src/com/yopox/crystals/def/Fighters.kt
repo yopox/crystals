@@ -25,10 +25,10 @@ object Fighters {
 
     // Monsters
     private val snake = Monster(SNAKE, "Snake",
-            Stats(30, 4, 3, 0, 0, 2),
+            Stats(10, 4, 3, 0, 0, 2),
             arrayListOf(getSpell(ATTACK), getSpell(WAIT)))
     private val bat = Monster(BAT, "Bat",
-            Stats(18, 3, 2, 0, 5, 8),
+            Stats(6, 3, 2, 0, 5, 8),
             arrayListOf(getSpell(ATTACK), getSpell(ULTRASOUND)))
 
     val map = mapOf(

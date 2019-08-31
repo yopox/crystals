@@ -24,6 +24,7 @@ import com.yopox.crystals.ui.Icon
 import com.yopox.crystals.ui.Transition
 import ktx.app.KtxScreen
 import ktx.graphics.use
+import kotlin.math.ceil
 
 /**
  * Fight Screen.
@@ -79,6 +80,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     private val fighters = ArrayList<Fighter>()
     private var stats = mutableListOf("", "")
     private var hero = 1
+    private var turn = 0
     private var victory = false
 
     internal object Intent {
@@ -208,10 +210,9 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
             }
             ScreenState.TRANSITION_EN -> {
                 if (Transition.drawWipe(shapeRenderer)) {
-                    resetState()
                     if (victory) game.setScreen<Trip>()
                     else game.setScreen<GameOver>()
-
+                    resetState()
                 }
             }
             else -> Unit
@@ -230,6 +231,15 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
                         initBlock(currentBlock!!.type)
                     } else {
                         // No more blocks, [subState] set to [State.CHOOSE_ACTION] automatically
+
+                        if (turn > 0 && !victory) {
+                            // 1/20 max MP heal
+                            val hero = fighters[hero]
+                            hero.healMP(ceil((hero.baseStats.mp / 20.0)).toInt())
+                            stats[1] = "MP ${hero.stats.mp}/${hero.baseStats.mp}"
+                        }
+                        turn++
+
                         Navigation to CHOOSE_ACTION
                         blockInput = true
                     }
@@ -410,7 +420,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
                         // Get the corresponding action
                         val crystal = (fighters[hero] as Hero).crystals[Navigation.selected]
                         val spell = crystal.spells[i - 1]
-                        if (i - 1 < crystal.unlocked && spell.cost < fighters[hero].stats.mp) {
+                        if (i - 1 < crystal.unlocked && spell.cost <= fighters[hero].stats.mp) {
                             // The spell is unlocked
                             Intent.action = spell.id
                             when (spell.target) {
@@ -514,6 +524,8 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
         icons.clear()
         fighters.clear()
         currentBlock = null
+        turn = 0
+        victory = false
         Dialog.reset()
     }
 

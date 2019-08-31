@@ -45,8 +45,12 @@ class Inn(private val game: Crystals) : KtxScreen, InputScreen {
     }
 
     fun setup(event: Event) {
+        val iconH = 7f * 2 + Util.BUTTON_HEIGHT
         // Add furniture
-        icons.add(Icon(Icons.Bed, Pair(10f, 28f)))
+        icons.add(Icon(Icons.Bed, Pair(20f, iconH)))
+
+        icons.add(Icon(Icons.Bookshelf, Pair(64f, iconH)))
+        icons.add(Icon(Icons.ChestOpened, Pair(64f + 16 + 2, iconH)))
 
         // Set stats text
         setStats()
@@ -74,7 +78,8 @@ class Inn(private val game: Crystals) : KtxScreen, InputScreen {
                 Transition.drawTransition(shapeRenderer,
                         10 + Util.BUTTON_WIDTH * 2 + 8, 7f, Util.WIDTH - 10 * 2 - Util.BUTTON_WIDTH * 2 - 4, 20f, frame)
                 {
-                    Progress.player.stats = Progress.player.baseStats
+                    Progress.player.stats.hp = Progress.player.baseStats.hp
+                    Progress.player.stats.mp = Progress.player.baseStats.mp
                     buttons[0].clickable = false
                     setStats()
                 }

@@ -6,6 +6,7 @@ import com.yopox.crystals.def.Icons
 import com.yopox.crystals.def.Jobs
 import com.yopox.crystals.def.Spells
 import com.yopox.crystals.screens.Fight
+import kotlin.math.ceil
 import kotlin.math.min
 import kotlin.math.round
 
@@ -144,11 +145,11 @@ open class Fighter(val type: Fighters.ID, val name: String, enemy: Boolean = tru
         Stat.SPD -> stats.spd += amount
     }
 
-    private fun healHP(amount: Int) {
+    fun healHP(amount: Int) {
         stats.hp = min(stats.hp + amount, baseStats.hp)
     }
 
-    private fun healMP(amount: Int) {
+    fun healMP(amount: Int) {
         stats.mp = min(stats.mp + amount, baseStats.mp)
     }
 
