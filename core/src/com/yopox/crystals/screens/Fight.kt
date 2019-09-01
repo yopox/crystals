@@ -1,6 +1,7 @@
 package com.yopox.crystals.screens
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
@@ -54,7 +55,6 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     enum class BlockType {
         TEXT,
         DAMAGE,
-        MAGICAL,
         KO,
         FAINT,
         UPDATE_HP,
@@ -155,12 +155,12 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
         // Add enemies icons
         val enemies = fighters.filter { it.team == Team.ENEMIES }
         for (i in 0..enemies.lastIndex)
-            icons.add(Icon(enemies[i].getIcon(), Pair(56f - 20 * i, 40f)) { selectTarget(i) })
+            icons.add(Icon(enemies[i].getIcon(), Pair(56f - 20 * i, 34f)) { selectTarget(i) })
 
         // Add allies icons
         val allies = fighters.filter { it.team == Team.ALLIES }
         for (i in 0..allies.lastIndex)
-            icons.add(Icon(allies[i].getIcon(), Pair(88f + 20 * i, 40f)) { selectTarget(i + enemies.size) })
+            icons.add(Icon(allies[i].getIcon(), Pair(88f + 20 * i, 34f)) { selectTarget(i + enemies.size) })
         icons.forEach { it.clickable = false }
 
         // Opening message
@@ -278,14 +278,25 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
                         }
                         BlockType.DAMAGE -> {
                             currentBlock!!.int2 += 1
-                            icons[currentBlock!!.int1].visible = (currentBlock!!.int2 / 8) % 2 == 0
-                            if (currentBlock!!.int2 == 8 * 4)
-                                currentBlock = null
-                        }
-                        BlockType.MAGICAL -> {
-                            currentBlock!!.int2 += 1
-                            icons[currentBlock!!.int1].visible = (currentBlock!!.int2 / 4) % 2 == 0
-                            if (currentBlock!!.int2 == 4 * 4)
+
+                            // Draw wipe
+                            val icon = icons[currentBlock!!.int1]
+                            val size = Util.textSize(currentBlock!!.content)
+                            val x0 = icon.pos.first + (icon.size.first - size.first) / 2
+                            val y0 = icon.pos.second + icon.size.second + 2
+                            val stopTime = 20
+                            Transition.drawTransition(shapeRenderer, x0 - 2, y0, size.first + 4, 8f, currentBlock!!.int2, stopTime)
+                            Util.font.color = Color.BLACK
+                            batch.use {
+                                Util.font.draw(it, currentBlock!!.content, x0, y0 + size.second + 1)
+                            }
+                            Util.font.color = Color.WHITE
+
+                            // Flash character
+                            if (currentBlock!!.int2 <= 3 * 8) {
+                                icon.visible = (currentBlock!!.int2 / 8) % 2 == 1
+                            }
+                            if (currentBlock!!.int2 == Transition.TRANSITION_TIME + stopTime)
                                 currentBlock = null
                         }
                         else -> currentBlock = null

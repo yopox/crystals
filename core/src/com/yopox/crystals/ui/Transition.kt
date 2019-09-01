@@ -11,6 +11,7 @@ object Transition {
      * Transition time (in frames).
      */
     const val TRANSITION_TIME = 30
+    const val HALF_TT = TRANSITION_TIME / 2
     const val DISPLAY_LEN = 40
     private const val TRANSITION_STUN = 2
     private var TRANSITION_FRAME = 0
@@ -61,6 +62,7 @@ object Transition {
             width: Float,
             height: Float,
             frame: Int,
+            stopTime: Int = 0,
             onMid: () -> Unit = {}
     ) {
         var x = 0f
@@ -68,18 +70,20 @@ object Transition {
 
         // Update
         when {
-            frame < TRANSITION_TIME / 2 -> {
+            frame < HALF_TT -> {
                 x = x0
-                w = width * easeOutQuad(frame.toFloat() / (TRANSITION_TIME / 2))
+                w = width * easeOutQuad(frame.toFloat() / HALF_TT)
             }
-            frame < TRANSITION_TIME -> {
-                w = width * easeOutQuad((TRANSITION_TIME - frame).toFloat() / (TRANSITION_TIME / 2))
+            frame < TRANSITION_TIME + stopTime -> {
+                val f2 = if (frame < HALF_TT + stopTime) HALF_TT else frame - stopTime
+
+                w = width * easeOutQuad((TRANSITION_TIME - f2).toFloat() / HALF_TT)
                 x = x0 + width - w
             }
         }
 
         // Mid transition callback
-        if (frame == TRANSITION_TIME / 2) {
+        if (frame == HALF_TT) {
             onMid()
         }
 

@@ -1,5 +1,6 @@
 package com.yopox.crystals.logic.fight
 
+import com.yopox.crystals.Util
 import com.yopox.crystals.def.Fighters
 import com.yopox.crystals.def.Fighters.ID.*
 import com.yopox.crystals.def.Icons
@@ -84,7 +85,7 @@ open class Fighter(val type: Fighters.ID, val name: String, enemy: Boolean = tru
 
             // Remove HP
             stats.hp -= damage
-            if (damage > 0) blocks.add(Fight.Block(Fight.BlockType.DAMAGE, int1 = battleId))
+            if (damage > 0) blocks.add(Fight.Block(Fight.BlockType.DAMAGE, content = Util.signedInt(-damage), int1 = battleId))
             if (type == HERO) blocks.add(Fight.Block(Fight.BlockType.UPDATE_HP, int1 = stats.hp))
 
             blocks.addAll(checkKO(this))
@@ -104,9 +105,8 @@ open class Fighter(val type: Fighters.ID, val name: String, enemy: Boolean = tru
         // Attack
         val damage = calcPhysicalDamage(this, f)
         f.stats.hp -= damage
-        if (damage > 0) blocks.add(Fight.Block(Fight.BlockType.DAMAGE, int1 = f.battleId))
+        if (damage > 0) blocks.add(Fight.Block(Fight.BlockType.DAMAGE, content = Util.signedInt(-damage), int1 = f.battleId))
         if (f.type == HERO) blocks.add(Fight.Block(Fight.BlockType.UPDATE_HP, int1 = f.stats.hp))
-        blocks.add(Fight.Block(Fight.BlockType.TEXT, "${f.name} lost $damage HP."))
 
         blocks.addAll(checkKO(f))
 
@@ -121,7 +121,7 @@ open class Fighter(val type: Fighters.ID, val name: String, enemy: Boolean = tru
         // Attack
         val damage = calcMagicalDamage(this, f, power)
         f.stats.hp -= damage
-        if (damage > 0) blocks.add(Fight.Block(Fight.BlockType.DAMAGE, int1 = f.battleId))
+        if (damage > 0) blocks.add(Fight.Block(Fight.BlockType.DAMAGE, content = Util.signedInt(-damage), int1 = f.battleId))
         if (f.type == HERO) blocks.add(Fight.Block(Fight.BlockType.UPDATE_HP, int1 = f.stats.hp))
         blocks.add(Fight.Block(Fight.BlockType.TEXT, "${f.name} lost $damage HP."))
 
@@ -188,7 +188,7 @@ open class Fighter(val type: Fighters.ID, val name: String, enemy: Boolean = tru
 
         if (h > 0) {
             f.healHP(h)
-            blocks.add(Fight.Block(Fight.BlockType.MAGICAL, int1 = f.battleId))
+            blocks.add(Fight.Block(Fight.BlockType.DAMAGE, content = Util.signedInt(h), int1 = f.battleId))
             blocks.add(Fight.Block(Fight.BlockType.TEXT, "${f.name} recovered $h HP."))
         }
         return blocks
@@ -196,7 +196,7 @@ open class Fighter(val type: Fighters.ID, val name: String, enemy: Boolean = tru
 
     fun poison(f: Fighter, power: Int, duration: Int): List<Fight.Block> {
         val blocks = ArrayList<Fight.Block>()
-        blocks.add(Fight.Block(Fight.BlockType.MAGICAL, int1 = f.battleId))
+        blocks.add(Fight.Block(Fight.BlockType.DAMAGE, content = "PSN", int1 = f.battleId))
         blocks.add(Fight.Block(Fight.BlockType.TEXT, "${f.name} is poisoned."))
         f.poison.add(Buff(Stat.HP, calcMagicalDamage(this, f, power), duration, f))
         return blocks

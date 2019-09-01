@@ -84,10 +84,10 @@ object Util {
         return (targetW - glyphLayout.width) / 2
     }
 
-    fun sizeX(bitmapFont: BitmapFont, value: String): Float {
+    fun textSize(value: String, bitmapFont: BitmapFont = font): Pair<Float, Float> {
         val glyphLayout = GlyphLayout()
         glyphLayout.setText(bitmapFont, value)
-        return glyphLayout.width
+        return Pair(glyphLayout.width, glyphLayout.height)
     }
 
     /**

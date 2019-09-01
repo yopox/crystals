@@ -30,6 +30,7 @@ class Chunk(private var x: Float, private val y: Float) {
     init {
         repeat(3) {
             events.add(Event(EVENT_TYPE.values().random()))
+            //events.add(Event(EVENT_TYPE.BATTLE))
         }
     }
 

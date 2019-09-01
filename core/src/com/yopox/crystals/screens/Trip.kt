@@ -92,7 +92,7 @@ class Trip(private val game: Crystals) : KtxScreen, InputScreen {
         Gdx.input.inputProcessor = this
         statusX[0] = Util.textOffsetX(Util.font, "${Progress.player.stats.hp} HP", 44f)
         statusX[1] = Util.textOffsetX(Util.font, "${Progress.player.stats.mp} MP", 44f)
-        goldX = Util.WIDTH - 8f - Util.sizeX(Util.font, "${Progress.gold} GOLD")
+        goldX = Util.WIDTH - 8f - Util.textSize("${Progress.gold} GOLD", Util.font).first
     }
 
     override fun resize(width: Int, height: Int) {
