@@ -74,7 +74,8 @@ object Actions {
         LOCKED,
         WAIT,
         // Monsters
-        ULTRASOUND
+        ULTRASOUND,
+        BARK
     }
 
     val categoryNames = mapOf(

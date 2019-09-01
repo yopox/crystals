@@ -23,10 +23,10 @@ abstract class Button(val pos: Pair<Float, Float>, var clickable: Boolean = true
      */
     fun touch(x: Int, y: Int) {
         if (clickable
-                && x > pos.first
-                && x < pos.first + size.first - 1
-                && y > pos.second
-                && y < pos.second + size.second - 1)
+                && x >= pos.first - 1
+                && x <= pos.first + size.first
+                && y >= pos.second - 1
+                && y <= pos.second + size.second)
             clicked = true
     }
 
@@ -36,10 +36,10 @@ abstract class Button(val pos: Pair<Float, Float>, var clickable: Boolean = true
     fun lift(x: Int, y: Int) {
         if (clicked && visible) {
             clicked = false
-            if (x > pos.first
-                    && x < pos.first + size.first - 1
-                    && y > pos.second
-                    && y < pos.second + size.second - 1)
+            if (x >= pos.first - 1
+                    && x <= pos.first + size.first
+                    && y >= pos.second - 1
+                    && y <= pos.second + size.second)
                 onClick()
         }
     }

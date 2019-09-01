@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.utils.viewport.FitViewport
-import com.sun.org.apache.bcel.internal.generic.POP
 import com.yopox.crystals.Crystals
 import com.yopox.crystals.InputScreen
 import com.yopox.crystals.ScreenState
@@ -64,7 +63,6 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     }
 
     data class Block(val type: BlockType, var content: String = "", var int1: Int = 0, var int2: Int = 0)
-
 
 
     private val batch = SpriteBatch()
@@ -140,8 +138,8 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     fun setup() {
         // Add fighters
         fighters.clear()
-        fighters.add(Fighters.map.getValue(Fighters.ID.SNAKE))
-        fighters.add(Fighters.map.getValue(Fighters.ID.BAT))
+        fighters.add(Fighters.map.getValue(Fighters.ID.DOG))
+        //fighters.add(Fighters.map.getValue(Fighters.ID.BAT))
         fighters.add(Progress.player)
 
         // Set battleId
@@ -167,7 +165,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
         icons.forEach { it.clickable = false }
 
         // Opening message
-        blocks.add(Block(BlockType.TEXT, "Snake and Bat attack!"))
+        blocks.add(Block(BlockType.TEXT, "Dog attacks!"))
     }
 
     override fun render(delta: Float) {
@@ -484,7 +482,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
         // Execute moves
         for (move in moves) {
             if (move.fighter.alive)
-                blocks.addAll(move.fighter.beginTurn())
+                blocks.addAll(move.fighter.beginTurn(fighters))
 
             if (move.fighter.alive) {
                 blocks.add(Block(BlockType.TEXT, Spells.text(move)))

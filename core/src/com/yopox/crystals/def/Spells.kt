@@ -93,7 +93,7 @@ object Spells {
     private val storm = Spell(STORM, "Storm", Jobs.ID.WARRIOR, 10, ENEMIES) { f1, f2 ->
         f1.buff(Stat.ATK_COEF, 1.1); f1.attack(f2)
     }
-    private val jump = Spell(JUMP, "Aerial Hit", Jobs.ID.WARRIOR, 5, SINGLE)  { f1, f2 ->
+    private val jump = Spell(JUMP, "Aerial Hit", Jobs.ID.WARRIOR, 5, SINGLE) { f1, f2 ->
         f1.buff(Stat.ATK_COEF, 2.2); f1.attack(f2)
     }
 
@@ -131,6 +131,10 @@ object Spells {
         f1.attack(f2) +
                 f1.addBuff(Stat.DEF_COEF, 0.8, 1, f2) +
                 text("${f2.name}'s defense fell.")
+    }
+    private val bark = Spell(BARK, "Bark", Jobs.ID.NONE, 2, SINGLE) { f1, f2 ->
+        f1.addBuff(Stat.ATK_COEF, 0.75, 1, f2) +
+                text("${f2.name}'s attack fell.")
     }
 
     val map = mapOf(
@@ -188,6 +192,7 @@ object Spells {
             TORNADO to tornado,
 
             ULTRASOUND to ultrasound,
+            BARK to bark,
 
             ATTACK to attack,
             DEFENSE to defense

@@ -1,5 +1,6 @@
 package com.yopox.crystals.logic.fight
 
+import com.badlogic.gdx.Gdx
 import com.yopox.crystals.Util
 import com.yopox.crystals.def.Fighters
 import com.yopox.crystals.def.Fighters.ID.*
@@ -62,18 +63,30 @@ open class Fighter(val type: Fighters.ID, val name: String, enemy: Boolean = tru
         HERO -> Icons.Warrior
         SNAKE -> Icons.Snake
         BAT -> Icons.Bat
+        DOG -> Icons.Dog
     }
 
     open fun prepare() {
         stats = baseStats.copy()
     }
 
-    fun beginTurn(): List<Fight.Block> {
+    fun beginTurn(fighters: ArrayList<Fighter>): List<Fight.Block> {
         val blocks = ArrayList<Fight.Block>()
+
+        // Update stats
         stats to baseStats
+
+        // Own buffs
         for (i in buffs.lastIndex downTo 0)
             if (buffs[i].duration == 0) buffs.removeAt(i)
-        buffs.forEach { it.target.buff(it.stat, it.amount); it.duration-- }
+        buffs.forEach { if (it.target == this) buff(it.stat, it.amount); it.duration-- }
+
+        // Buffs given by other fighters
+        for (f in fighters) {
+            if (f != this) for (b in f.buffs) {
+                if (b.target == this) buff(b.stat, b.amount)
+            }
+        }
 
         // Poison management
         if (poison.any()) {
@@ -149,7 +162,9 @@ open class Fighter(val type: Fighters.ID, val name: String, enemy: Boolean = tru
         Stat.WIS -> stats.wis += amount.toInt()
         Stat.DEF -> stats.def += amount.toInt()
         Stat.SPD -> stats.spd += amount.toInt()
-        Stat.ATK_COEF -> stats.atkCoef *= amount
+        Stat.ATK_COEF -> {
+            stats.atkCoef *= amount; Gdx.app.log("buff", "${stats.atkCoef}")
+        }
         Stat.DEF_COEF -> stats.defCoef *= amount
     }
 
@@ -166,6 +181,9 @@ open class Fighter(val type: Fighters.ID, val name: String, enemy: Boolean = tru
         val atk = from.stats.atk * from.stats.atkCoef
         val def = to.stats.def * to.stats.defCoef
         var damage = round(atk - def).toInt()
+
+        Gdx.app.log("atk", "atk ${from.stats.atk} ; atkcoef ${from.stats.atkCoef}")
+        Gdx.app.log("def", "def ${to.stats.def} ; defcoef ${to.stats.defCoef}")
 
         // Min damage
         val minDamage = round(atk * Util.MIN_PHYSICAL_DAMAGE).toInt()

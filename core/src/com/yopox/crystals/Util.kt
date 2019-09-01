@@ -142,7 +142,7 @@ object Util {
     fun signedInt(i: Int): String = if (i <= 0) "$i" else "+$i"
 
     fun <T> next(set: List<T>, elem: T): T {
-        val nextPos = (set.indexOf(elem) - 1) % set.size
+        val nextPos = (set.indexOf(elem) - 1 + set.size) % set.size
         return set.elementAt(nextPos)
     }
 
