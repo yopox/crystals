@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.utils.viewport.FitViewport
+import com.sun.org.apache.bcel.internal.generic.POP
 import com.yopox.crystals.Crystals
 import com.yopox.crystals.InputScreen
 import com.yopox.crystals.ScreenState
@@ -63,6 +64,8 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     }
 
     data class Block(val type: BlockType, var content: String = "", var int1: Int = 0, var int2: Int = 0)
+
+
 
     private val batch = SpriteBatch()
     private val shapeRenderer = ShapeRenderer()
@@ -155,12 +158,12 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
         // Add enemies icons
         val enemies = fighters.filter { it.team == Team.ENEMIES }
         for (i in 0..enemies.lastIndex)
-            icons.add(Icon(enemies[i].getIcon(), Pair(56f - 20 * i, 34f)) { selectTarget(i) })
+            icons.add(Icon(enemies[i].getIcon(), Pair(56f - 20 * i, 36f)) { selectTarget(i) })
 
         // Add allies icons
         val allies = fighters.filter { it.team == Team.ALLIES }
         for (i in 0..allies.lastIndex)
-            icons.add(Icon(allies[i].getIcon(), Pair(88f + 20 * i, 34f)) { selectTarget(i + enemies.size) })
+            icons.add(Icon(allies[i].getIcon(), Pair(88f + 20 * i, 36f)) { selectTarget(i + enemies.size) })
         icons.forEach { it.clickable = false }
 
         // Opening message
@@ -235,7 +238,6 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
                         if (turn > 0 && !victory) {
                             // 1/20 max MP heal
                             val hero = fighters[hero]
-                            hero.healMP(ceil((hero.baseStats.mp / 20.0)).toInt())
                             stats[1] = "MP ${hero.stats.mp}/${hero.baseStats.mp}"
                         }
                         turn++
@@ -284,8 +286,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
                             val size = Util.textSize(currentBlock!!.content)
                             val x0 = icon.pos.first + (icon.size.first - size.first) / 2
                             val y0 = icon.pos.second + icon.size.second + 2
-                            val stopTime = 20
-                            Transition.drawTransition(shapeRenderer, x0 - 2, y0, size.first + 4, 8f, currentBlock!!.int2, stopTime)
+                            Transition.drawTransition(shapeRenderer, x0 - 2, y0, size.first + 5, 8f, currentBlock!!.int2, Util.POPUP_STOP_TIME)
                             Util.font.color = Color.BLACK
                             batch.use {
                                 Util.font.draw(it, currentBlock!!.content, x0, y0 + size.second + 1)
@@ -296,7 +297,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
                             if (currentBlock!!.int2 <= 3 * 8) {
                                 icon.visible = (currentBlock!!.int2 / 8) % 2 == 1
                             }
-                            if (currentBlock!!.int2 == Transition.TRANSITION_TIME + stopTime)
+                            if (currentBlock!!.int2 == Transition.TRANSITION_TIME + Util.POPUP_STOP_TIME)
                                 currentBlock = null
                         }
                         else -> currentBlock = null
@@ -488,6 +489,9 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
             if (move.fighter.alive) {
                 blocks.add(Block(BlockType.TEXT, Spells.text(move)))
                 blocks.addAll(move.spell.use(move))
+                if (move.fighter.alive) {
+                    move.fighter.healMP(ceil((move.fighter.baseStats.mp / 20.0)).toInt())
+                }
             }
 
             // Game Over condition

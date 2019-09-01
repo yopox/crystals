@@ -35,6 +35,11 @@ object Util {
     const val HEIGHT = 90f
     const val TITLE_OFFSET = 8
 
+    const val POPUP_STOP_TIME = 24
+
+    const val MIN_PHYSICAL_DAMAGE = 0.15
+    const val MIN_MAGICAL_DAMAGE = 0.25
+
     const val FONT_SIZE = 8
     const val BIG_FONT_SIZE = 21
     const val TEXT_TITLE = "Crystals"

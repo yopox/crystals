@@ -15,7 +15,7 @@ object Spells {
     // Misc
     private val wait = Spell(WAIT, "Wait", Jobs.ID.ANY, 0, SELF)
     private val defense = Spell(DEFENSE, "Defend", Jobs.ID.ANY, 0, SELF) { f1, _ ->
-        f1.buff(Stat.DEF, 25); noText()
+        f1.buff(Stat.DEF_COEF, 2.0); noText()
     }
     private val attack = Spell(ATTACK, "Attack", Jobs.ID.ANY, 0, SINGLE) { f1, f2 ->
         f1.attack(f2)
@@ -30,7 +30,7 @@ object Spells {
     }
     private val cure = Spell(CURE, "Cure", Jobs.ID.PRIEST, 4, SINGLE)
     private val barrier = Spell(BARRIER, "Barrier", Jobs.ID.PRIEST, 4, SINGLE) { f1, f2 ->
-        f1.addBuff(Stat.DEF, 40, 2, f2) +
+        f1.addBuff(Stat.DEF_COEF, 2.0, 2, f2) +
                 text("${f2.name} is protected!")
     }
     private val beam = Spell(BEAMS, "Beam", Jobs.ID.PRIEST, 3, ENEMIES) { f1, f2 ->
@@ -73,28 +73,28 @@ object Spells {
         f1.attack(f2) + f1.attack(f2)
     }
     private val massive = Spell(MASSIVE, "Massive Hit", Jobs.ID.WARRIOR, 8, SINGLE) { f1, f2 ->
-        f1.buff(Stat.ATK, 25); f1.attack(f2)
+        f1.buff(Stat.ATK_COEF, 3.0); f1.attack(f2)
     }
     private val shield = Spell(SHIELD, "Shield", Jobs.ID.WARRIOR, 4, SINGLE) { f1, f2 ->
-        f1.addBuff(Stat.DEF, 120, 0, f2)
+        f1.addBuff(Stat.DEF_COEF, 3.0, 0, f2)
     }
     private val insult = Spell(INSULT, "Insult", Jobs.ID.WARRIOR, 1, SINGLE) { f1, f2 ->
         when (Random.nextInt(2)) {
             0 -> {
-                f1.addBuff(Stat.DEF, -15, 2, f2) +
+                f1.addBuff(Stat.DEF_COEF, 0.75, 2, f2) +
                         text("${f2.name} is frightened!")
             }
             else -> {
-                f1.addBuff(Stat.ATK, 15, 2, f2) +
+                f1.addBuff(Stat.ATK_COEF, 1.25, 2, f2) +
                         text("${f2.name} is upset!")
             }
         }
     }
     private val storm = Spell(STORM, "Storm", Jobs.ID.WARRIOR, 10, ENEMIES) { f1, f2 ->
-        f1.buff(Stat.ATK, 10); f1.attack(f2)
+        f1.buff(Stat.ATK_COEF, 1.1); f1.attack(f2)
     }
     private val jump = Spell(JUMP, "Aerial Hit", Jobs.ID.WARRIOR, 5, SINGLE)  { f1, f2 ->
-        f1.buff(Stat.ATK, 5); f1.attack(f2)
+        f1.buff(Stat.ATK_COEF, 2.2); f1.attack(f2)
     }
 
     // Invoker spells
@@ -129,7 +129,7 @@ object Spells {
     // Monster spells
     private val ultrasound = Spell(ULTRASOUND, "Ultrasound", Jobs.ID.NONE, 3, SINGLE) { f1, f2 ->
         f1.attack(f2) +
-                f1.addBuff(Stat.DEF, -4, 1, f2) +
+                f1.addBuff(Stat.DEF_COEF, 0.8, 1, f2) +
                 text("${f2.name}'s defense fell.")
     }
 

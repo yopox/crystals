@@ -7,7 +7,7 @@ import com.yopox.crystals.def.Icons
 import com.yopox.crystals.def.Jobs
 import com.yopox.crystals.def.Spells
 import com.yopox.crystals.screens.Fight
-import kotlin.math.ceil
+import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.round
 
@@ -16,12 +16,16 @@ data class Stats(var hp: Int = 20,
                  var atk: Int = 5,
                  var wis: Int = 5,
                  var def: Int = 5,
-                 var spd: Int = 5) {
+                 var spd: Int = 5,
+                 var atkCoef: Double = 1.0,
+                 var defCoef: Double = 1.0) {
     infix fun to(stats: Stats) {
         atk = stats.atk
         wis = stats.wis
         def = stats.def
         spd = stats.spd
+        atkCoef = stats.atkCoef
+        defCoef = stats.defCoef
     }
 }
 
@@ -36,10 +40,12 @@ enum class Stat {
     ATK,
     WIS,
     DEF,
-    SPD
+    SPD,
+    ATK_COEF,
+    DEF_COEF
 }
 
-data class Buff(val stat: Stat, val amount: Int, var duration: Int = 0, val target: Fighter)
+data class Buff(val stat: Stat, val amount: Double, var duration: Int = 0, val target: Fighter)
 
 open class Fighter(val type: Fighters.ID, val name: String, enemy: Boolean = true) {
     var baseStats = Stats()
@@ -74,7 +80,7 @@ open class Fighter(val type: Fighters.ID, val name: String, enemy: Boolean = tru
             var damage = 0
 
             // Calculate poison damage
-            poison.forEach { damage += it.amount ; it.duration-- }
+            poison.forEach { damage += it.amount.toInt(); it.duration-- }
 
             // Remove old poisons
             for (i in poison.lastIndex downTo 0)
@@ -105,7 +111,7 @@ open class Fighter(val type: Fighters.ID, val name: String, enemy: Boolean = tru
         // Attack
         val damage = calcPhysicalDamage(this, f)
         f.stats.hp -= damage
-        if (damage > 0) blocks.add(Fight.Block(Fight.BlockType.DAMAGE, content = Util.signedInt(-damage), int1 = f.battleId))
+        blocks.add(Fight.Block(Fight.BlockType.DAMAGE, content = Util.signedInt(-damage), int1 = f.battleId))
         if (f.type == HERO) blocks.add(Fight.Block(Fight.BlockType.UPDATE_HP, int1 = f.stats.hp))
 
         blocks.addAll(checkKO(f))
@@ -130,19 +136,21 @@ open class Fighter(val type: Fighters.ID, val name: String, enemy: Boolean = tru
         return blocks
     }
 
-    fun addBuff(stat: Stat, amount: Int, duration: Int, target: Fighter = this): ArrayList<Fight.Block> {
+    fun addBuff(stat: Stat, amount: Double, duration: Int, target: Fighter = this): ArrayList<Fight.Block> {
         target.buff(stat, amount)
         buffs.add(Buff(stat, amount, duration, target))
         return ArrayList()
     }
 
-    fun buff(stat: Stat, amount: Int) = when (stat) {
-        Stat.HP -> healHP(amount)
-        Stat.MP -> healMP(amount)
-        Stat.ATK -> stats.atk += amount
-        Stat.WIS -> stats.wis += amount
-        Stat.DEF -> stats.def += amount
-        Stat.SPD -> stats.spd += amount
+    fun buff(stat: Stat, amount: Double) = when (stat) {
+        Stat.HP -> healHP(amount.toInt())
+        Stat.MP -> healMP(amount.toInt())
+        Stat.ATK -> stats.atk += amount.toInt()
+        Stat.WIS -> stats.wis += amount.toInt()
+        Stat.DEF -> stats.def += amount.toInt()
+        Stat.SPD -> stats.spd += amount.toInt()
+        Stat.ATK_COEF -> stats.atkCoef *= amount
+        Stat.DEF_COEF -> stats.defCoef *= amount
     }
 
     fun healHP(amount: Int) {
@@ -155,15 +163,25 @@ open class Fighter(val type: Fighters.ID, val name: String, enemy: Boolean = tru
 
     private fun calcPhysicalDamage(from: Fighter, to: Fighter): Int {
         // Damage calculation
-        val damage = round(from.stats.atk * 60.0 / (60.0 + to.stats.def)).toInt()
+        val atk = from.stats.atk * from.stats.atkCoef
+        val def = to.stats.def * to.stats.defCoef
+        var damage = round(atk - def).toInt()
+
+        // Min damage
+        val minDamage = round(atk * Util.MIN_PHYSICAL_DAMAGE).toInt()
+        damage = max(damage, minDamage)
         return min(damage, to.stats.hp)
     }
 
     private fun calcMagicalDamage(from: Fighter, to: Fighter, power: Int): Int {
         // Damage calculation
-        val powerCoeff = 1 + from.stats.wis / 10.0
-        val defCoeff = 80.0 / (80.0 + to.stats.def / 3.0 + to.stats.wis * 2.0 / 3.0)
-        val damage = round(power * powerCoeff * defCoeff).toInt()
+        val atk = from.stats.wis * power / 10 * from.stats.atkCoef
+        val def = (to.stats.def / 2 + to.stats.wis / 2) * to.stats.defCoef
+        var damage = round(atk - def).toInt()
+
+        // Min damage
+        val minDamage = round(atk * Util.MIN_MAGICAL_DAMAGE).toInt()
+        damage = max(damage, minDamage)
         return min(damage, to.stats.hp)
     }
 
@@ -198,7 +216,7 @@ open class Fighter(val type: Fighters.ID, val name: String, enemy: Boolean = tru
         val blocks = ArrayList<Fight.Block>()
         blocks.add(Fight.Block(Fight.BlockType.DAMAGE, content = "PSN", int1 = f.battleId))
         blocks.add(Fight.Block(Fight.BlockType.TEXT, "${f.name} is poisoned."))
-        f.poison.add(Buff(Stat.HP, calcMagicalDamage(this, f, power), duration, f))
+        f.poison.add(Buff(Stat.HP, calcMagicalDamage(this, f, power).toDouble(), duration, f))
         return blocks
     }
 

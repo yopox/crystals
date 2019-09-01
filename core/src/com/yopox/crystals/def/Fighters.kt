@@ -18,17 +18,22 @@ object Fighters {
     }
 
     // Heroes
-    private val warrior = Hero(Jobs.ID.WARRIOR, "Xavier", Stats(35, 8, 6, 0, 5, 4), "Xavier has powerful\nfighting skills. He's called\n'Xavier le guerrier'.")
-    private val mage = Hero(Jobs.ID.MAGE, "Faroo", Stats(20, 15, 2, 10, 4, 4), "Faroo is a mage.")
+    private val warrior = Hero(Jobs.ID.WARRIOR, "Xavier",
+            Stats(25, 8, 6, 0, 3, 4),
+            "Xavier has powerful\nfighting skills. He's called\n'Xavier le guerrier'.")
+
+    private val mage = Hero(Jobs.ID.MAGE, "Faroo",
+            Stats(20, 15, 3, 10, 2, 4),
+            "Faroo is a mage.")
 
     val heroes = listOf(warrior, mage)
 
     // Monsters
     private val snake = Monster(SNAKE, "Snake",
-            Stats(10, 4, 3, 0, 0, 2),
+            Stats(8, 4, 5, 0, 0, 2),
             arrayListOf(getSpell(ATTACK), getSpell(WAIT)))
     private val bat = Monster(BAT, "Bat",
-            Stats(6, 3, 2, 0, 5, 8),
+            Stats(6, 3, 4, 0, 1, 8),
             arrayListOf(getSpell(ATTACK), getSpell(ULTRASOUND)))
 
     val map = mapOf(
