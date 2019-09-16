@@ -40,6 +40,10 @@ object Util {
     const val MIN_PHYSICAL_DAMAGE = 0.15
     const val MIN_MAGICAL_DAMAGE = 0.25
 
+    /**
+     * Text
+     * TODO: Better way to store & access text
+     */
     const val FONT_SIZE = 8
     const val BIG_FONT_SIZE = 21
     const val TEXT_TITLE = "Crystals"
@@ -155,6 +159,5 @@ object Util {
             Gdx.files.internal("shader/invertVert.vs").readString(),
             Gdx.files.internal("shader/invertFrag.vs").readString())
     val defaultShader: ShaderProgram? = SpriteBatch.createDefaultShader()
-
 
 }

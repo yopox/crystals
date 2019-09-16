@@ -138,8 +138,9 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     fun setup() {
         // Add fighters
         fighters.clear()
-        fighters.add(Fighters.map.getValue(Fighters.ID.DOG))
-        //fighters.add(Fighters.map.getValue(Fighters.ID.BAT))
+        fighters.add(Fighters.map.values.random())
+        if (Math.random() < 0.4) fighters.add(Fighters.map.values.random())
+        if (Math.random() < 0.05) fighters.add(Fighters.map.values.random())
         fighters.add(Progress.player)
 
         // Set battleId
@@ -165,7 +166,12 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
         icons.forEach { it.clickable = false }
 
         // Opening message
-        blocks.add(Block(BlockType.TEXT, "Dog attacks!"))
+        var text = fighters.filter { it.team == Team.ENEMIES }.map { it.name }.reduce { n1, n2 -> "$n1, $n2" }
+        text += when (fighters.filter { it.team == Team.ENEMIES }.size) {
+            1 -> " attacks!"
+            else -> " attack!"
+        }
+        blocks.add(Block(BlockType.TEXT, text))
     }
 
     override fun render(delta: Float) {

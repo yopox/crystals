@@ -12,10 +12,7 @@ import com.yopox.crystals.Util
 import com.yopox.crystals.def.Icons
 import com.yopox.crystals.logic.Event
 import com.yopox.crystals.logic.Progress
-import com.yopox.crystals.ui.Button
-import com.yopox.crystals.ui.Icon
-import com.yopox.crystals.ui.TextButton
-import com.yopox.crystals.ui.Transition
+import com.yopox.crystals.ui.*
 import ktx.app.KtxScreen
 import ktx.graphics.use
 
@@ -45,12 +42,12 @@ class Inn(private val game: Crystals) : KtxScreen, InputScreen {
     }
 
     fun setup(event: Event) {
-        val iconH = 7f * 2 + Util.BUTTON_HEIGHT
+        val iconH = 7f * 2 + Util.BUTTON_HEIGHT - 2
         // Add furniture
         icons.add(Icon(Icons.Bed, Pair(20f, iconH)))
 
-        icons.add(Icon(Icons.Bookshelf, Pair(64f, iconH)))
-        icons.add(Icon(Icons.ChestOpened, Pair(64f + 16 + 2, iconH)))
+        icons.add(Tile.genInnTile(Pair(64f, iconH)))
+        icons.add(Tile.genInnTile(Pair(64f + 16 + 2, iconH)))
 
         // Set stats text
         setStats()
@@ -89,6 +86,13 @@ class Inn(private val game: Crystals) : KtxScreen, InputScreen {
                 blockInput = false
                 frame = 0
             }
+        }
+
+        Util.drawRect(shapeRenderer, 49f, 49f, 96f, 25f)
+        batch.use {
+            Util.font.draw(it, "Obtained :", 49f, 82f)
+            Util.font.draw(it, "First line description", 49f + 20, 60f)
+            Util.font.draw(it, "Second line description", 49f + 20, 50f)
         }
 
         when (state) {

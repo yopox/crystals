@@ -136,6 +136,14 @@ object Spells {
         f1.addBuff(Stat.ATK_COEF, 0.75, 1, f2) +
                 text("${f2.name}'s attack fell.")
     }
+    private val web = Spell(WEB, "Web", Jobs.ID.NONE, 4, SINGLE) { f1, f2 ->
+        f1.addBuff(Stat.SPD, -5.0, 3, f2) +
+                text("${f2.name}'s defense fell.")
+    }
+    private val bite = Spell(BITE, "Bite", Jobs.ID.NONE, 2, SINGLE) { f1, f2 ->
+        f1.addBuff(Stat.ATK_COEF, 2.0, 0, f1) +
+        f1.attack(f2, true)
+    }
 
     val map = mapOf(
             HEAL to heal,
@@ -193,6 +201,8 @@ object Spells {
 
             ULTRASOUND to ultrasound,
             BARK to bark,
+            WEB to web,
+            BITE to bite,
 
             ATTACK to attack,
             DEFENSE to defense
@@ -216,6 +226,7 @@ object Spells {
         ATTACK -> "${move.fighter.name} attacks ${move.targets.first().name}!"
         DEFENSE -> "${move.fighter.name} is defending."
         WAIT -> "${move.fighter.name} waits."
+        INSULT -> "${move.fighter.name} insults ${move.targets[0].name}!"
         else -> "${move.fighter.name} uses ${move.spell.name}."
     }
 }

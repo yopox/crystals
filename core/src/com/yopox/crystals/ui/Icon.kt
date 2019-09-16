@@ -14,7 +14,7 @@ import ktx.graphics.use
  * @param pos The icon position
  * @param onClick optional click callback
  */
-class Icon(id: Pair<Int, Int>, pos: Pair<Float, Float>, onClick: () -> Unit = {}) : Button(pos, true, onClick) {
+open class Icon(id: Pair<Int, Int>, pos: Pair<Float, Float>, onClick: () -> Unit = {}) : Button(pos, true, onClick) {
 
     companion object {
         val icons: Texture = Crystals.assetManager["1BitPack.png"]

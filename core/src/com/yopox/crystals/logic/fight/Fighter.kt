@@ -64,10 +64,13 @@ open class Fighter(val type: Fighters.ID, val name: String, enemy: Boolean = tru
         SNAKE -> Icons.Snake
         BAT -> Icons.Bat
         DOG -> Icons.Dog
+        SPIDER -> Icons.Spider
+        else -> Icons.Unknown
     }
 
     open fun prepare() {
         stats = baseStats.copy()
+        buffs.clear()
     }
 
     fun beginTurn(fighters: ArrayList<Fighter>): List<Fight.Block> {
@@ -116,7 +119,7 @@ open class Fighter(val type: Fighters.ID, val name: String, enemy: Boolean = tru
         return Fight.Move(this, Spells.baseSpell(Jobs.ID.ANY), arrayListOf())
     }
 
-    fun attack(f: Fighter): ArrayList<Fight.Block> {
+    fun attack(f: Fighter, leech: Boolean = false): ArrayList<Fight.Block> {
         if (!f.alive) return ArrayList()
 
         val blocks = ArrayList<Fight.Block>()
@@ -126,6 +129,13 @@ open class Fighter(val type: Fighters.ID, val name: String, enemy: Boolean = tru
         f.stats.hp -= damage
         blocks.add(Fight.Block(Fight.BlockType.DAMAGE, content = Util.signedInt(-damage), int1 = f.battleId))
         if (f.type == HERO) blocks.add(Fight.Block(Fight.BlockType.UPDATE_HP, int1 = f.stats.hp))
+
+        if (leech) {
+            val leeched = damage / 2
+            healHP(leeched)
+            blocks.add(Fight.Block(Fight.BlockType.DAMAGE, content = Util.signedInt(leeched), int1 = battleId))
+            if (type == HERO) blocks.add(Fight.Block(Fight.BlockType.UPDATE_HP, int1 = stats.hp))
+        }
 
         blocks.addAll(checkKO(f))
 
@@ -162,9 +172,7 @@ open class Fighter(val type: Fighters.ID, val name: String, enemy: Boolean = tru
         Stat.WIS -> stats.wis += amount.toInt()
         Stat.DEF -> stats.def += amount.toInt()
         Stat.SPD -> stats.spd += amount.toInt()
-        Stat.ATK_COEF -> {
-            stats.atkCoef *= amount; Gdx.app.log("buff", "${stats.atkCoef}")
-        }
+        Stat.ATK_COEF -> stats.atkCoef *= amount
         Stat.DEF_COEF -> stats.defCoef *= amount
     }
 
@@ -181,9 +189,6 @@ open class Fighter(val type: Fighters.ID, val name: String, enemy: Boolean = tru
         val atk = from.stats.atk * from.stats.atkCoef
         val def = to.stats.def * to.stats.defCoef
         var damage = round(atk - def).toInt()
-
-        Gdx.app.log("atk", "atk ${from.stats.atk} ; atkcoef ${from.stats.atkCoef}")
-        Gdx.app.log("def", "def ${to.stats.def} ; defcoef ${to.stats.defCoef}")
 
         // Min damage
         val minDamage = round(atk * Util.MIN_PHYSICAL_DAMAGE).toInt()
