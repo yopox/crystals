@@ -5,7 +5,7 @@ on: push
 jobs:
   notify:
     name: Notify Discord
-    runs-on: macOS-latest
+    runs-on: ubuntu-latest
     steps:
     - name: Discord notification
       env:
