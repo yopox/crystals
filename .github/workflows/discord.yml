@@ -1,0 +1,15 @@
+name: Discord
+
+on: push
+
+jobs:
+  notify:
+    name: Notify Discord
+    runs-on: macOS-latest
+    steps:
+    - name: Discord notification
+      env:
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+      uses: Ilshidur/action-discord@master
+      with:
+        args: ${{ github.event_name }}
