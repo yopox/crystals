@@ -208,7 +208,7 @@ object Spells {
             DEFENSE to defense
     ).withDefault { wait }
 
-    fun getSpell(spell: Actions.ID): Spell = map.getValue(spell)
+    operator fun invoke(spell: Actions.ID): Spell = map.getValue(spell)
 
     fun baseSpell(job: Jobs.ID): Spell = when (job) {
         Jobs.ID.BARD -> map.getValue(SING)

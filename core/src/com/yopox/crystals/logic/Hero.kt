@@ -6,7 +6,7 @@ import com.yopox.crystals.logic.fight.Stats
 import com.yopox.crystals.screens.Fight
 import com.yopox.crystals.ui.ActionIcon
 
-class Hero(val job: Jobs.ID, name: String, initStats: Stats, val desc: String) : Fighter(Fighters.ID.HERO, name, false) {
+class Hero(val job: Jobs.ID, name: String, initStats: Stats, val desc: String, icon: Icons.ID) : Fighter(Fighters.ID.HERO, name, icon, false) {
 
     var crystals = arrayListOf(Crystal.baseCrystal(job))
 
@@ -36,7 +36,7 @@ class Hero(val job: Jobs.ID, name: String, initStats: Stats, val desc: String) :
         for (i in 0..2) {
             val cr = crystals.getOrNull(i)
             if (cr != null) {
-                buttons[3 + i].changeType(Jobs.getJob(cr.job).iconId)
+                buttons[3 + i].changeType(Jobs(cr.job).iconId)
             } else {
                 buttons[3 + i].hide()
             }
@@ -64,18 +64,6 @@ class Hero(val job: Jobs.ID, name: String, initStats: Stats, val desc: String) :
             buttons[i].hide()
         }
 
-    }
-
-    override fun getIcon(): Pair<Int, Int> = when (job) {
-        Jobs.ID.BARD -> Icons.Bard
-        Jobs.ID.GEOMANCER -> Icons.Geomancer
-        Jobs.ID.INVOKER -> Icons.Invoker
-        Jobs.ID.MAGE -> Icons.Mage
-        Jobs.ID.MONK -> Icons.Monk
-        Jobs.ID.PRIEST -> Icons.Priest
-        Jobs.ID.ROGUE -> Icons.Rogue
-        Jobs.ID.WARRIOR -> Icons.Warrior
-        else -> Icons.Snake
     }
 
 }

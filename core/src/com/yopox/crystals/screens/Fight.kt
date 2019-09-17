@@ -138,9 +138,9 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     fun setup() {
         // Add fighters
         fighters.clear()
-        fighters.add(Fighters.map.values.random())
-        if (Math.random() < 0.4) fighters.add(Fighters.map.values.random())
-        if (Math.random() < 0.05) fighters.add(Fighters.map.values.random())
+        fighters.add(Fighters.random())
+        if (Math.random() < 0.4) fighters.add(Fighters.random())
+        if (Math.random() < 0.05) fighters.add(Fighters.random())
         fighters.add(Progress.player)
 
         // Set battleId
@@ -157,12 +157,12 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
         // Add enemies icons
         val enemies = fighters.filter { it.team == Team.ENEMIES }
         for (i in 0..enemies.lastIndex)
-            icons.add(Icon(enemies[i].getIcon(), Pair(56f - 20 * i, 36f)) { selectTarget(i) })
+            icons.add(Icon(enemies[i].icon, Pair(56f - 20 * i, 36f)) { selectTarget(i) })
 
         // Add allies icons
         val allies = fighters.filter { it.team == Team.ALLIES }
         for (i in 0..allies.lastIndex)
-            icons.add(Icon(allies[i].getIcon(), Pair(88f + 20 * i, 36f)) { selectTarget(i + enemies.size) })
+            icons.add(Icon(allies[i].icon, Pair(88f + 20 * i, 36f)) { selectTarget(i + enemies.size) })
         icons.forEach { it.clickable = false }
 
         // Opening message

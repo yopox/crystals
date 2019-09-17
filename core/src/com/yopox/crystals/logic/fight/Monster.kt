@@ -1,13 +1,14 @@
 package com.yopox.crystals.logic.fight
 
 import com.yopox.crystals.def.Fighters
+import com.yopox.crystals.def.Icons
 import com.yopox.crystals.screens.Fight
 
 enum class Behavior {
     RANDOM
 }
 
-class Monster(type: Fighters.ID, name: String, monsterStats: Stats, val spells: ArrayList<Spell>) : Fighter(type, name, true) {
+class Monster(type: Fighters.ID, name: String, monsterStats: Stats, val spells: ArrayList<Spell>, icon: Icons.ID) : Fighter(type, name, icon, true) {
 
     private val behavior: Behavior = Behavior.RANDOM
 

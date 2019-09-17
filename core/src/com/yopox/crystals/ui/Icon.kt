@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.yopox.crystals.Crystals
 import com.yopox.crystals.Util
+import com.yopox.crystals.def.Icons
 import ktx.graphics.use
 
 /**
@@ -14,7 +15,9 @@ import ktx.graphics.use
  * @param pos The icon position
  * @param onClick optional click callback
  */
-open class Icon(id: Pair<Int, Int>, pos: Pair<Float, Float>, onClick: () -> Unit = {}) : Button(pos, true, onClick) {
+open class Icon(var id: Icons.ID, pos: Pair<Float, Float>, onClick: () -> Unit = {}) : Button(pos, true, onClick) {
+
+    var srcPos: Pair<Int, Int> = Icons(id)
 
     companion object {
         val icons: Texture = Crystals.assetManager["1BitPack.png"]
@@ -22,8 +25,11 @@ open class Icon(id: Pair<Int, Int>, pos: Pair<Float, Float>, onClick: () -> Unit
         private const val BORDER = 1
     }
 
-    val x: Int = id.first * (SIZE + BORDER)
-    val y: Int = id.second * (SIZE + BORDER)
+    val x: Int
+        get() = srcPos.first * (SIZE + BORDER)
+    val y: Int
+        get() = srcPos.second * (SIZE + BORDER)
+
     override val size = Pair(SIZE.toFloat(), SIZE.toFloat())
 
     override fun draw(sR: ShapeRenderer, batch: SpriteBatch) {
@@ -32,6 +38,11 @@ open class Icon(id: Pair<Int, Int>, pos: Pair<Float, Float>, onClick: () -> Unit
             batch.use { it.draw(icons, pos.first, pos.second, x, y, SIZE, SIZE) }
             batch.shader = Util.defaultShader
         }
+    }
+
+    fun setIcon(id: Icons.ID?) {
+        this.id = id ?: Icons.ID.UNKNOWN
+        srcPos = Icons(this.id)
     }
 
 }

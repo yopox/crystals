@@ -48,7 +48,7 @@ enum class Stat {
 
 data class Buff(val stat: Stat, val amount: Double, var duration: Int = 0, val target: Fighter)
 
-open class Fighter(val type: Fighters.ID, val name: String, enemy: Boolean = true) {
+open class Fighter(val type: Fighters.ID, val name: String, val icon: Icons.ID, enemy: Boolean = true) {
     var baseStats = Stats()
     var stats = Stats()
     var buffs = ArrayList<Buff>()
@@ -58,15 +58,6 @@ open class Fighter(val type: Fighters.ID, val name: String, enemy: Boolean = tru
     var battleId = 0
     val alive: Boolean
         get() = stats.hp > 0
-
-    open fun getIcon() = when (type) {
-        HERO -> Icons.Warrior
-        SNAKE -> Icons.Snake
-        BAT -> Icons.Bat
-        DOG -> Icons.Dog
-        SPIDER -> Icons.Spider
-        else -> Icons.Unknown
-    }
 
     open fun prepare() {
         stats = baseStats.copy()

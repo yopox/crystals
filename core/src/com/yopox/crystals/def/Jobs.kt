@@ -44,7 +44,7 @@ object Jobs {
 
     val default = warrior
 
-    val map = mapOf(
+    private val map = mapOf(
             ID.BARD to bard,
             ID.GEOMANCER to geomancer,
             ID.INVOKER to invoker,
@@ -55,6 +55,8 @@ object Jobs {
             ID.WARRIOR to warrior
     ).withDefault { mage }
 
-    fun getJob(id: ID) = map.getValue(id)
+    operator fun invoke(id: ID) = map.getValue(id)
+    fun randomID() = map.keys.random()
+    fun randomJob() = map.values.random()
 
 }

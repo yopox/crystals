@@ -22,12 +22,12 @@ object RNG {
         return sums[list]!!
     }
 
-    val treasure = listOf(
-            Proba(CHEST_CLOSED, 1.0),
-            Proba(BOOKSHELF, 0.25),
-            Proba(CLOSET1, 0.15),
-            Proba(CLOSET2, 0.15),
-            Proba(CLOSET3, 0.15)
+    val treasure = mapOf(
+            CHEST_CLOSED to 1.0,
+            BOOKSHELF to 0.25,
+            CLOSET1 to 0.15,
+            CLOSET2 to 0.15,
+            CLOSET3 to 0.15
     )
 
     val inn = listOf(

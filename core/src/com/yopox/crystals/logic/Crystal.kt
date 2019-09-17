@@ -12,10 +12,7 @@ class Crystal(val job: Jobs.ID) {
 
     companion object {
 
-        fun random(): Crystal {
-            val job = Jobs.map.keys.random()
-            return random(job)
-        }
+        fun random() = random(Jobs.randomID())
 
         fun random(job: Jobs.ID): Crystal {
             val crystal = Crystal(job)

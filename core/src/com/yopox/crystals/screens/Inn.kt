@@ -11,6 +11,7 @@ import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
 import com.yopox.crystals.def.Icons
 import com.yopox.crystals.logic.Event
+import com.yopox.crystals.logic.Item
 import com.yopox.crystals.logic.Progress
 import com.yopox.crystals.ui.*
 import ktx.app.KtxScreen
@@ -32,6 +33,12 @@ class Inn(private val game: Crystals) : KtxScreen, InputScreen {
     private var frame = 0
     private var stats = MutableList(2) { "" }
     private var statsX = MutableList(2) { 0f }
+    private var reveal = false
+
+    private var treasureTransition = false
+    private var treasureFrame = 0
+    private var treasure: Item? = null
+    private var nextTreasure: Item? = null
 
     init {
         buttons.add(TextButton(10f, 7f, Util.TEXT_SLEEP) { sleep() })
@@ -44,10 +51,12 @@ class Inn(private val game: Crystals) : KtxScreen, InputScreen {
     fun setup(event: Event) {
         val iconH = 7f * 2 + Util.BUTTON_HEIGHT - 2
         // Add furniture
-        icons.add(Icon(Icons.Bed, Pair(20f, iconH)))
+        icons.add(Icon(Icons.ID.BED, Pair(20f, iconH)))
 
-        icons.add(Tile.genInnTile(Pair(64f, iconH)))
-        icons.add(Tile.genInnTile(Pair(64f + 16 + 2, iconH)))
+        icons.add(Tile.genInnTile(Pair(64f, iconH)) { clickTile(0) })
+        icons.add(Tile.genInnTile(Pair(64f + 16 + 2, iconH)) { clickTile(1) })
+
+        icons.add(Icon(Icons.ID.POTION, Pair(52f, 53f)).apply { hide() })
 
         // Set stats text
         setStats()
@@ -56,6 +65,17 @@ class Inn(private val game: Crystals) : KtxScreen, InputScreen {
     override fun render(delta: Float) {
         batch.projectionMatrix = camera.combined
         shapeRenderer.projectionMatrix = camera.combined
+
+        // Draw the treasure
+        if (treasure != null) {
+            Util.drawRect(shapeRenderer, 49f, 49f, 100f, 25f)
+            batch.use {
+                Util.font.draw(it, "Obtained :", 49f, 82f)
+                Util.font.draw(it, treasure?.name, 49f + 21, 69f)
+                Util.font.draw(it, treasure?.description, 49f + 21, 59f)
+            }
+            icons.last().draw(shapeRenderer, batch)
+        }
 
         // Draw characters
         icons.forEach { icon -> icon.draw(shapeRenderer, batch) }
@@ -70,6 +90,8 @@ class Inn(private val game: Crystals) : KtxScreen, InputScreen {
         // Draw buttons
         buttons.forEach { it.draw(shapeRenderer, batch) }
 
+
+        // Draw transitions
         if (transition) {
             if (frame <= Transition.TRANSITION_TIME) {
                 Transition.drawTransition(shapeRenderer,
@@ -88,11 +110,23 @@ class Inn(private val game: Crystals) : KtxScreen, InputScreen {
             }
         }
 
-        Util.drawRect(shapeRenderer, 49f, 49f, 96f, 25f)
-        batch.use {
-            Util.font.draw(it, "Obtained :", 49f, 82f)
-            Util.font.draw(it, "First line description", 49f + 20, 60f)
-            Util.font.draw(it, "Second line description", 49f + 20, 50f)
+        if (treasureTransition) {
+            if (treasureFrame <= Transition.TRANSITION_TIME) {
+                Transition.drawTransition(shapeRenderer,
+                        49f, 49f, 100f, 33f, treasureFrame)
+                {
+                    treasure = nextTreasure
+                    icons.last().apply {
+                        setIcon(treasure?.icon)
+                        show()
+                    }
+                }
+                treasureFrame++
+            } else {
+                treasureTransition = false
+                treasureFrame = 0
+                blockInput = false
+            }
         }
 
         when (state) {
@@ -130,6 +164,16 @@ class Inn(private val game: Crystals) : KtxScreen, InputScreen {
         blockInput = true
     }
 
+    private fun clickTile(i: Int) {
+        val tile = icons[i+1] as Tile
+        if (!tile.firstTouched && (tile.treasure != null || tile.gold > 0)) {
+            tile.firstTouched = true
+            blockInput = true
+            treasureTransition = true
+            nextTreasure = tile.treasure
+        }
+    }
+
     override fun inputUp(x: Int, y: Int) {
         icons.forEach { it.lift(x, y) }
         buttons.forEach { it.lift(x, y) }
@@ -145,6 +189,9 @@ class Inn(private val game: Crystals) : KtxScreen, InputScreen {
         buttons[0].clickable = true
         slept = false
         state = ScreenState.TRANSITION_OP
+        treasure = null
+        treasureTransition = false
+        treasureFrame = 0
     }
 
     override fun show() {

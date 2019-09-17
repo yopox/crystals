@@ -1,3 +1,5 @@
 package com.yopox.crystals.logic
 
-data class Item(val name: String, var value: Int)
+import com.yopox.crystals.def.Icons
+
+data class Item(val name: String, val description: String, var value: Int, val icon: Icons.ID)

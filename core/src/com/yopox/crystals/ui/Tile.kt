@@ -1,6 +1,7 @@
 package com.yopox.crystals.ui
 
 import com.yopox.crystals.def.Icons
+import com.yopox.crystals.def.Items
 import com.yopox.crystals.def.RNG
 import com.yopox.crystals.def.weighedRandom
 import com.yopox.crystals.logic.Item
@@ -12,7 +13,10 @@ enum class Content {
     TREASURE
 }
 
-class Tile(id: Pair<Int, Int>, pos: Pair<Float, Float>, onClick: Function0<Unit>) : Icon(id, pos, onClick) {
+/**
+ * Icon with more properties.
+ */
+class Tile(id: Icons.ID, pos: Pair<Float, Float>, onClick: Function0<Unit>) : Icon(id, pos, onClick) {
     val type: Content = NONE
     var gold = 0
     var treasure: Item? = null
@@ -20,10 +24,12 @@ class Tile(id: Pair<Int, Int>, pos: Pair<Float, Float>, onClick: Function0<Unit>
 
     companion object {
 
-        fun genInnTile(pos: Pair<Float, Float>): Tile {
+        fun genInnTile(pos: Pair<Float, Float>, onClick: Function0<Unit> = {}): Tile {
             val icon = RNG.inn.weighedRandom()
-            return Tile(Icons.map.getValue(icon), pos) {}
+            val item = Items.random()
+            return Tile(icon, pos, onClick).apply { treasure = item }
         }
+
     }
 
 }
