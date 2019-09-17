@@ -26,7 +26,8 @@ class Tile(id: Icons.ID, pos: Pair<Float, Float>, onClick: Function0<Unit>) : Ic
 
         fun genInnTile(pos: Pair<Float, Float>, onClick: Function0<Unit> = {}): Tile {
             val icon = RNG.inn.weighedRandom()
-            val item = Items.random()
+            val id = RNG.genTreasure(icon)
+            val item = if (id != null) Items(id) else null
             return Tile(icon, pos, onClick).apply { treasure = item }
         }
 

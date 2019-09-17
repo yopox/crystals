@@ -145,7 +145,7 @@ object Spells {
         f1.attack(f2, true)
     }
 
-    val map = mapOf(
+     val map = mapOf(
             HEAL to heal,
             HEAL2 to heal2,
             CURE to cure,

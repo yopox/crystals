@@ -68,11 +68,11 @@ class Inn(private val game: Crystals) : KtxScreen, InputScreen {
 
         // Draw the treasure
         if (treasure != null) {
-            Util.drawRect(shapeRenderer, 49f, 49f, 100f, 25f)
+            Util.drawRect(shapeRenderer, 49f, 49f, 100f, 24f)
             batch.use {
                 Util.font.draw(it, "Obtained :", 49f, 82f)
-                Util.font.draw(it, treasure?.name, 49f + 21, 69f)
-                Util.font.draw(it, treasure?.description, 49f + 21, 59f)
+                Util.font.draw(it, treasure?.name, 49f + 23, 69f)
+                Util.font.draw(it, treasure?.description, 49f + 23, 59f)
             }
             icons.last().draw(shapeRenderer, batch)
         }
@@ -167,6 +167,7 @@ class Inn(private val game: Crystals) : KtxScreen, InputScreen {
     private fun clickTile(i: Int) {
         val tile = icons[i+1] as Tile
         if (!tile.firstTouched && (tile.treasure != null || tile.gold > 0)) {
+            if (tile.id in Icons.changingIcons.keys) tile.setIcon(Icons.changingIcons[tile.id])
             tile.firstTouched = true
             blockInput = true
             treasureTransition = true

@@ -33,10 +33,14 @@ object Icons {
         CLOSET1,
         CLOSET2,
         CLOSET3,
+        CLOSET4_OPENED,
+        CLOSET4_CLOSED,
 
         // Items
         POTION,
         CARROT,
+        SCROLL,
+
         UNKNOWN
     }
 
@@ -68,10 +72,13 @@ object Icons {
     private val Closet1 = Pair(8, 14)
     private val Closet2 = Pair(9, 14)
     private val Closet3 = Pair(10, 14)
+    private val Closet4Closed = Pair(5, 7)
+    private val Closet4Opened = Pair(6, 7)
 
     // Items
     private val Potion = Pair(18, 25)
     private val Carrot = Pair(18, 30)
+    private val Scroll = Pair(17, 27)
 
     operator fun invoke(id: ID) = when(id) {
         PRIEST -> Priest
@@ -96,9 +103,17 @@ object Icons {
         CLOSET1 -> Closet1
         CLOSET2 -> Closet2
         CLOSET3 -> Closet3
+        CLOSET4_OPENED -> Closet4Opened
+        CLOSET4_CLOSED -> Closet4Closed
         POTION -> Potion
         CARROT -> Carrot
+        SCROLL -> Scroll
         else -> Unknown
     }
+
+    val changingIcons = mapOf(
+            CHEST_CLOSED to CHEST_OPENED,
+            CLOSET4_CLOSED to CLOSET4_OPENED
+    )
 
 }

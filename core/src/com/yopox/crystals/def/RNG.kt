@@ -9,53 +9,78 @@ import kotlin.random.Random
  */
 object RNG {
 
-    data class Item<K>(val value: K, val weight: Int)
-    data class Proba<K>(val value: K, val proba: Double)
-
     private val sums = mutableMapOf<Any, Int>()
 
-    fun <A> computeSum(list: List<Item<A>>): Int {
-        if (sums[list] == null) {
-            val sum = list.map { it.weight }.reduce { i1, i2 -> i1 + i2 }
-            sums[list] = sum
+    fun <A> computeSum(map: Map<A, Int>): Int {
+        if (sums[map] == null) {
+            val sum = map.values.reduce { i1, i2 -> i1 + i2 }
+            sums[map] = sum
         }
-        return sums[list]!!
+        return sums[map]!!
     }
 
-    val treasure = mapOf(
+    /**
+     * Treasure probability for tiles.
+     */
+    private val treasure = mapOf(
             CHEST_CLOSED to 1.0,
             BOOKSHELF to 0.25,
-            CLOSET1 to 0.15,
-            CLOSET2 to 0.15,
-            CLOSET3 to 0.15
+            CLOSET1 to 0.1,
+            CLOSET2 to 0.1,
+            CLOSET3 to 0.1,
+            CLOSET4_CLOSED to 0.2,
+            CHEST_OPENED to 0.0,
+            CLOSET4_OPENED to 0.0
+    ).withDefault { 0.01 }
+
+    // Tiles frequency
+
+    val inn = mapOf(
+            CHEST_CLOSED to 5,
+            CHEST_OPENED to 1,
+            BED to 5,
+            BOOKSHELF to 6,
+            CLOSET1 to 1,
+            CLOSET2 to 1,
+            CLOSET3 to 1,
+            CLOSET4_CLOSED to 2
     )
 
-    val inn = listOf(
-            Item(CHEST_CLOSED, 5),
-            Item(CHEST_OPENED, 1),
-            Item(BED, 10),
-            Item(BOOKSHELF, 6),
-            Item(CLOSET1, 2),
-            Item(CLOSET2, 2),
-            Item(CLOSET3, 2)
+    val innBad = mapOf(
+            CHEST_OPENED to 4,
+            BED to 1,
+            BOOKSHELF_SKULL to 4,
+            WEB to 20
     )
 
-    val innBad = listOf(
-            Item(CHEST_CLOSED, 1),
-            Item(CHEST_OPENED, 5),
-            Item(BED, 5),
-            Item(BOOKSHELF, 1),
-            Item(WEB, 20)
+    val innGood = mapOf(
+            CHEST_CLOSED to 5,
+            BOOKSHELF to 2,
+            CLOSET4_CLOSED to 5
     )
 
-    val innGood = listOf(
-            Item(CHEST_CLOSED, 10),
-            Item(BOOKSHELF, 8)
-    )
+    private val treasures = mapOf(
+        BOOKSHELF to mapOf(
+                Items.ID.SCROLL to 1
+        )
+    ).withDefault { mapOf(
+            Items.ID.POTION to 1
+    ) }
+
+    /**
+     * Generate a treasure (or not) for a given tile.
+     */
+    fun genTreasure(id: Icons.ID): Items.ID? {
+        return if (Math.random() > treasure.getValue(id)) {
+            null
+        } else {
+            treasures.getValue(id).weighedRandom()
+        }
+    }
 
 }
 
-fun <A> List<RNG.Item<A>>.weighedRandom(): A {
+fun <A> Map<A, Int>.weighedRandom(): A {
     // Computes the sum of weights
     val sum = RNG.computeSum(this)
 
@@ -63,11 +88,12 @@ fun <A> List<RNG.Item<A>>.weighedRandom(): A {
     val randomItem = Random.nextInt(1, sum + 1)
 
     // Returns the corresponding value
-    var weightSum = this[0].weight
+    val intValues = this.values.toIntArray()
+    var weightSum = intValues.first()
     var i = 0
     while (randomItem > weightSum) {
-        i++; weightSum += this[i].weight
+        i++; weightSum += intValues[i]
     }
 
-    return this[i].value
+    return this.keys.elementAt(i)
 }
