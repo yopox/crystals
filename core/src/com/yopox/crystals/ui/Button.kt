@@ -11,7 +11,7 @@ import com.yopox.crystals.Util
  * @param clickable is clickable
  * @param onClick click callback
  */
-abstract class Button(val pos: Pair<Float, Float>, var clickable: Boolean = true, var onClick: () -> Unit) {
+abstract class Button(var pos: Pair<Float, Float>, var clickable: Boolean = true, var onClick: () -> Unit) {
     protected var clicked = false
     var visible = true
     open val size = Pair(Util.BUTTON_WIDTH, Util.BUTTON_HEIGHT)
@@ -50,6 +50,10 @@ abstract class Button(val pos: Pair<Float, Float>, var clickable: Boolean = true
 
     fun show() {
         visible = true
+    }
+
+    fun reset() {
+        clicked = false
     }
 
 }

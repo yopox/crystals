@@ -29,6 +29,7 @@ class Spell(
             move.fighter.stats.mp -= move.spell.cost
             blocks.add(Fight.Block(Fight.BlockType.TEXT, Spells.text(move)))
         } else {
+            blocks.add(Fight.Block(Fight.BlockType.LEARN, int1 = move.fighter.battleId))
             blocks.add(Fight.Block(Fight.BlockType.TEXT, "${move.fighter.name} learned ${move.spell.name}!"))
             move.fighter.freeSpell = false
         }

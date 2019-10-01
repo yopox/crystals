@@ -12,6 +12,7 @@ import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
 import com.yopox.crystals.def.Actions
 import com.yopox.crystals.def.Fighters
+import com.yopox.crystals.def.Icons
 import com.yopox.crystals.def.Spells
 import com.yopox.crystals.logic.Hero
 import com.yopox.crystals.logic.Progress
@@ -59,6 +60,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
         FAINT,
         UPDATE_HP,
         UPDATE_MP,
+        LEARN,
         WIN
     }
 
@@ -75,6 +77,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     private var state = ScreenState.TRANSITION_OP
     private var subState = MAIN
     private val icons = ArrayList<Icon>()
+    private val learn: Icon
 
     private val blocks = ArrayList<Block>()
     private var currentBlock: Block? = null
@@ -133,6 +136,8 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
         buttons.add(ActionIcon(Actions.ID.W_MAGIC, Pair(58f, 5f)) { selectIcon(3) })
         buttons.add(ActionIcon(Actions.ID.ROB, Pair(74f, 5f)) { selectIcon(4) })
         buttons.add(ActionIcon(Actions.ID.GEOMANCY, Pair(90f, 5f)) { selectIcon(5) })
+
+        learn = Icon(Icons.ID.EXCLAMATION, Pair(0f, 0f)).apply { hide() }
     }
 
     fun setup() {
@@ -180,6 +185,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
 
         // Draw characters
         icons.map { icon -> icon.draw(shapeRenderer, batch) }
+        learn.draw(shapeRenderer, batch)
 
         if (!blockInput) {
             update()
@@ -304,6 +310,30 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
                             if (currentBlock!!.int2 == Transition.TRANSITION_TIME + Util.POPUP_STOP_TIME)
                                 currentBlock = null
                         }
+                        BlockType.LEARN -> {
+                            currentBlock!!.int2 += 1
+                            Gdx.app.log("icon", learn.pos.toString())
+
+                            // Draw wipe
+                            val t1 = Transition.TRANSITION_TIME
+                            if (currentBlock!!.int2 < t1)
+                                Transition.drawTransition(
+                                        shapeRenderer,
+                                        learn.pos.first, learn.pos.second,
+                                        16f, 16f, currentBlock!!.int2, 0)
+                                { learn.show() }
+
+                            if (currentBlock!!.int2 > t1 + 24)
+                                Transition.drawTransition(
+                                        shapeRenderer,
+                                        learn.pos.first, learn.pos.second,
+                                        16f, 16f, currentBlock!!.int2 - t1 - 24, 0)
+                                { learn.hide() }
+
+                            if (currentBlock!!.int2 == 2 * t1 + 24)
+                                currentBlock = null
+
+                        }
                         else -> currentBlock = null
                     }
                 }
@@ -335,7 +365,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
         }
         BlockType.UPDATE_HP -> stats[0] = "HP ${currentBlock!!.int1}/${fighters[hero].baseStats.hp}"
         BlockType.UPDATE_MP -> stats[1] = "MP ${currentBlock!!.int1}/${fighters[hero].baseStats.mp}"
-
+        BlockType.LEARN -> learn.pos = Pair(icons[currentBlock!!.int1].pos.first, icons[currentBlock!!.int1].pos.second + 20)
         else -> Unit
     }
 
@@ -546,6 +576,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
         turn = 0
         victory = false
         Dialog.reset()
+        icons.forEach { it.reset() }
     }
 
 }

@@ -47,6 +47,8 @@ object Icons {
         // Equipment
         SWORD,
 
+        // Others
+        EXCLAMATION,
         UNKNOWN
     }
 
@@ -63,7 +65,6 @@ object Icons {
     private val Bat = Pair(26, 8)
     private val Dog = Pair(31, 7)
     private val Spider = Pair(28, 5)
-    private val Unknown = Pair(21, 25)
 
     // Furniture
     private val ChestClosed = Pair(8, 6)
@@ -91,6 +92,10 @@ object Icons {
 
     // Equipment
     private val Sword = Pair(0, 28)
+
+    // Others
+    private val Exclamation = Pair(20, 25)
+    private val Unknown = Pair(21, 25)
 
     operator fun invoke(id: ID) = when(id) {
         PRIEST -> Priest
@@ -124,6 +129,7 @@ object Icons {
         BEER -> Beer
         COINS -> Coins
         BAG_OF_COINS -> BagOfCoins
+        EXCLAMATION -> Exclamation
         else -> Unknown
     }
 

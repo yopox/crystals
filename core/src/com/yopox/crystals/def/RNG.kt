@@ -23,7 +23,7 @@ object RNG {
     /**
      * Spell unlocking probability
      */
-    const val UNLOCK_2ND_SPELL = 0.1
+    const val UNLOCK_2ND_SPELL = 0.15
     const val UNLOCK_3RD_SPELL = 0.04
 
     /**
