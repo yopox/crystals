@@ -33,7 +33,6 @@ class Inn(private val game: Crystals) : KtxScreen, InputScreen {
     private var frame = 0
     private var stats = MutableList(2) { "" }
     private var statsX = MutableList(2) { 0f }
-    private var reveal = false
 
     private var treasureTransition = false
     private var treasureFrame = 0
@@ -166,8 +165,8 @@ class Inn(private val game: Crystals) : KtxScreen, InputScreen {
 
     private fun clickTile(i: Int) {
         val tile = icons[i+1] as Tile
+        if (tile.id in Icons.changingIcons.keys) tile.setIcon(Icons.changingIcons[tile.id])
         if (!tile.firstTouched && (tile.treasure != null || tile.gold > 0)) {
-            if (tile.id in Icons.changingIcons.keys) tile.setIcon(Icons.changingIcons[tile.id])
             tile.firstTouched = true
             blockInput = true
             treasureTransition = true

@@ -1,6 +1,5 @@
 package com.yopox.crystals.def
 
-import com.badlogic.gdx.Gdx
 import com.yopox.crystals.def.Icons.ID.*
 import kotlin.random.Random
 
@@ -18,6 +17,14 @@ object RNG {
         }
         return sums[map]!!
     }
+
+    operator fun invoke(proba: Double) = Random.nextDouble() <= proba
+
+    /**
+     * Spell unlocking probability
+     */
+    const val UNLOCK_2ND_SPELL = 0.1
+    const val UNLOCK_3RD_SPELL = 0.04
 
     /**
      * Treasure probability for tiles.
@@ -60,12 +67,14 @@ object RNG {
     )
 
     private val treasures = mapOf(
-        BOOKSHELF to mapOf(
-                Items.ID.SCROLL to 1
+            BOOKSHELF to mapOf(
+                    Items.ID.SCROLL to 1
+            )
+    ).withDefault {
+        mapOf(
+                Items.ID.POTION to 1
         )
-    ).withDefault { mapOf(
-            Items.ID.POTION to 1
-    ) }
+    }
 
     /**
      * Generate a treasure (or not) for a given tile.

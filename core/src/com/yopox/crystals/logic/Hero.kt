@@ -66,4 +66,18 @@ class Hero(val job: Jobs.ID, name: String, initStats: Stats, val desc: String, i
 
     }
 
+    fun useCrystal(crystal: Crystal) = when (crystal.unlocked) {
+        1 -> if (RNG(RNG.UNLOCK_2ND_SPELL)) {
+            crystal.unlocked++
+            Fight.Intent.action = crystal.spells[1].id
+            freeSpell = true
+        } else Unit
+        2 -> if (RNG(RNG.UNLOCK_3RD_SPELL)) {
+            crystal.unlocked++
+            Fight.Intent.action = crystal.spells[2].id
+            freeSpell = true
+        } else Unit
+        else -> Unit
+    }
+
 }

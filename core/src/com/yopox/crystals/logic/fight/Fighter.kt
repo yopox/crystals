@@ -7,6 +7,7 @@ import com.yopox.crystals.def.Fighters.ID.*
 import com.yopox.crystals.def.Icons
 import com.yopox.crystals.def.Jobs
 import com.yopox.crystals.def.Spells
+import com.yopox.crystals.logic.Crystal
 import com.yopox.crystals.screens.Fight
 import kotlin.math.max
 import kotlin.math.min
@@ -58,6 +59,7 @@ open class Fighter(val type: Fighters.ID, val name: String, val icon: Icons.ID, 
     var battleId = 0
     val alive: Boolean
         get() = stats.hp > 0
+    var freeSpell = false
 
     open fun prepare() {
         stats = baseStats.copy()

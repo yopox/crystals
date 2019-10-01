@@ -439,6 +439,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
                         if (i - 1 < crystal.unlocked && spell.cost <= fighters[hero].stats.mp) {
                             // The spell is unlocked
                             Intent.action = spell.id
+                            (fighters[hero] as Hero).useCrystal(crystal)
                             when (spell.target) {
                                 Target.SINGLE -> {
                                     Navigation to CHOOSE_TARGET
@@ -491,7 +492,6 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
                 blocks.addAll(move.fighter.beginTurn(fighters))
 
             if (move.fighter.alive) {
-                blocks.add(Block(BlockType.TEXT, Spells.text(move)))
                 blocks.addAll(move.spell.use(move))
                 if (move.fighter.alive) {
                     move.fighter.healMP(ceil((move.fighter.baseStats.mp / 20.0)).toInt())

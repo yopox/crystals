@@ -37,9 +37,15 @@ object Icons {
         CLOSET4_CLOSED,
 
         // Items
+        COINS,
+        BAG_OF_COINS,
         POTION,
         CARROT,
         SCROLL,
+        BEER,
+
+        // Equipment
+        SWORD,
 
         UNKNOWN
     }
@@ -76,9 +82,15 @@ object Icons {
     private val Closet4Opened = Pair(6, 7)
 
     // Items
+    private val Coins  = Pair(9, 26)
+    private val BagOfCoins  = Pair(10, 26)
     private val Potion = Pair(18, 25)
     private val Carrot = Pair(18, 30)
     private val Scroll = Pair(17, 27)
+    private val Beer = Pair(15, 31)
+
+    // Equipment
+    private val Sword = Pair(0, 28)
 
     operator fun invoke(id: ID) = when(id) {
         PRIEST -> Priest
@@ -108,6 +120,10 @@ object Icons {
         POTION -> Potion
         CARROT -> Carrot
         SCROLL -> Scroll
+        SWORD -> Sword
+        BEER -> Beer
+        COINS -> Coins
+        BAG_OF_COINS -> BagOfCoins
         else -> Unknown
     }
 

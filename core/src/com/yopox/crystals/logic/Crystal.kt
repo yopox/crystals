@@ -8,7 +8,7 @@ import com.yopox.crystals.logic.fight.Spell
 class Crystal(val job: Jobs.ID) {
 
     val spells = ArrayList<Spell>()
-    var unlocked = 3
+    var unlocked = 1
 
     companion object {
 
@@ -32,7 +32,7 @@ class Crystal(val job: Jobs.ID) {
     fun contains(spell: Actions.ID): Boolean = spells.map { it.id }.contains(spell)
 
     /**
-     * Fill empty spell slots.
+     * Fill crystal with empty spell slots.
      */
     fun fill() {
         while (spells.size < 3) {
