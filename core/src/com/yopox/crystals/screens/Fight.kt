@@ -48,10 +48,9 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     }
 
     /**
-     * Main state components. Useful to tell the fight.
+     * Main state components.
      * TODO: Screen shaking
      * TODO: Animations
-     * TODO: Update HP/MP
      */
     enum class BlockType {
         TEXT,
@@ -323,14 +322,14 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
                                         16f, 16f, currentBlock!!.int2, 0)
                                 { learn.show() }
 
-                            if (currentBlock!!.int2 > t1 + 24)
+                            if (currentBlock!!.int2 > t1 + 48)
                                 Transition.drawTransition(
                                         shapeRenderer,
                                         learn.pos.first, learn.pos.second,
-                                        16f, 16f, currentBlock!!.int2 - t1 - 24, 0)
+                                        16f, 16f, currentBlock!!.int2 - t1 - 48, 0)
                                 { learn.hide() }
 
-                            if (currentBlock!!.int2 == 2 * t1 + 24)
+                            if (currentBlock!!.int2 == 2 * t1 + 48)
                                 currentBlock = null
 
                         }
@@ -365,11 +364,11 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
         }
         BlockType.UPDATE_HP -> stats[0] = "HP ${currentBlock!!.int1}/${fighters[hero].baseStats.hp}"
         BlockType.UPDATE_MP -> stats[1] = "MP ${currentBlock!!.int1}/${fighters[hero].baseStats.mp}"
-        BlockType.LEARN -> learn.pos = Pair(icons[currentBlock!!.int1].pos.first, icons[currentBlock!!.int1].pos.second + 20)
+        BlockType.LEARN -> learn.pos = Pair(icons[currentBlock!!.int1].pos.first, icons[currentBlock!!.int1].pos.second + 18)
         else -> Unit
     }
 
-    private fun initState(state: State): Unit = when (state) {
+    private fun initState(state: State) = when (state) {
         MAIN -> {
             Navigation.oldStack.clear()
             Intent.targets.clear()
