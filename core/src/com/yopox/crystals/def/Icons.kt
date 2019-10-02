@@ -35,6 +35,9 @@ object Icons {
         CLOSET3,
         CLOSET4_OPENED,
         CLOSET4_CLOSED,
+        PILLAR_TOP,
+        PILLAR_MIDDLE,
+        PILLAR_BOTTOM,
 
         // Items
         COINS,
@@ -46,6 +49,8 @@ object Icons {
 
         // Equipment
         SWORD,
+        CRYSTAL,
+        CROWN,
 
         // Others
         EXCLAMATION,
@@ -81,10 +86,13 @@ object Icons {
     private val Closet3 = Pair(10, 14)
     private val Closet4Closed = Pair(5, 7)
     private val Closet4Opened = Pair(6, 7)
+    private val PillarTop = Pair(3, 11)
+    private val PillarMiddle = Pair(3, 12)
+    private val PillarBottom = Pair(3, 13)
 
     // Items
-    private val Coins  = Pair(9, 26)
-    private val BagOfCoins  = Pair(10, 26)
+    private val Coins = Pair(9, 26)
+    private val BagOfCoins = Pair(10, 26)
     private val Potion = Pair(18, 25)
     private val Carrot = Pair(18, 30)
     private val Scroll = Pair(17, 27)
@@ -92,12 +100,14 @@ object Icons {
 
     // Equipment
     private val Sword = Pair(0, 28)
+    private val Crystal = Pair(18, 22)
+    private val Crown = Pair(12, 24)
 
     // Others
     private val Exclamation = Pair(20, 25)
     private val Unknown = Pair(21, 25)
 
-    operator fun invoke(id: ID) = when(id) {
+    operator fun invoke(id: ID) = when (id) {
         PRIEST -> Priest
         MAGE -> Mage
         MONK -> Monk
@@ -106,10 +116,12 @@ object Icons {
         BARD -> Bard
         ROGUE -> Rogue
         GEOMANCER -> Geomancer
+
         SNAKE -> Snake
         DOG -> Dog
         SPIDER -> Spider
         BAT -> Bat
+
         CHEST_CLOSED -> ChestClosed
         CHEST_OPENED -> ChestOpened
         BED -> Bed
@@ -122,13 +134,21 @@ object Icons {
         CLOSET3 -> Closet3
         CLOSET4_OPENED -> Closet4Opened
         CLOSET4_CLOSED -> Closet4Closed
+        PILLAR_TOP -> PillarTop
+        PILLAR_MIDDLE -> PillarMiddle
+        PILLAR_BOTTOM -> PillarBottom
+
         POTION -> Potion
         CARROT -> Carrot
         SCROLL -> Scroll
-        SWORD -> Sword
         BEER -> Beer
         COINS -> Coins
         BAG_OF_COINS -> BagOfCoins
+
+        SWORD -> Sword
+        CRYSTAL -> Crystal
+        CROWN -> Crown
+
         EXCLAMATION -> Exclamation
         else -> Unknown
     }

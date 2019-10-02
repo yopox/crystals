@@ -5,16 +5,15 @@ import kotlin.random.Random
 
 /**
  * RNG probabilities & functions are defined here.
+ *
+ * TODO: Proper chunk events RNG
  */
 object RNG {
 
     private val sums = mutableMapOf<Any, Int>()
 
     fun <A> computeSum(map: Map<A, Int>): Int {
-        if (sums[map] == null) {
-            val sum = map.values.reduce { i1, i2 -> i1 + i2 }
-            sums[map] = sum
-        }
+        if (sums[map] == null) sums[map] = map.values.reduce { i1, i2 -> i1 + i2 }
         return sums[map]!!
     }
 
@@ -64,6 +63,11 @@ object RNG {
             CHEST_CLOSED to 5,
             BOOKSHELF to 2,
             CLOSET4_CLOSED to 5
+    )
+
+    val temple = mapOf(
+            CRYSTAL to 5,
+            CROWN to 3
     )
 
     private val treasures = mapOf(

@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.yopox.crystals.Util
-import com.yopox.crystals.logic.EVENT_TYPE
+import com.yopox.crystals.def.Events
 import com.yopox.crystals.logic.Event
 import ktx.graphics.use
 
@@ -28,7 +28,7 @@ class Chunk(private var x: Float, private val y: Float) {
      */
     init {
         repeat(3) {
-            events.add(Event(EVENT_TYPE.values().random()))
+            events.add(Event(Events.ID.values().random()))
             //events.add(Event(EVENT_TYPE.INN))
         }
     }
