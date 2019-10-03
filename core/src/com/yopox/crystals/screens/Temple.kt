@@ -3,6 +3,7 @@ package com.yopox.crystals.screens
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.utils.viewport.FitViewport
@@ -33,20 +34,10 @@ class Temple(private val game: Crystals) : KtxScreen, InputScreen {
     private var state = ScreenState.TRANSITION_OP
     private val icons = ArrayList<Icon>()
     private var frame = 0
+    val ray: Texture = Crystals.assetManager["temple.png"]
+    val circle: Texture = Crystals.assetManager["circle.png"]
 
     fun setup(event: Event) {
-        icons.add(Icon(Icons.ID.PILLAR_BOTTOM, Pair(22f, 8f)))
-        icons.add(Icon(Icons.ID.PILLAR_TOP, Pair(22f, 22f)))
-        icons.add(Icon(Icons.ID.PILLAR_BOTTOM, Pair(45f, 8f)))
-        icons.add(Icon(Icons.ID.PILLAR_MIDDLE, Pair(45f, 22f)))
-        icons.add(Icon(Icons.ID.PILLAR_TOP, Pair(45f, 36f)))
-        icons.add(Icon(Icons.ID.PILLAR_BOTTOM, Pair(97f, 8f)))
-        icons.add(Icon(Icons.ID.PILLAR_MIDDLE, Pair(97f, 22f)))
-        icons.add(Icon(Icons.ID.PILLAR_TOP, Pair(97f, 36f)))
-        icons.add(Icon(Icons.ID.PILLAR_BOTTOM, Pair(119f, 8f)))
-        icons.add(Icon(Icons.ID.PILLAR_TOP, Pair(119f, 22f)))
-        icons.forEach { it.clickable = false }
-
         icons.add(Tile.genTempleTile(Pair(72f, 30f)) { state = ScreenState.TRANSITION_EN ; blockInput = true })
     }
 
@@ -54,12 +45,21 @@ class Temple(private val game: Crystals) : KtxScreen, InputScreen {
         batch.projectionMatrix = camera.combined
         shapeRenderer.projectionMatrix = camera.combined
 
+        batch.use {
+            it.draw(ray, 0f, 0f)
+        }
+
         frame = (frame + 1) % 240
-        icons.last().apply {
+        val icon = icons.last()
+        icon.apply {
             pos = Pair(pos.first, Util.HEIGHT / 4 + 2 * sin(frame * Math.PI / 120).toFloat())
         }
 
-        icons.map { icon -> icon.draw(shapeRenderer, batch) }
+        batch.use {
+            if (!icon.clicked) it.draw(circle, icons.last().pos.first - 8, icons.last().pos.second - 8)
+        }
+
+        icons.map { i -> i.draw(shapeRenderer, batch) }
 
         batch.use {
             // Draw the title
