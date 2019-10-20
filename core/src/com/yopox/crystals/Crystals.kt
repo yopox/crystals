@@ -27,6 +27,8 @@ class Crystals : KtxGame<Screen>() {
             load("icons.png", Texture::class.java)
             load("1BitPack.png", Texture::class.java)
             load("Base_Attacks.png", Texture::class.java)
+            load("temple.png", Texture::class.java)
+            load("circle.png", Texture::class.java)
             finishLoading()
         }
 
@@ -40,6 +42,7 @@ class Crystals : KtxGame<Screen>() {
         addScreen(Fight(this))
         addScreen(Inn(this))
         addScreen(GameOver(this))
+        addScreen(Temple(this))
         setScreen<TitleScreen>()
     }
 

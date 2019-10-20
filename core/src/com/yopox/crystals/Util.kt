@@ -63,6 +63,7 @@ object Util {
     const val TEXT_RETURN_TITLE = "Return to title"
     const val TEXT_INN = "Inn"
     const val TEXT_SLEEP = "Sleep"
+    const val TEXT_TEMPLE = "Temple"
     /**
      * Generates [BitmapFont] objects from `.ttf` files.
      */

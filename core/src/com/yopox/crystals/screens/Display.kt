@@ -8,7 +8,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport
 import com.yopox.crystals.Crystals
 import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
-import com.yopox.crystals.logic.EVENT_TYPE
+import com.yopox.crystals.def.Events
 import com.yopox.crystals.logic.Event
 import com.yopox.crystals.ui.Transition
 import ktx.app.KtxScreen
@@ -41,31 +41,34 @@ class Display(private val game: Crystals) : KtxScreen {
         shapeRenderer.projectionMatrix = camera.combined
 
         batch.use {
-            it.draw(icons, Util.WIDTH / 2 - 7, Util.HEIGHT / 2 - 7 + 8, event.iconX, 0, 12, 12)
+            it.draw(icons, Util.WIDTH / 2 - 7, Util.HEIGHT / 2 + 3, event.iconX, 0, 14, 14)
             Util.font.draw(it, event.name, textX, Util.HEIGHT / 2)
         }
 
         when (state) {
             ScreenState.TRANSITION_OP -> {
-                if (Transition.drawWipe(shapeRenderer, false, true)) {
+                if (Transition.drawWipe(shapeRenderer, leftToRight = false, reverse = true)) {
                     state = ScreenState.MAIN
                 }
             }
             ScreenState.TRANSITION_EN -> {
                 if (Transition.drawWipe(shapeRenderer)) {
                     resetState()
-                    when (event.type) {
-                        EVENT_TYPE.BATTLE -> {
+                    when (event.id) {
+                        Events.ID.BATTLE -> {
                             game.getScreen<Fight>().setup()
                             game.setScreen<Fight>()
                         }
-                        EVENT_TYPE.INN -> {
+                        Events.ID.INN -> {
                             game.getScreen<Inn>().setup(event)
                             game.setScreen<Inn>()
                         }
+                        Events.ID.TEMPLE -> {
+                            game.getScreen<Temple>().setup(event)
+                            game.setScreen<Temple>()
+                        }
                         else -> game.setScreen<Trip>()
                     }
-
                 }
             }
             else -> {

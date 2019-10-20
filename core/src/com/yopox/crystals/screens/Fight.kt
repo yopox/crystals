@@ -555,13 +555,13 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     }
 
     override fun inputUp(x: Int, y: Int) {
-        buttons.map { it.lift(x, y) }
-        icons.map { it.lift(x, y) }
+        buttons.forEach { it.lift(x, y) }
+        icons.forEach { it.lift(x, y) }
     }
 
     override fun inputDown(x: Int, y: Int) {
-        buttons.map { it.touch(x, y) }
-        icons.map { it.touch(x, y) }
+        buttons.forEach { it.touch(x, y) }
+        icons.forEach { it.touch(x, y) }
     }
 
     private fun resetState() {
