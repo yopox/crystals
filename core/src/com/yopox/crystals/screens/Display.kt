@@ -67,6 +67,10 @@ class Display(private val game: Crystals) : KtxScreen {
                             game.getScreen<Temple>().setup(event)
                             game.setScreen<Temple>()
                         }
+                        Events.ID.SHOP -> {
+                            game.getScreen<Shop>().setup(event)
+                            game.setScreen<Shop>()
+                        }
                         else -> game.setScreen<Trip>()
                     }
                 }

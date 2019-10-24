@@ -38,6 +38,8 @@ object Icons {
         PILLAR_TOP,
         PILLAR_MIDDLE,
         PILLAR_BOTTOM,
+        BENCH_LEFT,
+        BENCH_MIDDLE,
 
         // Items
         COINS,
@@ -89,6 +91,8 @@ object Icons {
     private val PillarTop = Pair(3, 11)
     private val PillarMiddle = Pair(3, 12)
     private val PillarBottom = Pair(3, 13)
+    private val BenchLeft = Pair(3, 8)
+    private val BenchMiddle = Pair(4, 8)
 
     // Items
     private val Coins = Pair(9, 26)
@@ -137,6 +141,8 @@ object Icons {
         PILLAR_TOP -> PillarTop
         PILLAR_MIDDLE -> PillarMiddle
         PILLAR_BOTTOM -> PillarBottom
+        BENCH_LEFT -> BenchLeft
+        BENCH_MIDDLE -> BenchMiddle
 
         POTION -> Potion
         CARROT -> Carrot

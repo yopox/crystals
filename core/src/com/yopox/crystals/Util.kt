@@ -64,12 +64,16 @@ object Util {
     const val TEXT_INN = "Inn"
     const val TEXT_SLEEP = "Sleep"
     const val TEXT_TEMPLE = "Temple"
+    const val TEXT_SHOP = "Shop"
+    const val TEXT_SELL = "Sell"
+    const val TEXT_BUY = "Buy"
+    const val TEXT_LEAVE = "Leave"
     /**
      * Generates [BitmapFont] objects from `.ttf` files.
      */
     fun genFonts() {
-        val generator = FreeTypeFontGenerator(Gdx.files.internal("babyblocks.ttf"))
-        val generator2 = FreeTypeFontGenerator(Gdx.files.internal("bubbleTime.ttf"))
+        val generator = FreeTypeFontGenerator(Gdx.files.internal("fonts/babyblocks.ttf"))
+        val generator2 = FreeTypeFontGenerator(Gdx.files.internal("fonts/bubbleTime.ttf"))
         val parameter = FreeTypeFontGenerator.FreeTypeFontParameter()
         parameter.size = FONT_SIZE
         val parameter2 = FreeTypeFontGenerator.FreeTypeFontParameter()

@@ -43,6 +43,7 @@ class Crystals : KtxGame<Screen>() {
         addScreen(Inn(this))
         addScreen(GameOver(this))
         addScreen(Temple(this))
+        addScreen(Shop(this))
         setScreen<TitleScreen>()
     }
 
