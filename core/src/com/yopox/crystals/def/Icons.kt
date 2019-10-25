@@ -17,6 +17,7 @@ object Icons {
         BARD,
         ROGUE,
         GEOMANCER,
+        SHOPKEEPER,
         SNAKE,
         DOG,
         SPIDER,
@@ -69,6 +70,7 @@ object Icons {
     private val Bard = Pair(5, 32)
     private val Rogue = Pair(6, 32)
     private val Geomancer = Pair(7, 32)
+    private val Shopkeeper = Pair(30, 4)
     private val Snake = Pair(28, 8)
     private val Bat = Pair(26, 8)
     private val Dog = Pair(31, 7)
@@ -122,6 +124,7 @@ object Icons {
         BARD -> Bard
         ROGUE -> Rogue
         GEOMANCER -> Geomancer
+        SHOPKEEPER -> Shopkeeper
 
         SNAKE -> Snake
         DOG -> Dog

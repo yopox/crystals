@@ -10,6 +10,7 @@ import com.yopox.crystals.InputScreen
 import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
 import com.yopox.crystals.def.Icons
+import com.yopox.crystals.def.Text
 import com.yopox.crystals.logic.Event
 import com.yopox.crystals.logic.Progress
 import com.yopox.crystals.ui.*
@@ -30,12 +31,21 @@ class Shop(private val game: Crystals) : KtxScreen, InputScreen {
     private val items = ArrayList<Tile>()
     private val buttons = ArrayList<Button>()
     var goldX = 0f
+
+    private var itemTransition = false
+    private var itemFrame = 0
     var selectedItem: Tile? = null
+    var nextItem: Tile? = null
+    var shopkeeper: Icon
+    var text = arrayListOf<String>()
+    var textX = listOf<Float>()
 
     private val benchX = 4f
     private val benchY = 24f
 
     init {
+        shopkeeper = Icon(Icons.ID.SHOPKEEPER, Pair(109f, 28f))
+
         buttons.add(TextButton(79f - 40, 5f, Util.TEXT_SELL) { sell() })
         buttons.add(TextButton(79f, 5f, Util.TEXT_BUY) { buy() })
         buttons.add(TextButton(79f + 40, 5f, Util.TEXT_LEAVE) {
@@ -64,10 +74,21 @@ class Shop(private val game: Crystals) : KtxScreen, InputScreen {
         val itemX = benchX - 4
 
         repeat(itemsNb) {
-            items.add(Tile.genShopTile(Pair(itemX + (it + 1) * spray - 8, benchY + 17)) { selectedItem = items[it] })
+            items.add(Tile.genShopTile(Pair(itemX + (it + 1) * spray - 8, benchY + 17)) { selectItem(items[it]) })
         }
 
         goldX = Util.WIDTH - 5f - Util.textSize("${Progress.gold} GOLD", Util.font).first
+        text = arrayListOf(Text.shopkeeperLines.random())
+        textX = text.map { Util.textOffsetX(Util.font, it, 76f) }
+    }
+
+    private fun selectItem(tile: Tile) {
+        if (selectedItem != tile) {
+            nextItem = tile
+            itemTransition = true
+            itemFrame = 0
+            blockInput = true
+        }
     }
 
     override fun render(delta: Float) {
@@ -80,15 +101,44 @@ class Shop(private val game: Crystals) : KtxScreen, InputScreen {
             Util.font.draw(it, "${Progress.gold} GOLD", goldX, 81f)
         }
 
-        selectedItem?.let {
+        // Shop items
+        nextItem?.let {
             Util.drawRect(shapeRenderer, it.pos.first - 1, it.pos.second - 1, 18f, 18f)
         }
-
-        bench.forEach { it.draw(shapeRenderer, batch) }
         items.forEach { it.draw(shapeRenderer, batch) }
+
+        // UI (bench & buttons)
+        bench.forEach { it.draw(shapeRenderer, batch) }
         buttons.forEach { it.draw(shapeRenderer, batch) }
 
+        // Item box
         Util.drawRect(shapeRenderer, 79f, 25f, 76f, 46f)
+        shopkeeper.draw(shapeRenderer, batch)
+
+        batch.use {
+            for (i in 0 until text.size) {
+                Util.font.draw(it, text[i], 79f + textX[i], 62f - 10 * i)
+            }
+        }
+
+        if (itemTransition) {
+            if (itemFrame < Transition.TRANSITION_TIME) {
+                Transition.drawTransition(shapeRenderer, 79f, 25f, 76f, 46f, itemFrame) {
+                    selectedItem = nextItem
+                    text.clear()
+                    text.add(nextItem!!.treasure!!.name)
+                    text.add(nextItem!!.treasure!!.description)
+                    text.add("${nextItem!!.treasure!!.value} GOLD")
+                    textX = text.map { Util.textOffsetX(Util.font, it, 76f) }
+                    shopkeeper.hide()
+                }
+                itemFrame++
+            } else {
+                itemFrame = 0
+                itemTransition = false
+                blockInput = false
+            }
+        }
 
         when (state) {
             ScreenState.TRANSITION_OP -> {
@@ -110,7 +160,10 @@ class Shop(private val game: Crystals) : KtxScreen, InputScreen {
     private fun resetState() {
         state = ScreenState.TRANSITION_OP
         items.clear()
+        text.clear()
         selectedItem = null
+        nextItem = null
+        shopkeeper.show()
     }
 
     override fun inputUp(x: Int, y: Int) {
