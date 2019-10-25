@@ -28,8 +28,8 @@ class Chunk(private var x: Float, private val y: Float) {
      */
     init {
         repeat(3) {
-            events.add(Event(Events.ID.values().random()))
-            //events.add(Event(EVENT_TYPE.INN))
+            //events.add(Event(Events.ID.values().random()))
+            events.add(Event(Events.ID.SHOP))
         }
     }
 

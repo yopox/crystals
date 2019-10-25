@@ -1,7 +1,6 @@
 package com.yopox.crystals.screens
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
@@ -16,6 +15,7 @@ import com.yopox.crystals.logic.Progress
 import com.yopox.crystals.ui.*
 import ktx.app.KtxScreen
 import ktx.graphics.use
+import kotlin.random.Random
 
 class Shop(private val game: Crystals) : KtxScreen, InputScreen {
 
@@ -26,11 +26,14 @@ class Shop(private val game: Crystals) : KtxScreen, InputScreen {
     private val viewport = FitViewport(Util.WIDTH, Util.HEIGHT, camera)
 
     private var state = ScreenState.TRANSITION_OP
-    private val icons = ArrayList<Icon>()
+    private val bench = ArrayList<Icon>()
     private val items = ArrayList<Tile>()
     private val buttons = ArrayList<Button>()
     var goldX = 0f
     var selectedItem: Tile? = null
+
+    private val benchX = 4f
+    private val benchY = 24f
 
     init {
         buttons.add(TextButton(79f - 40, 5f, Util.TEXT_SELL) { sell() })
@@ -39,6 +42,11 @@ class Shop(private val game: Crystals) : KtxScreen, InputScreen {
             state = ScreenState.TRANSITION_EN
             blockInput = true
         })
+        bench.add(Icon(Icons.ID.BENCH_LEFT, Pair(benchX, benchY)))
+        bench.add(Icon(Icons.ID.BENCH_MIDDLE, Pair(benchX + 14, benchY)))
+        bench.add(Icon(Icons.ID.BENCH_MIDDLE, Pair(benchX + 2 * 14, benchY)))
+        bench.add(Icon(Icons.ID.BENCH_MIDDLE, Pair(benchX + 3 * 14, benchY)))
+        bench.add(Icon(Icons.ID.BENCH_LEFT, Pair(benchX + 4 * 14, benchY)).apply { flip() })
     }
 
     private fun sell() {
@@ -50,24 +58,16 @@ class Shop(private val game: Crystals) : KtxScreen, InputScreen {
     }
 
     fun setup(event: Event) {
-        val benchX = 4f
-        val benchY = 24f
-        icons.add(Icon(Icons.ID.BENCH_LEFT, Pair(benchX, benchY)))
-        icons.add(Icon(Icons.ID.BENCH_MIDDLE, Pair(benchX + 14, benchY)))
-        icons.add(Icon(Icons.ID.BENCH_MIDDLE, Pair(benchX + 2 * 14, benchY)))
-        icons.add(Icon(Icons.ID.BENCH_MIDDLE, Pair(benchX + 3 * 14, benchY)))
-        icons.add(Icon(Icons.ID.BENCH_LEFT, Pair(benchX + 4 * 14, benchY)).apply { flip() })
-
         // Generate shop items
-        val itemsNb = 3
+        val itemsNb = Random.nextInt(2) + 2
         val spray = (16 * 5) / (itemsNb + 1)
         val itemX = benchX - 4
 
-        items.add(Tile(Icons.ID.CRYSTAL, Pair(itemX + spray - 8, benchY + 17)) { selectedItem = items[0] })
-        items.add(Tile(Icons.ID.SWORD, Pair(itemX + 2 * spray - 8, benchY + 17)) { selectedItem = items[1] })
-        items.add(Tile(Icons.ID.BEER, Pair(itemX + 3 * spray - 8, benchY + 17)) { selectedItem = items[2] })
+        repeat(itemsNb) {
+            items.add(Tile.genShopTile(Pair(itemX + (it + 1) * spray - 8, benchY + 17)) { selectedItem = items[it] })
+        }
 
-        goldX = Util.WIDTH - 7f - Util.textSize("${Progress.gold} GOLD", Util.font).first
+        goldX = Util.WIDTH - 5f - Util.textSize("${Progress.gold} GOLD", Util.font).first
     }
 
     override fun render(delta: Float) {
@@ -84,7 +84,7 @@ class Shop(private val game: Crystals) : KtxScreen, InputScreen {
             Util.drawRect(shapeRenderer, it.pos.first - 1, it.pos.second - 1, 18f, 18f)
         }
 
-        icons.forEach { it.draw(shapeRenderer, batch) }
+        bench.forEach { it.draw(shapeRenderer, batch) }
         items.forEach { it.draw(shapeRenderer, batch) }
         buttons.forEach { it.draw(shapeRenderer, batch) }
 
@@ -108,7 +108,9 @@ class Shop(private val game: Crystals) : KtxScreen, InputScreen {
     }
 
     private fun resetState() {
-        icons.clear()
+        state = ScreenState.TRANSITION_OP
+        items.clear()
+        selectedItem = null
     }
 
     override fun inputUp(x: Int, y: Int) {

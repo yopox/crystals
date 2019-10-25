@@ -53,6 +53,7 @@ object Icons {
         SWORD,
         CRYSTAL,
         CROWN,
+        LONG_SWORD,
 
         // Others
         EXCLAMATION,
@@ -106,6 +107,7 @@ object Icons {
     private val Sword = Pair(0, 28)
     private val Crystal = Pair(18, 22)
     private val Crown = Pair(12, 24)
+    private val LongSword = Pair(0, 29)
 
     // Others
     private val Exclamation = Pair(20, 25)
@@ -154,6 +156,7 @@ object Icons {
         SWORD -> Sword
         CRYSTAL -> Crystal
         CROWN -> Crown
+        LONG_SWORD -> LongSword
 
         EXCLAMATION -> Exclamation
         else -> Unknown

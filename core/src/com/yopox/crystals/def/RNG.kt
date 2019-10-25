@@ -70,6 +70,15 @@ object RNG {
             CROWN to 3
     )
 
+    val shopItems = mapOf(
+            Items.ID.POTION to 10,
+            Items.ID.SCROLL to 2,
+            Items.ID.CARROT to 3,
+            Items.ID.CRYSTAL to 1,
+            Items.ID.SWORD to 6,
+            Items.ID.LONG_SWORD to 3
+    )
+
     private val treasures = mapOf(
             BOOKSHELF to mapOf(
                     Items.ID.SCROLL to 1

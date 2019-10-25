@@ -5,5 +5,5 @@ import com.yopox.crystals.def.Jobs
 
 object Progress {
     var player = Fighters.heroes.get(0)
-    var gold = 1
+    var gold = 10
 }
