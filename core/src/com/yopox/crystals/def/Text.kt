@@ -2,11 +2,16 @@ package com.yopox.crystals.def
 
 object Text {
 
-    val shopkeeperLines = listOf(
-            "What do you need\n    today ?",
-            "Check out these\nmagnificent items !",
+    val shopkeeperWelcome = listOf(
+            "What do you need\n      today ?",
+            "  Check out these\nmagnificent items !",
             "Welcome!",
-            "Take your time\nadventurer!"
+            "Take your time\n  adventurer!"
+    )
+
+    val shopkeeperThanks = listOf(
+            "Thanks :^)",
+            "  Do you need\nanything else ?"
     )
 
 }

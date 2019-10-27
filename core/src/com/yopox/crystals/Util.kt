@@ -29,7 +29,7 @@ object Util {
     lateinit var font: BitmapFont
     lateinit var bigFont: BitmapFont
 
-    const val BUILD_NB = "build 0.1"
+    const val BUILD_NB = "Release 0.1"
 
     const val WIDTH = 160f
     const val HEIGHT = 90f

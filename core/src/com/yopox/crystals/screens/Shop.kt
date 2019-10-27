@@ -64,7 +64,17 @@ class Shop(private val game: Crystals) : KtxScreen, InputScreen {
     }
 
     private fun buy() {
-        Gdx.app.log("Shop", "Buy")
+        selectedItem?.let {
+            val cost = it.treasure!!.value
+            if (cost <= Progress.gold) {
+                Progress.gold -= cost
+                nextItem = null
+                itemTransition = true
+                selectedItem!!.apply { hide() ; clickable = false }
+                itemFrame = 0
+                blockInput = true
+            }
+        }
     }
 
     fun setup(event: Event) {
@@ -78,7 +88,7 @@ class Shop(private val game: Crystals) : KtxScreen, InputScreen {
         }
 
         goldX = Util.WIDTH - 5f - Util.textSize("${Progress.gold} GOLD", Util.font).first
-        text = arrayListOf(Text.shopkeeperLines.random())
+        text = arrayListOf(Text.shopkeeperWelcome.random())
         textX = text.map { Util.textOffsetX(Util.font, it, 76f) }
     }
 
@@ -126,11 +136,7 @@ class Shop(private val game: Crystals) : KtxScreen, InputScreen {
                 Transition.drawTransition(shapeRenderer, 79f, 25f, 76f, 46f, itemFrame) {
                     selectedItem = nextItem
                     text.clear()
-                    text.add(nextItem!!.treasure!!.name)
-                    text.add(nextItem!!.treasure!!.description)
-                    text.add("${nextItem!!.treasure!!.value} GOLD")
-                    textX = text.map { Util.textOffsetX(Util.font, it, 76f) }
-                    shopkeeper.hide()
+                    updateBoxText()
                 }
                 itemFrame++
             } else {
@@ -154,6 +160,20 @@ class Shop(private val game: Crystals) : KtxScreen, InputScreen {
                 }
             }
             else -> Unit
+        }
+    }
+
+    private fun updateBoxText() {
+        if (selectedItem != null) {
+            text.add(nextItem!!.treasure!!.name)
+            text.add(nextItem!!.treasure!!.description)
+            text.add("${nextItem!!.treasure!!.value} GOLD")
+            textX = text.map { Util.textOffsetX(Util.font, it, 76f) }
+            shopkeeper.hide()
+        } else {
+            text = arrayListOf(Text.shopkeeperThanks.random())
+            textX = text.map { Util.textOffsetX(Util.font, it, 76f) }
+            shopkeeper.show()
         }
     }
 

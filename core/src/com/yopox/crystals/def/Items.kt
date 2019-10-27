@@ -17,7 +17,7 @@ object Items {
     private val carrot = Item("Carrot", "Heals 15HP.", 5, Icons.ID.CARROT)
     private val potion = Item("Potion", "Heals 50HP.", 20, Icons.ID.POTION)
     private val scroll = Item("Fire Scroll", "Casts a fireball.", 80, Icons.ID.SCROLL)
-    private val crystal = Item("Warrior Crystal", "!!!", 300, Icons.ID.CRYSTAL)
+    private val crystal = Item("Warrior Crystal", "Looks powerful.", 300, Icons.ID.CRYSTAL)
     private val sword = Item("Sword", "ATK : 2", 15, Icons.ID.SWORD)
     private val longSword = Item("Long Sword", "ATK : 6", 50, Icons.ID.LONG_SWORD)
 
