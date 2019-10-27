@@ -66,7 +66,7 @@ open class Fighter(val type: Fighters.ID, val name: String, val icon: Icons.ID, 
         buffs.clear()
     }
 
-    fun beginTurn(fighters: ArrayList<Fighter>): List<Fight.Block> {
+    fun beginTurn(fighters: List<Fighter>): List<Fight.Block> {
         val blocks = ArrayList<Fight.Block>()
 
         // Update stats
@@ -108,7 +108,7 @@ open class Fighter(val type: Fighters.ID, val name: String, val icon: Icons.ID, 
         return blocks
     }
 
-    internal open fun getMove(fighters: ArrayList<Fighter>): Fight.Move {
+    internal open fun getMove(fighters: List<Fighter>): Fight.Move {
         return Fight.Move(this, Spells.baseSpell(Jobs.ID.ANY), arrayListOf())
     }
 

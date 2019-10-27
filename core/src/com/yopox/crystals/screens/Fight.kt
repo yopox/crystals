@@ -2,18 +2,12 @@ package com.yopox.crystals.screens
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer
-import com.badlogic.gdx.utils.viewport.FitViewport
 import com.yopox.crystals.Crystals
-import com.yopox.crystals.InputScreen
 import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
 import com.yopox.crystals.def.Actions
 import com.yopox.crystals.def.Fighters
 import com.yopox.crystals.def.Icons
-import com.yopox.crystals.def.Spells
 import com.yopox.crystals.logic.Hero
 import com.yopox.crystals.logic.Progress
 import com.yopox.crystals.logic.fight.Fighter
@@ -23,15 +17,15 @@ import com.yopox.crystals.logic.fight.Team
 import com.yopox.crystals.screens.Fight.State.*
 import com.yopox.crystals.ui.ActionIcon
 import com.yopox.crystals.ui.Icon
+import com.yopox.crystals.ui.Screen
 import com.yopox.crystals.ui.Transition
-import ktx.app.KtxScreen
 import ktx.graphics.use
 import kotlin.math.ceil
 
 /**
  * Fight Screen.
  */
-class Fight(private val game: Crystals) : KtxScreen, InputScreen {
+class Fight(game: Crystals) : Screen(Util.TEXT_FIGHT, game) {
 
     /**
      * State of the fight :
@@ -65,19 +59,11 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
 
     data class Block(val type: BlockType, var content: String = "", var int1: Int = 0, var int2: Int = 0)
 
-
-    private val batch = SpriteBatch()
-    private val shapeRenderer = ShapeRenderer()
-    override val camera = OrthographicCamera().also { it.position.set(Util.WIDTH / 2, Util.HEIGHT / 2, 0f) }
-    override var blockInput = true
-    private val viewport = FitViewport(Util.WIDTH, Util.HEIGHT, camera)
-
-    private val buttons = ArrayList<ActionIcon>()
-    private var state = ScreenState.TRANSITION_OP
     private var subState = MAIN
     private val icons = ArrayList<Icon>()
     private val learn: Icon
 
+    var actionButtons = ArrayList<ActionIcon>()
     private val blocks = ArrayList<Block>()
     private var currentBlock: Block? = null
     private val fighters = ArrayList<Fighter>()
@@ -129,12 +115,12 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     }
 
     init {
-        buttons.add(ActionIcon(Actions.ID.ATTACK, Pair(10f, 5f)) { selectIcon(0) })
-        buttons.add(ActionIcon(Actions.ID.DEFENSE, Pair(26f, 5f)) { selectIcon(1) })
-        buttons.add(ActionIcon(Actions.ID.ITEMS, Pair(42f, 5f)) { selectIcon(2) })
-        buttons.add(ActionIcon(Actions.ID.W_MAGIC, Pair(58f, 5f)) { selectIcon(3) })
-        buttons.add(ActionIcon(Actions.ID.ROB, Pair(74f, 5f)) { selectIcon(4) })
-        buttons.add(ActionIcon(Actions.ID.GEOMANCY, Pair(90f, 5f)) { selectIcon(5) })
+        actionButtons.add(ActionIcon(Actions.ID.ATTACK, Pair(10f, 5f)) { selectIcon(0) })
+        actionButtons.add(ActionIcon(Actions.ID.DEFENSE, Pair(26f, 5f)) { selectIcon(1) })
+        actionButtons.add(ActionIcon(Actions.ID.ITEMS, Pair(42f, 5f)) { selectIcon(2) })
+        actionButtons.add(ActionIcon(Actions.ID.W_MAGIC, Pair(58f, 5f)) { selectIcon(3) })
+        actionButtons.add(ActionIcon(Actions.ID.ROB, Pair(74f, 5f)) { selectIcon(4) })
+        actionButtons.add(ActionIcon(Actions.ID.GEOMANCY, Pair(90f, 5f)) { selectIcon(5) })
 
         learn = Icon(Icons.ID.EXCLAMATION, Pair(0f, 0f)).apply { hide() }
     }
@@ -179,8 +165,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
     }
 
     override fun render(delta: Float) {
-        batch.projectionMatrix = camera.combined
-        shapeRenderer.projectionMatrix = camera.combined
+        super.render(delta)
 
         // Draw characters
         icons.map { icon -> icon.draw(shapeRenderer, batch) }
@@ -192,11 +177,6 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
 
         // Draw the Dialog box
         drawDialog()
-
-        batch.use {
-            // Draw the title
-            Util.bigFont.draw(it, Util.TEXT_FIGHT, 10f, Util.HEIGHT - Util.TITLE_OFFSET)
-        }
 
         if (Navigation.navigating) {
             Navigation.frame++
@@ -213,23 +193,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
             }
         }
 
-        when (state) {
-            ScreenState.TRANSITION_OP -> {
-                if (Transition.drawWipe(shapeRenderer, false, reverse = true)) {
-                    state = ScreenState.MAIN
-                    blockInput = false
-                }
-            }
-            ScreenState.TRANSITION_EN -> {
-                if (Transition.drawWipe(shapeRenderer)) {
-                    if (victory) game.setScreen<Trip>()
-                    else game.setScreen<GameOver>()
-                    resetState()
-                }
-            }
-            else -> Unit
-        }
-
+        drawTransitions()
     }
 
     private fun update() {
@@ -375,14 +339,14 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
             Dialog.reset()
         }
         CHOOSE_ACTION -> {
-            Progress.player.setActionsIcons(buttons)
+            Progress.player.setActionsIcons(actionButtons)
         }
         CHOOSE_SUBACTION -> {
-            Progress.player.setSubactionIcons(Navigation.selected, buttons)
+            Progress.player.setSubactionIcons(Navigation.selected, actionButtons)
         }
         CHOOSE_TARGET -> {
             icons.forEach { it.clickable = true }
-            buttons[0].changeType(Actions.ID.RETURN)
+            actionButtons[0].changeType(Actions.ID.RETURN)
             for (i in 1..5) buttons[i].hide()
         }
     }
@@ -410,19 +374,19 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
                 batch.use {
                     Util.font.draw(it, Util.TEXT_ACTIONS, 10f, 32f)
                 }
-                buttons.map { it.draw(shapeRenderer, batch) }
+                actionButtons.map { it.draw(shapeRenderer, batch) }
             }
             CHOOSE_SUBACTION -> {
                 batch.use {
                     Util.font.draw(it, Actions.categoryNames[Intent.category], 10f, 32f)
                 }
-                buttons.map { it.draw(shapeRenderer, batch) }
+                actionButtons.map { it.draw(shapeRenderer, batch) }
             }
             CHOOSE_TARGET -> {
                 batch.use {
                     Util.font.draw(it, Util.TEXT_TARGET, 10f, 32f)
                 }
-                buttons.map { it.draw(shapeRenderer, batch) }
+                actionButtons.map { it.draw(shapeRenderer, batch) }
             }
         }
     }
@@ -450,7 +414,7 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
                         // Crystal
                         Navigation to CHOOSE_SUBACTION
                         Navigation.selected = i - 3
-                        Intent.category = buttons[i].type
+                        Intent.category = actionButtons[i].type
                         blockInput = true
                     }
                     else -> {
@@ -539,32 +503,29 @@ class Fight(private val game: Crystals) : KtxScreen, InputScreen {
         Navigation to MAIN
     }
 
-    override fun show() {
-        super.show()
-        Gdx.input.inputProcessor = this
-    }
-
-    override fun resize(width: Int, height: Int) {
-        viewport.update(width, height)
-        camera.update()
-        camera.position.set(Util.WIDTH / 2, Util.HEIGHT / 2, 0f)
-    }
-
-    override fun dispose() {
-        batch.dispose()
+    override fun stateChange(st: ScreenState) = when (st) {
+        ScreenState.TRANSITION_EN -> {
+            if (victory) game.setScreen<Trip>()
+            else game.setScreen<GameOver>()
+            resetState()
+        }
+        ScreenState.TRANSITION_OP -> {
+            state = ScreenState.MAIN; blockInput = false
+        }
+        else -> Unit
     }
 
     override fun inputUp(x: Int, y: Int) {
-        buttons.forEach { it.lift(x, y) }
+        actionButtons.forEach { it.lift(x, y) }
         icons.forEach { it.lift(x, y) }
     }
 
     override fun inputDown(x: Int, y: Int) {
-        buttons.forEach { it.touch(x, y) }
+        actionButtons.forEach { it.touch(x, y) }
         icons.forEach { it.touch(x, y) }
     }
 
-    private fun resetState() {
+    override fun resetState() {
         blockInput = true
         state = ScreenState.TRANSITION_OP
         blocks.clear()

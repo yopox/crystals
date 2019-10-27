@@ -1,6 +1,7 @@
 package com.yopox.crystals.def
 
 import com.yopox.crystals.def.Icons.ID.*
+import com.yopox.crystals.ui.Chunk
 import kotlin.random.Random
 
 /**
@@ -26,6 +27,18 @@ object RNG {
     const val UNLOCK_3RD_SPELL = 0.04
 
     /**
+     * Chunk probability
+     */
+    val chunks = mapOf(
+            Events.ID.SHOP to 30,
+            Events.ID.BATTLE to 10,
+            Events.ID.GARDEN to 2,
+            Events.ID.INN to 3,
+            Events.ID.TEMPLE to 1,
+            Events.ID.HOUSE to 3
+    )
+
+    /**
      * Treasure probability for tiles.
      */
     private val treasure = mapOf(
@@ -39,8 +52,9 @@ object RNG {
             CLOSET4_OPENED to 0.0
     ).withDefault { 0.01 }
 
-    // Tiles frequency
-
+    /**
+     * Tiles frequency.
+     */
     val inn = mapOf(
             CHEST_CLOSED to 5,
             CHEST_OPENED to 1,

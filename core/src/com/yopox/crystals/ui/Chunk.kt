@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.yopox.crystals.Util
 import com.yopox.crystals.def.Events
+import com.yopox.crystals.def.RNG
+import com.yopox.crystals.def.weighedRandom
 import com.yopox.crystals.logic.Event
 import ktx.graphics.use
 
@@ -28,8 +30,7 @@ class Chunk(private var x: Float, private val y: Float) {
      */
     init {
         repeat(3) {
-            //events.add(Event(Events.ID.values().random()))
-            events.add(Event(Events.ID.SHOP))
+            events.add(Event(RNG.chunks.weighedRandom()))
         }
     }
 

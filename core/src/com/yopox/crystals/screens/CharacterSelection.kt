@@ -1,20 +1,14 @@
 package com.yopox.crystals.screens
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer
-import com.badlogic.gdx.utils.viewport.FitViewport
-import com.yopox.crystals.*
+import com.yopox.crystals.Crystals
+import com.yopox.crystals.ScreenState
+import com.yopox.crystals.Util
 import com.yopox.crystals.def.Fighters
 import com.yopox.crystals.logic.Progress
-import com.yopox.crystals.def.Jobs
-import com.yopox.crystals.logic.Crystal
-import com.yopox.crystals.logic.Hero
-import com.yopox.crystals.ui.Button
+import com.yopox.crystals.ui.Screen
 import com.yopox.crystals.ui.TextButton
 import com.yopox.crystals.ui.Transition
-import ktx.app.KtxScreen
 import ktx.graphics.use
 
 /**
@@ -23,18 +17,10 @@ import ktx.graphics.use
  * TODO: Real nextJobId / previousJob function
  * TODO: Change the state on click
  */
-class CharacterSelection(private val game: Crystals) : KtxScreen, InputScreen {
+class CharacterSelection(game: Crystals) : Screen("", game) {
 
-    private val batch = SpriteBatch()
-    override val camera = OrthographicCamera().also { it.position.set(Util.WIDTH / 2, Util.HEIGHT / 2, 0f) }
-    override var blockInput = true
-    private val viewport = FitViewport(Util.WIDTH, Util.HEIGHT, camera)
-    private val shapeRenderer = ShapeRenderer()
-
-    private val buttons = ArrayList<Button>()
-    private var hero = Fighters.heroes.get(0)
-    private var nextHero = Fighters.heroes.get(0)
-    private var state = ScreenState.TRANSITION_OP
+    private var hero = Fighters.heroes[0]
+    private var nextHero = Fighters.heroes[0]
     private var transition = false
     private var frame = 0
 
@@ -74,22 +60,7 @@ class CharacterSelection(private val game: Crystals) : KtxScreen, InputScreen {
 
         drawClassTransition()
 
-        when (state) {
-            ScreenState.TRANSITION_OP -> {
-                if (Transition.drawWipe(shapeRenderer, false, reverse = true)) {
-                    state = ScreenState.MAIN
-                    blockInput = false
-                }
-            }
-            ScreenState.TRANSITION_EN -> {
-                if (Transition.drawWipe(shapeRenderer)) {
-                    resetState()
-                    game.setScreen<Trip>()
-                }
-            }
-            else -> Unit
-        }
-
+        drawTransitions()
     }
 
     private fun drawClassTransition() {
@@ -107,16 +78,6 @@ class CharacterSelection(private val game: Crystals) : KtxScreen, InputScreen {
                 blockInput = false
             }
         }
-    }
-
-    override fun resize(width: Int, height: Int) {
-        viewport.update(width, height)
-        camera.update()
-        camera.position.set(Util.WIDTH / 2, Util.HEIGHT / 2, 0f)
-    }
-
-    override fun dispose() {
-        batch.dispose()
     }
 
     private fun drawClassDesc() {
@@ -142,9 +103,9 @@ class CharacterSelection(private val game: Crystals) : KtxScreen, InputScreen {
         if (!blockInput) buttons.map { it.touch(x, y) }
     }
 
-    private fun resetState() {
-        hero = Fighters.heroes.get(0)
-        nextHero = Fighters.heroes.get(0)
+    override fun resetState() {
+        hero = Fighters.heroes[0]
+        nextHero = Fighters.heroes[0]
         transition = false
         state = ScreenState.TRANSITION_OP
         frame = 0

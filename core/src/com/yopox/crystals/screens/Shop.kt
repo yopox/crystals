@@ -1,12 +1,7 @@
 package com.yopox.crystals.screens
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer
-import com.badlogic.gdx.utils.viewport.FitViewport
 import com.yopox.crystals.Crystals
-import com.yopox.crystals.InputScreen
 import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
 import com.yopox.crystals.def.Icons
@@ -14,22 +9,13 @@ import com.yopox.crystals.def.Text
 import com.yopox.crystals.logic.Event
 import com.yopox.crystals.logic.Progress
 import com.yopox.crystals.ui.*
-import ktx.app.KtxScreen
 import ktx.graphics.use
 import kotlin.random.Random
 
-class Shop(private val game: Crystals) : KtxScreen, InputScreen {
+class Shop(game: Crystals) : Screen(Util.TEXT_SHOP, game) {
 
-    private val batch = SpriteBatch()
-    private val shapeRenderer = ShapeRenderer()
-    override val camera = OrthographicCamera().also { it.position.set(Util.WIDTH / 2, Util.HEIGHT / 2, 0f) }
-    override var blockInput = true
-    private val viewport = FitViewport(Util.WIDTH, Util.HEIGHT, camera)
-
-    private var state = ScreenState.TRANSITION_OP
     private val bench = ArrayList<Icon>()
     private val items = ArrayList<Tile>()
-    private val buttons = ArrayList<Button>()
     var goldX = 0f
 
     private var itemTransition = false
@@ -70,7 +56,7 @@ class Shop(private val game: Crystals) : KtxScreen, InputScreen {
                 Progress.gold -= cost
                 nextItem = null
                 itemTransition = true
-                selectedItem!!.apply { hide() ; clickable = false }
+                selectedItem!!.apply { hide(); clickable = false }
                 itemFrame = 0
                 blockInput = true
             }
@@ -102,14 +88,7 @@ class Shop(private val game: Crystals) : KtxScreen, InputScreen {
     }
 
     override fun render(delta: Float) {
-        batch.projectionMatrix = camera.combined
-        shapeRenderer.projectionMatrix = camera.combined
-
-        // Draw the title
-        batch.use {
-            Util.bigFont.draw(it, Util.TEXT_SHOP, 10f, Util.HEIGHT - Util.TITLE_OFFSET)
-            Util.font.draw(it, "${Progress.gold} GOLD", goldX, 81f)
-        }
+        super.render(delta)
 
         // Shop items
         nextItem?.let {
@@ -119,7 +98,6 @@ class Shop(private val game: Crystals) : KtxScreen, InputScreen {
 
         // UI (bench & buttons)
         bench.forEach { it.draw(shapeRenderer, batch) }
-        buttons.forEach { it.draw(shapeRenderer, batch) }
 
         // Item box
         Util.drawRect(shapeRenderer, 79f, 25f, 76f, 46f)
@@ -146,21 +124,7 @@ class Shop(private val game: Crystals) : KtxScreen, InputScreen {
             }
         }
 
-        when (state) {
-            ScreenState.TRANSITION_OP -> {
-                if (Transition.drawWipe(shapeRenderer, false, reverse = true)) {
-                    state = ScreenState.MAIN
-                    blockInput = false
-                }
-            }
-            ScreenState.TRANSITION_EN -> {
-                if (Transition.drawWipe(shapeRenderer)) {
-                    resetState()
-                    game.setScreen<Trip>()
-                }
-            }
-            else -> Unit
-        }
+        drawTransitions()
     }
 
     private fun updateBoxText() {
@@ -177,7 +141,7 @@ class Shop(private val game: Crystals) : KtxScreen, InputScreen {
         }
     }
 
-    private fun resetState() {
+    override fun resetState() {
         state = ScreenState.TRANSITION_OP
         items.clear()
         text.clear()
@@ -196,18 +160,4 @@ class Shop(private val game: Crystals) : KtxScreen, InputScreen {
         items.forEach { it.touch(x, y) }
     }
 
-    override fun show() {
-        super.show()
-        Gdx.input.inputProcessor = this
-    }
-
-    override fun resize(width: Int, height: Int) {
-        viewport.update(width, height)
-        camera.update()
-        camera.position.set(Util.WIDTH / 2, Util.HEIGHT / 2, 0f)
-    }
-
-    override fun dispose() {
-        batch.dispose()
-    }
 }

@@ -19,11 +19,11 @@ class Hero(val job: Jobs.ID, name: String, initStats: Stats, val desc: String, i
         stats to baseStats
     }
 
-    override fun getMove(fighters: ArrayList<Fighter>): Fight.Move {
+    override fun getMove(fighters: List<Fighter>): Fight.Move {
         return Fight.Move(this, Spells.map.getValue(Fight.Intent.action), Fight.Intent.targets)
     }
 
-    fun setActionsIcons(buttons: ArrayList<ActionIcon>) {
+    fun setActionsIcons(buttons: List<ActionIcon>) {
         // Show all buttons
         buttons.forEach { it.show() }
 

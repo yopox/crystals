@@ -1,12 +1,7 @@
 package com.yopox.crystals.screens
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer
-import com.badlogic.gdx.utils.viewport.FitViewport
 import com.yopox.crystals.Crystals
-import com.yopox.crystals.InputScreen
 import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
 import com.yopox.crystals.def.Icons
@@ -14,20 +9,11 @@ import com.yopox.crystals.logic.Event
 import com.yopox.crystals.logic.Item
 import com.yopox.crystals.logic.Progress
 import com.yopox.crystals.ui.*
-import ktx.app.KtxScreen
 import ktx.graphics.use
 
-class Inn(private val game: Crystals) : KtxScreen, InputScreen {
+class Inn(game: Crystals) : Screen(Util.TEXT_INN, game) {
 
-    private val batch = SpriteBatch()
-    private val shapeRenderer = ShapeRenderer()
-    override val camera = OrthographicCamera().also { it.position.set(Util.WIDTH / 2, Util.HEIGHT / 2, 0f) }
-    override var blockInput = true
-    private val viewport = FitViewport(Util.WIDTH, Util.HEIGHT, camera)
-
-    private var state = ScreenState.TRANSITION_OP
     private val icons = ArrayList<Icon>()
-    private val buttons = ArrayList<Button>()
     private var slept = false
     private var transition = false
     private var frame = 0
@@ -62,8 +48,7 @@ class Inn(private val game: Crystals) : KtxScreen, InputScreen {
     }
 
     override fun render(delta: Float) {
-        batch.projectionMatrix = camera.combined
-        shapeRenderer.projectionMatrix = camera.combined
+        super.render(delta)
 
         // Draw the treasure
         if (treasure != null) {
@@ -79,9 +64,8 @@ class Inn(private val game: Crystals) : KtxScreen, InputScreen {
         // Draw characters
         icons.forEach { icon -> icon.draw(shapeRenderer, batch) }
 
-        // Draw the title
+        // Draw the stats
         batch.use {
-            Util.bigFont.draw(it, Util.TEXT_INN, 10f, Util.HEIGHT - Util.TITLE_OFFSET)
             Util.font.draw(it, stats[0], statsX[0], 23f)
             Util.font.draw(it, stats[1], statsX[1], 13f)
         }
@@ -128,21 +112,7 @@ class Inn(private val game: Crystals) : KtxScreen, InputScreen {
             }
         }
 
-        when (state) {
-            ScreenState.TRANSITION_OP -> {
-                if (Transition.drawWipe(shapeRenderer, false, reverse = true)) {
-                    state = ScreenState.MAIN
-                    blockInput = false
-                }
-            }
-            ScreenState.TRANSITION_EN -> {
-                if (Transition.drawWipe(shapeRenderer)) {
-                    resetState()
-                    game.setScreen<Trip>()
-                }
-            }
-            else -> Unit
-        }
+        drawTransitions()
     }
 
     private fun setStats() {
@@ -164,7 +134,7 @@ class Inn(private val game: Crystals) : KtxScreen, InputScreen {
     }
 
     private fun clickTile(i: Int) {
-        val tile = icons[i+1] as Tile
+        val tile = icons[i + 1] as Tile
         if (tile.id in Icons.changingIcons.keys) tile.setIcon(Icons.changingIcons[tile.id])
         if (!tile.firstTouched && (tile.treasure != null || tile.gold > 0)) {
             tile.firstTouched = true
@@ -184,7 +154,7 @@ class Inn(private val game: Crystals) : KtxScreen, InputScreen {
         buttons.forEach { it.touch(x, y) }
     }
 
-    private fun resetState() {
+    override fun resetState() {
         icons.clear()
         buttons[0].clickable = true
         slept = false

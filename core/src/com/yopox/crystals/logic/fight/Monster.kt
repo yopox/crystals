@@ -16,7 +16,7 @@ class Monster(type: Fighters.ID, name: String, monsterStats: Stats, val spells: 
         baseStats = monsterStats.copy()
     }
 
-    override fun getMove(fighters: ArrayList<Fighter>): Fight.Move {
+    override fun getMove(fighters: List<Fighter>): Fight.Move {
 
         val spells = spells.filter { it.cost <= stats.mp }
         val spell: Spell
