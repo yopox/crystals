@@ -320,11 +320,11 @@ class Fight(game: Crystals) : Screen(Util.TEXT_FIGHT, game) {
         }
         BlockType.WIN -> {
             victory = true
-            state = ScreenState.TRANSITION_EN
+            state = ScreenState.ENDING
         }
         BlockType.FAINT -> {
             victory = false
-            state = ScreenState.TRANSITION_EN
+            state = ScreenState.ENDING
         }
         BlockType.UPDATE_HP -> stats[0] = "HP ${currentBlock!!.int1}/${fighters[hero].baseStats.hp}"
         BlockType.UPDATE_MP -> stats[1] = "MP ${currentBlock!!.int1}/${fighters[hero].baseStats.mp}"
@@ -504,12 +504,12 @@ class Fight(game: Crystals) : Screen(Util.TEXT_FIGHT, game) {
     }
 
     override fun stateChange(st: ScreenState) = when (st) {
-        ScreenState.TRANSITION_EN -> {
+        ScreenState.ENDING -> {
             if (victory) game.setScreen<Trip>()
             else game.setScreen<GameOver>()
             resetState()
         }
-        ScreenState.TRANSITION_OP -> {
+        ScreenState.OPENING -> {
             state = ScreenState.MAIN; blockInput = false
         }
         else -> Unit
@@ -527,7 +527,7 @@ class Fight(game: Crystals) : Screen(Util.TEXT_FIGHT, game) {
 
     override fun resetState() {
         blockInput = true
-        state = ScreenState.TRANSITION_OP
+        state = ScreenState.OPENING
         blocks.clear()
         subState = MAIN
         icons.clear()

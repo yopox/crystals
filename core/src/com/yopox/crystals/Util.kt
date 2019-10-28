@@ -15,8 +15,8 @@ import ktx.graphics.use
 
 enum class ScreenState {
     MAIN,
-    TRANSITION_OP,
-    TRANSITION_EN
+    OPENING,
+    ENDING
 }
 
 /**
@@ -68,6 +68,7 @@ object Util {
     const val TEXT_SELL = "Sell"
     const val TEXT_BUY = "Buy"
     const val TEXT_LEAVE = "Leave"
+    const val TEXT_GARDEN = "Garden"
     /**
      * Generates [BitmapFont] objects from `.ttf` files.
      */

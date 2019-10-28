@@ -32,7 +32,7 @@ class CharacterSelection(game: Crystals) : Screen("", game) {
         buttons.add(TextButton(x, y, Util.TEXT_CONTINUE) {
             blockInput = true
             Progress.player = hero
-            state = ScreenState.TRANSITION_EN
+            state = ScreenState.ENDING
         })
         buttons.add(TextButton(x, y + 21, Util.TEXT_PREVIOUS) {
             nextHero = Util.next(Fighters.heroes, hero)
@@ -107,7 +107,7 @@ class CharacterSelection(game: Crystals) : Screen("", game) {
         hero = Fighters.heroes[0]
         nextHero = Fighters.heroes[0]
         transition = false
-        state = ScreenState.TRANSITION_OP
+        state = ScreenState.OPENING
         frame = 0
         blockInput = true
     }

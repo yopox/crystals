@@ -29,9 +29,7 @@ class Chunk(private var x: Float, private val y: Float) {
      * TODO: Real event generation
      */
     init {
-        repeat(3) {
-            events.add(Event(RNG.chunks.weighedRandom()))
-        }
+        reroll()
     }
 
     fun draw(sR: ShapeRenderer, batch: SpriteBatch, icons: Texture) {
@@ -72,6 +70,13 @@ class Chunk(private var x: Float, private val y: Float) {
 
     fun step() {
         x -= Util.CHUNK_SEP
+    }
+
+    fun reroll() {
+        events.clear()
+        repeat(3) {
+            events.add(Event(RNG.chunks.weighedRandom()))
+        }
     }
 
 }

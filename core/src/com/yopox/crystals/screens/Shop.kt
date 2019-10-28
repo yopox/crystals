@@ -35,7 +35,7 @@ class Shop(game: Crystals) : Screen(Util.TEXT_SHOP, game) {
         buttons.add(TextButton(79f - 40, 5f, Util.TEXT_SELL) { sell() })
         buttons.add(TextButton(79f, 5f, Util.TEXT_BUY) { buy() })
         buttons.add(TextButton(79f + 40, 5f, Util.TEXT_LEAVE) {
-            state = ScreenState.TRANSITION_EN
+            state = ScreenState.ENDING
             blockInput = true
         })
         bench.add(Icon(Icons.ID.BENCH_LEFT, Pair(benchX, benchY)))
@@ -142,7 +142,7 @@ class Shop(game: Crystals) : Screen(Util.TEXT_SHOP, game) {
     }
 
     override fun resetState() {
-        state = ScreenState.TRANSITION_OP
+        state = ScreenState.OPENING
         items.clear()
         text.clear()
         selectedItem = null

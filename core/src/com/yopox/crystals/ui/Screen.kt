@@ -20,7 +20,7 @@ abstract class Screen(val name: String, internal val game: Crystals) : KtxScreen
     internal val camera = OrthographicCamera().also { it.position.set(Util.WIDTH / 2, Util.HEIGHT / 2, 0f) }
     internal var blockInput = true
     internal val viewport = FitViewport(Util.WIDTH, Util.HEIGHT, camera)
-    internal var state = ScreenState.TRANSITION_OP
+    internal var state = ScreenState.OPENING
     internal var buttons = mutableListOf<Button>()
 
     override fun show() {
@@ -51,14 +51,14 @@ abstract class Screen(val name: String, internal val game: Crystals) : KtxScreen
     }
 
     fun drawTransitions() = when (state) {
-        ScreenState.TRANSITION_OP -> {
+        ScreenState.OPENING -> {
             if (Transition.drawWipe(shapeRenderer, false, reverse = true))
-                stateChange(ScreenState.TRANSITION_OP)
+                stateChange(ScreenState.OPENING)
             else Unit
         }
-        ScreenState.TRANSITION_EN -> {
+        ScreenState.ENDING -> {
             if (Transition.drawWipe(shapeRenderer))
-                stateChange(ScreenState.TRANSITION_EN)
+                stateChange(ScreenState.ENDING)
             else Unit
         }
         else -> Unit
@@ -67,10 +67,10 @@ abstract class Screen(val name: String, internal val game: Crystals) : KtxScreen
     abstract fun resetState(): Unit
 
     open fun stateChange(st: ScreenState) = when (st) {
-        ScreenState.TRANSITION_EN -> {
+        ScreenState.ENDING -> {
             resetState(); game.setScreen<Trip>()
         }
-        ScreenState.TRANSITION_OP -> {
+        ScreenState.OPENING -> {
             state = ScreenState.MAIN; blockInput = false
         }
         else -> Unit

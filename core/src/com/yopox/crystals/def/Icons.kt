@@ -42,6 +42,12 @@ object Icons {
         BENCH_LEFT,
         BENCH_MIDDLE,
 
+        // Landscape
+        WEEDS,
+        TREE,
+        CACTUS,
+        ROCKS,
+
         // Items
         COINS,
         BAG_OF_COINS,
@@ -97,6 +103,12 @@ object Icons {
     private val BenchLeft = Pair(3, 8)
     private val BenchMiddle = Pair(4, 8)
 
+    // Landscape
+    private val Tree = Pair(0, 1)
+    private val Rocks = Pair(5, 2)
+    private val Cactus = Pair(6, 1)
+    private val Weeds = Pair(0, 2)
+
     // Items
     private val Coins = Pair(9, 26)
     private val BagOfCoins = Pair(10, 26)
@@ -148,6 +160,11 @@ object Icons {
         PILLAR_BOTTOM -> PillarBottom
         BENCH_LEFT -> BenchLeft
         BENCH_MIDDLE -> BenchMiddle
+
+        WEEDS -> Weeds
+        ROCKS -> Rocks
+        TREE -> Tree
+        CACTUS -> Cactus
 
         POTION -> Potion
         CARROT -> Carrot

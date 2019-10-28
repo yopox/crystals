@@ -18,7 +18,7 @@ class Temple(game: Crystals) : Screen(Util.TEXT_TEMPLE, game) {
     val circle: Texture = Crystals.assetManager["circle.png"]
 
     fun setup(event: Event) {
-        icons.add(Tile.genTempleTile(Pair(72f, 30f)) { state = ScreenState.TRANSITION_EN; blockInput = true })
+        icons.add(Tile.genTempleTile(Pair(72f, 30f)) { state = ScreenState.ENDING; blockInput = true })
     }
 
     override fun render(delta: Float) {
@@ -44,7 +44,7 @@ class Temple(game: Crystals) : Screen(Util.TEXT_TEMPLE, game) {
     }
 
     override fun resetState() {
-        state = ScreenState.TRANSITION_OP
+        state = ScreenState.OPENING
         icons.clear()
     }
 

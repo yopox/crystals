@@ -18,8 +18,13 @@ class TitleScreen(game: Crystals) : Screen("", game) {
         state = ScreenState.MAIN
         buttons.add(TextButton(Util.WIDTH / 2 - Util.BUTTON_WIDTH, Util.HEIGHT / 4, Util.TEXT_NEWGAME, true) {
             blockInput = true
-            state = ScreenState.TRANSITION_EN
+            state = ScreenState.ENDING
         })
+    }
+
+    override fun show() {
+        super.show()
+        blockInput = false
     }
 
     override fun render(delta: Float) {
@@ -36,10 +41,10 @@ class TitleScreen(game: Crystals) : Screen("", game) {
     }
 
     override fun stateChange(st: ScreenState) = when (st) {
-        ScreenState.TRANSITION_EN -> {
+        ScreenState.ENDING -> {
             resetState(); game.setScreen<CharacterSelection>()
         }
-        ScreenState.TRANSITION_OP -> {
+        ScreenState.OPENING -> {
             state = ScreenState.MAIN; blockInput = false
         }
         else -> Unit
@@ -55,6 +60,6 @@ class TitleScreen(game: Crystals) : Screen("", game) {
 
     override fun resetState() {
         blockInput = true
-        state = ScreenState.TRANSITION_OP
+        state = ScreenState.OPENING
     }
 }

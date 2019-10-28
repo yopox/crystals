@@ -13,7 +13,7 @@ class GameOver(game: Crystals) : Screen("", game) {
     init {
         buttons.add(TextButton(Util.WIDTH / 2 - Util.BUTTON_WIDTH, Util.HEIGHT / 4, Util.TEXT_RETURN_TITLE, true) {
             blockInput = true
-            state = ScreenState.TRANSITION_EN
+            state = ScreenState.ENDING
         })
     }
 
@@ -29,10 +29,10 @@ class GameOver(game: Crystals) : Screen("", game) {
     }
 
     override fun stateChange(st: ScreenState) = when (st) {
-        ScreenState.TRANSITION_EN -> {
+        ScreenState.ENDING -> {
             resetState(); game.setScreen<TitleScreen>()
         }
-        ScreenState.TRANSITION_OP -> {
+        ScreenState.OPENING -> {
             state = ScreenState.MAIN; blockInput = false
         }
         else -> Unit
@@ -48,6 +48,6 @@ class GameOver(game: Crystals) : Screen("", game) {
 
     override fun resetState() {
         blockInput = true
-        state = ScreenState.TRANSITION_OP
+        state = ScreenState.OPENING
     }
 }

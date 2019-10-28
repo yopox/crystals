@@ -28,7 +28,7 @@ class Inn(game: Crystals) : Screen(Util.TEXT_INN, game) {
     init {
         buttons.add(TextButton(10f, 7f, Util.TEXT_SLEEP) { sleep() })
         buttons.add(TextButton(10f + Util.BUTTON_WIDTH + 4, 7f, Util.TEXT_CONTINUE) {
-            state = ScreenState.TRANSITION_EN
+            state = ScreenState.ENDING
             blockInput = true
         })
     }
@@ -158,7 +158,7 @@ class Inn(game: Crystals) : Screen(Util.TEXT_INN, game) {
         icons.clear()
         buttons[0].clickable = true
         slept = false
-        state = ScreenState.TRANSITION_OP
+        state = ScreenState.OPENING
         treasure = null
         treasureTransition = false
         treasureFrame = 0

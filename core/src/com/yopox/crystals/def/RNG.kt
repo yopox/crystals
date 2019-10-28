@@ -30,9 +30,9 @@ object RNG {
      * Chunk probability
      */
     val chunks = mapOf(
-            Events.ID.SHOP to 30,
+            Events.ID.SHOP to 3,
             Events.ID.BATTLE to 10,
-            Events.ID.GARDEN to 2,
+            Events.ID.GARDEN to 4,
             Events.ID.INN to 3,
             Events.ID.TEMPLE to 1,
             Events.ID.HOUSE to 3
@@ -64,6 +64,14 @@ object RNG {
             CLOSET2 to 1,
             CLOSET3 to 1,
             CLOSET4_CLOSED to 2
+    )
+
+    val garden = mapOf(
+            CHEST_CLOSED to 1,
+            WEEDS to 5,
+            CACTUS to 1,
+            TREE to 5,
+            ROCKS to 2
     )
 
     val innBad = mapOf(

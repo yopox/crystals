@@ -27,14 +27,14 @@ class Trip(game: Crystals) : Screen(Util.TEXT_TRIP, game) {
         val x = 16f
         val y = 7f
         buttons.add(TextButton(x, y, Util.TEXT_STATUS) {
-            Gdx.app.log("trip", "Status")
+            chunks[0].reroll()
         })
         buttons.add(TextButton(x + 40, y, Util.TEXT_BAG) {
             Gdx.app.log("trip", "Bag")
         })
         buttons.add(TextButton(x + 2 * 40, y, Util.TEXT_CONTINUE, clickable = false) {
             Display.changeEvent(chunks[0].getEvent()!!)
-            state = ScreenState.TRANSITION_EN
+            state = ScreenState.ENDING
             blockInput = true
         })
         for (i in 0..4)
@@ -59,10 +59,10 @@ class Trip(game: Crystals) : Screen(Util.TEXT_TRIP, game) {
     }
 
     override fun stateChange(st: ScreenState) = when (st) {
-        ScreenState.TRANSITION_EN -> {
+        ScreenState.ENDING -> {
             resetState(); game.setScreen<Display>()
         }
-        ScreenState.TRANSITION_OP -> {
+        ScreenState.OPENING -> {
             state = ScreenState.MAIN; blockInput = false
         }
         else -> Unit
@@ -96,7 +96,7 @@ class Trip(game: Crystals) : Screen(Util.TEXT_TRIP, game) {
         chunks.map { it.step() }
         chunks.add(Chunk(Util.WIDTH / 4 + 16f + 4 * Util.CHUNK_SEP, Util.HEIGHT / 3 - 3))
         buttons[2].clickable = false
-        state = ScreenState.TRANSITION_OP
+        state = ScreenState.OPENING
     }
 
 }
