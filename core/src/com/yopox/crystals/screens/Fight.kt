@@ -1,6 +1,5 @@
 package com.yopox.crystals.screens
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.yopox.crystals.Crystals
 import com.yopox.crystals.ScreenState
@@ -275,27 +274,21 @@ class Fight(game: Crystals) : Screen(Util.TEXT_FIGHT, game) {
                         }
                         BlockType.LEARN -> {
                             currentBlock!!.int2 += 1
-                            Gdx.app.log("icon", learn.pos.toString())
 
                             // Draw wipe
                             val t1 = Transition.TRANSITION_TIME
-                            if (currentBlock!!.int2 < t1)
-                                Transition.drawTransition(
+                            val stopTime = 48
+                            if (currentBlock!!.int2 < t1 + stopTime)
+                                Transition.drawInvertTransition(
                                         shapeRenderer,
                                         learn.pos.first, learn.pos.second,
-                                        16f, 16f, currentBlock!!.int2, 0)
-                                { learn.show() }
+                                        16f, 16f,
+                                        currentBlock!!.int2, stopTime) {}
 
-                            if (currentBlock!!.int2 > t1 + 48)
-                                Transition.drawTransition(
-                                        shapeRenderer,
-                                        learn.pos.first, learn.pos.second,
-                                        16f, 16f, currentBlock!!.int2 - t1 - 48, 0)
-                                { learn.hide() }
-
-                            if (currentBlock!!.int2 == 2 * t1 + 48)
+                            if (currentBlock!!.int2 == t1 + stopTime - 1) {
+                                learn.hide()
                                 currentBlock = null
-
+                            }
                         }
                         else -> currentBlock = null
                     }
@@ -328,7 +321,10 @@ class Fight(game: Crystals) : Screen(Util.TEXT_FIGHT, game) {
         }
         BlockType.UPDATE_HP -> stats[0] = "HP ${currentBlock!!.int1}/${fighters[hero].baseStats.hp}"
         BlockType.UPDATE_MP -> stats[1] = "MP ${currentBlock!!.int1}/${fighters[hero].baseStats.mp}"
-        BlockType.LEARN -> learn.pos = Pair(icons[currentBlock!!.int1].pos.first, icons[currentBlock!!.int1].pos.second + 18)
+        BlockType.LEARN -> {
+            learn.pos = Pair(icons[currentBlock!!.int1].pos.first, icons[currentBlock!!.int1].pos.second + 18)
+            learn.show()
+        }
         else -> Unit
     }
 
@@ -347,7 +343,7 @@ class Fight(game: Crystals) : Screen(Util.TEXT_FIGHT, game) {
         CHOOSE_TARGET -> {
             icons.forEach { it.clickable = true }
             actionButtons[0].changeType(Actions.ID.RETURN)
-            for (i in 1..5) buttons[i].hide()
+            actionButtons.forEachIndexed { i, icon -> if (i != 0) icon.hide() }
         }
     }
 

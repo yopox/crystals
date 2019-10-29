@@ -134,9 +134,9 @@ object Util {
      * @param x X position (bottom-left)
      * @param y Y position (bottom-left)
      */
-    fun drawFilledRect(shapeRenderer: ShapeRenderer, x: Float, y: Float, w: Float, h: Float) {
+    fun drawFilledRect(shapeRenderer: ShapeRenderer, x: Float, y: Float, w: Float, h: Float, black: Boolean = false) {
         shapeRenderer.use(ShapeRenderer.ShapeType.Filled) {
-            it.color = Color.WHITE
+            it.color = if (black) Color.BLACK else Color.WHITE
             it.rect(x, y, w, h)
         }
     }
