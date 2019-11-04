@@ -69,6 +69,7 @@ object Util {
     const val TEXT_BUY = "Buy"
     const val TEXT_LEAVE = "Leave"
     const val TEXT_GARDEN = "Garden"
+    const val TEXT_RESULTS = "Results"
     /**
      * Generates [BitmapFont] objects from `.ttf` files.
      */

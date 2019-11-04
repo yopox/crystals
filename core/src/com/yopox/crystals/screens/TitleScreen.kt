@@ -42,7 +42,7 @@ class TitleScreen(game: Crystals) : Screen("", game) {
 
     override fun stateChange(st: ScreenState) = when (st) {
         ScreenState.ENDING -> {
-            resetState(); game.setScreen<CharacterSelection>()
+            resetState(); game.setScreen<Results>()
         }
         ScreenState.OPENING -> {
             state = ScreenState.MAIN; blockInput = false

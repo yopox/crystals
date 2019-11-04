@@ -60,6 +60,7 @@ open class Fighter(val type: Fighters.ID, val name: String, val icon: Icons.ID, 
     val alive: Boolean
         get() = stats.hp > 0
     var freeSpell = false
+    var level = 1
 
     open fun prepare() {
         stats = baseStats.copy()

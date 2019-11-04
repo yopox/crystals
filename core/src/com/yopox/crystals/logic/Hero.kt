@@ -6,9 +6,10 @@ import com.yopox.crystals.logic.fight.Stats
 import com.yopox.crystals.screens.Fight
 import com.yopox.crystals.ui.ActionIcon
 
-class Hero(val job: Jobs.ID, name: String, initStats: Stats, val desc: String, icon: Icons.ID) : Fighter(Fighters.ID.HERO, name, icon, false) {
+class Hero(job: Jobs.ID, name: String, initStats: Stats, val desc: String, icon: Icons.ID) : Fighter(Fighters.ID.HERO, name, icon, false) {
 
     var crystals = arrayListOf(Crystal.baseCrystal(job))
+    var xp = 12000
 
     init {
         baseStats = initStats.copy()
@@ -78,6 +79,14 @@ class Hero(val job: Jobs.ID, name: String, initStats: Stats, val desc: String, i
             freeSpell = true
         } else Unit
         else -> Unit
+    }
+
+    fun addXP(amount: Int) {
+        if (amount <= 0) return
+        this.xp += amount
+        while (this.xp >= Progress.XP_LEVELS[level]) {
+            level++
+        }
     }
 
 }

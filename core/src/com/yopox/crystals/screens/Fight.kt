@@ -501,7 +501,10 @@ class Fight(game: Crystals) : Screen(Util.TEXT_FIGHT, game) {
 
     override fun stateChange(st: ScreenState) = when (st) {
         ScreenState.ENDING -> {
-            if (victory) game.setScreen<Trip>()
+            if (victory) {
+                game.getScreen<Results>().setup(0, listOf())
+                game.setScreen<Results>()
+            }
             else game.setScreen<GameOver>()
             resetState()
         }
@@ -533,6 +536,10 @@ class Fight(game: Crystals) : Screen(Util.TEXT_FIGHT, game) {
         victory = false
         Dialog.reset()
         icons.forEach { it.reset() }
+    }
+
+    fun stateChange() {
+
     }
 
 }
