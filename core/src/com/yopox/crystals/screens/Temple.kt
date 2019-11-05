@@ -6,7 +6,6 @@ import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
 import com.yopox.crystals.logic.Event
 import com.yopox.crystals.ui.Icon
-import com.yopox.crystals.ui.Screen
 import com.yopox.crystals.ui.Tile
 import ktx.graphics.use
 import kotlin.math.sin

@@ -31,6 +31,12 @@ object Util {
 
     const val BUILD_NB = "Release 0.1"
 
+    /**
+     * Gameplay values
+     */
+    const val STARTING_COINS = 10
+    const val MAX_LOOT = 4
+
     const val WIDTH = 160f
     const val HEIGHT = 90f
     const val TITLE_OFFSET = 8

@@ -6,7 +6,6 @@ import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
 import com.yopox.crystals.def.Fighters
 import com.yopox.crystals.logic.Progress
-import com.yopox.crystals.ui.Screen
 import com.yopox.crystals.ui.TextButton
 import com.yopox.crystals.ui.Transition
 import ktx.graphics.use

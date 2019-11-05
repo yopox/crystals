@@ -2,13 +2,14 @@ package com.yopox.crystals.logic.fight
 
 import com.yopox.crystals.def.Fighters
 import com.yopox.crystals.def.Icons
+import com.yopox.crystals.logic.Item
 import com.yopox.crystals.screens.Fight
 
 enum class Behavior {
     RANDOM
 }
 
-class Monster(type: Fighters.ID, name: String, monsterStats: Stats, val spells: ArrayList<Spell>, icon: Icons.ID) : Fighter(type, name, icon, true) {
+class Monster(type: Fighters.ID, name: String, val monsterStats: Stats, val spells: ArrayList<Spell>, icon: Icons.ID, val xp: Int, val coins: Int, val loots: Map<Item, Double>) : Fighter(type, name, icon, true) {
 
     private val behavior: Behavior = Behavior.RANDOM
 
@@ -35,4 +36,9 @@ class Monster(type: Fighters.ID, name: String, monsterStats: Stats, val spells: 
 
         return Fight.Move(this, spell, targets)
     }
+
+    fun scale(lvl: Int) {
+        // TODO: Stats scaling
+    }
+
 }

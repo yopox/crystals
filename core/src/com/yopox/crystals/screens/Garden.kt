@@ -4,7 +4,6 @@ import com.yopox.crystals.Crystals
 import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
 import com.yopox.crystals.logic.Event
-import com.yopox.crystals.ui.Screen
 import com.yopox.crystals.ui.TextButton
 import com.yopox.crystals.ui.Tile
 

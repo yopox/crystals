@@ -7,7 +7,6 @@ import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
 import com.yopox.crystals.logic.Progress
 import com.yopox.crystals.ui.Chunk
-import com.yopox.crystals.ui.Screen
 import com.yopox.crystals.ui.TextButton
 import ktx.graphics.use
 

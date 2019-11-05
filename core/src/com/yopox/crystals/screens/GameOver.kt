@@ -3,7 +3,6 @@ package com.yopox.crystals.screens
 import com.yopox.crystals.Crystals
 import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
-import com.yopox.crystals.ui.Screen
 import com.yopox.crystals.ui.TextButton
 import ktx.graphics.use
 

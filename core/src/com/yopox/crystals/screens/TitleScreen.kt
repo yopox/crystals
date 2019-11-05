@@ -3,7 +3,7 @@ package com.yopox.crystals.screens
 import com.yopox.crystals.Crystals
 import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
-import com.yopox.crystals.ui.Screen
+import com.yopox.crystals.logic.Progress
 import com.yopox.crystals.ui.TextButton
 import ktx.graphics.use
 
@@ -17,6 +17,7 @@ class TitleScreen(game: Crystals) : Screen("", game) {
     init {
         state = ScreenState.MAIN
         buttons.add(TextButton(Util.WIDTH / 2 - Util.BUTTON_WIDTH, Util.HEIGHT / 4, Util.TEXT_NEWGAME, true) {
+            Progress.reset()
             blockInput = true
             state = ScreenState.ENDING
         })
@@ -42,7 +43,7 @@ class TitleScreen(game: Crystals) : Screen("", game) {
 
     override fun stateChange(st: ScreenState) = when (st) {
         ScreenState.ENDING -> {
-            resetState(); game.setScreen<Results>()
+            resetState(); game.setScreen<CharacterSelection>()
         }
         ScreenState.OPENING -> {
             state = ScreenState.MAIN; blockInput = false

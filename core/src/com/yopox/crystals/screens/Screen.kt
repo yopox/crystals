@@ -1,4 +1,4 @@
-package com.yopox.crystals.ui
+package com.yopox.crystals.screens
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputProcessor
@@ -9,7 +9,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport
 import com.yopox.crystals.Crystals
 import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
-import com.yopox.crystals.screens.Trip
+import com.yopox.crystals.ui.Button
+import com.yopox.crystals.ui.Transition
 import ktx.app.KtxScreen
 import ktx.graphics.use
 

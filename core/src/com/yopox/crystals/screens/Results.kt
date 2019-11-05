@@ -6,8 +6,12 @@ import com.yopox.crystals.Util
 import com.yopox.crystals.def.Icons
 import com.yopox.crystals.logic.Item
 import com.yopox.crystals.logic.Progress
-import com.yopox.crystals.ui.*
+import com.yopox.crystals.ui.Icon
+import com.yopox.crystals.ui.TextButton
+import com.yopox.crystals.ui.Tile
+import com.yopox.crystals.ui.Transition
 import ktx.graphics.use
+import kotlin.math.max
 
 class Results(game: Crystals) : Screen(Util.TEXT_RESULTS, game) {
 
@@ -15,28 +19,59 @@ class Results(game: Crystals) : Screen(Util.TEXT_RESULTS, game) {
     val loot = ArrayList<Tile>()
     var progress = 0f
     var frame = 0
-    var xpAmount = 40
+    var xpAmount = 0
     var addedXP = 0
     var xpX = 0f
-    var transitionTime = 60
+    var transitionTime = 0
+
+    var lootName = "LOOT"
+    var coins = 0
+    var coinsX = 0f
+
+    var lootTransition = false
+    var lootTransitionFrame = 0
+    var lootTransitionTile: Tile? = null
 
     init {
         hero = Icon(Icons.ID.WARRIOR, Pair(22f, 43f))
-        buttons.add(TextButton(79f + 40, 5f, Util.TEXT_CONTINUE) {
-            state = ScreenState.ENDING
-            blockInput = true
+        buttons.add(TextButton(79f + 36, 5f, Util.TEXT_CONTINUE) {
+            if (frame == transitionTime) {
+                state = ScreenState.ENDING
+                blockInput = true
+            }
         })
-        setup(2000, listOf())
     }
 
-    fun setup(xp: Int, loot: List<Item>) {
+    fun setup(xp: Int, loots: List<Item>, coins: Int) {
         xpAmount = xp
+        this.coins = coins
+        coinsX = Util.WIDTH - 49f - Util.textSize("$coins COINS", Util.font).first
         val p = xpAmount / Progress.XP_GAPS[Progress.player.level]
+        val lastLevelXP = Progress.XP_LEVELS.getOrNull(Progress.player.level - 1) ?: 0
+        progress = (Progress.player.xp - lastLevelXP).toFloat() / Progress.XP_GAPS[Progress.player.level - 1]
+        progress = max(0f, progress)
         transitionTime = when {
             xp < 100 -> 60
             p < 0.2 -> 40
             p < 0.6 -> 100
             else -> 160
+        }
+        val spray = 100f / (loots.size + 1)
+        val lootX = 10f
+        for ((i, l) in loots.withIndex()) {
+            loot.add(Tile(Icons.ID.UNKNOWN, Pair(lootX + (i + 1) * spray - 8, 8f)) { openLoot(loot[i]) }.apply { treasure = l })
+        }
+    }
+
+    private fun openLoot(tile: Tile) {
+        if (!tile.firstTouched) {
+            tile.firstTouched = true
+            blockInput = true
+            lootTransition = true
+            lootTransitionFrame = 0
+            lootTransitionTile = tile
+        } else {
+            lootName = tile.treasure?.name ?: "LOOT"
         }
     }
 
@@ -44,10 +79,9 @@ class Results(game: Crystals) : Screen(Util.TEXT_RESULTS, game) {
         super.render(delta)
 
         hero.draw(shapeRenderer, batch)
-        loot.forEach { it.draw(shapeRenderer, batch) }
 
         // XP bar
-        if (frame < transitionTime) {
+        if (state == ScreenState.MAIN && frame < transitionTime) {
             frame++
 
             // XP update
@@ -59,6 +93,7 @@ class Results(game: Crystals) : Screen(Util.TEXT_RESULTS, game) {
             // Progress bar update
             val lastLevelXP = Progress.XP_LEVELS.getOrNull(Progress.player.level - 1) ?: 0
             progress = (Progress.player.xp - lastLevelXP).toFloat() / Progress.XP_GAPS[Progress.player.level - 1]
+            progress = max(progress, 0f)
         }
         val xp = "XP: ${Progress.player.xp}/${Progress.XP_LEVELS[Progress.player.level]}"
         xpX = Util.WIDTH - 20f - Util.textSize(xp, Util.font).first
@@ -69,11 +104,59 @@ class Results(game: Crystals) : Screen(Util.TEXT_RESULTS, game) {
             Util.font.draw(it, xp, xpX, 58f)
         }
 
+        // Draw loot box
+        Util.drawRect(shapeRenderer, 9f, 5f, 102f, 22f)
+        loot.forEach { it.draw(shapeRenderer, batch) }
+        batch.use {
+            Util.font.draw(it, lootName, 9f, 35f)
+            Util.font.draw(it, "$coins COINS", coinsX, 35f)
+        }
+
+        // Draw loot transition
+        if (lootTransition) {
+            if (lootTransitionFrame < Transition.TRANSITION_TIME) {
+                Transition.drawTransition(shapeRenderer, lootTransitionTile!!.pos.first, lootTransitionTile!!.pos.second, 16f, 16f, lootTransitionFrame) {
+                    lootTransitionTile?.apply { setIcon(treasure?.icon ?: Icons.ID.UNKNOWN) }
+                    lootName = lootTransitionTile?.treasure?.name ?: "LOOT"
+                }
+                lootTransitionFrame++
+            } else {
+                lootTransitionFrame = 0
+                lootTransition = false
+                blockInput = false
+            }
+        }
+
         drawTransitions()
     }
 
-    override fun resetState() {
+    override fun stateChange(st: ScreenState) = when (st) {
+        ScreenState.ENDING -> {
+            // Add revealed items
+            loot.forEach { l ->
+                l.treasure?.let {
+                    Progress.items[it] = Progress.items[it]?.plus(1) ?: 1
+                }
+            }
+            // Add coins
+            Progress.gold += coins
+            // Next screen
+            resetState(); game.setScreen<Trip>()
+        }
+        ScreenState.OPENING -> {
+            state = ScreenState.MAIN; blockInput = false
+        }
+        else -> Unit
+    }
 
+    override fun resetState() {
+        state = ScreenState.OPENING
+        loot.clear()
+        lootTransition = false
+        progress = 0f
+        frame = 0
+        addedXP = 0
+        lootName = "Loot"
     }
 
     override fun inputUp(x: Int, y: Int) {

@@ -7,16 +7,15 @@ import com.yopox.crystals.Util
 import com.yopox.crystals.def.Actions
 import com.yopox.crystals.def.Fighters
 import com.yopox.crystals.def.Icons
+import com.yopox.crystals.def.RNG
 import com.yopox.crystals.logic.Hero
+import com.yopox.crystals.logic.Item
 import com.yopox.crystals.logic.Progress
-import com.yopox.crystals.logic.fight.Fighter
-import com.yopox.crystals.logic.fight.Spell
+import com.yopox.crystals.logic.fight.*
 import com.yopox.crystals.logic.fight.Target
-import com.yopox.crystals.logic.fight.Team
 import com.yopox.crystals.screens.Fight.State.*
 import com.yopox.crystals.ui.ActionIcon
 import com.yopox.crystals.ui.Icon
-import com.yopox.crystals.ui.Screen
 import com.yopox.crystals.ui.Transition
 import ktx.graphics.use
 import kotlin.math.ceil
@@ -127,9 +126,9 @@ class Fight(game: Crystals) : Screen(Util.TEXT_FIGHT, game) {
     fun setup() {
         // Add fighters
         fighters.clear()
-        fighters.add(Fighters.random())
-        if (Math.random() < 0.4) fighters.add(Fighters.random())
-        if (Math.random() < 0.05) fighters.add(Fighters.random())
+        fighters.add(Fighters.getMonster(Fighters.random(), 1))
+        if (Math.random() < 0.3) fighters.add(Fighters.getMonster(Fighters.random(), 1))
+        if (Math.random() < 0.05) fighters.add(Fighters.getMonster(Fighters.random(), 1))
         fighters.add(Progress.player)
 
         // Set battleId
@@ -502,7 +501,9 @@ class Fight(game: Crystals) : Screen(Util.TEXT_FIGHT, game) {
     override fun stateChange(st: ScreenState) = when (st) {
         ScreenState.ENDING -> {
             if (victory) {
-                game.getScreen<Results>().setup(0, listOf())
+                // Generate loot & coins
+                val enemies = fighters.filter { it.team == Team.ENEMIES }.map { (it as Monster) }
+                game.getScreen<Results>().setup(enemies.map { it.xp }.sum(), genLoot(), enemies.map { it.coins }.sum())
                 game.setScreen<Results>()
             }
             else game.setScreen<GameOver>()
@@ -512,6 +513,17 @@ class Fight(game: Crystals) : Screen(Util.TEXT_FIGHT, game) {
             state = ScreenState.MAIN; blockInput = false
         }
         else -> Unit
+    }
+
+    private fun genLoot(): List<Item> {
+        val items = mutableListOf<Item>()
+        for (monster in fighters.filter { it.team == Team.ENEMIES }) {
+            for (item in (monster as Monster).loots) {
+                if (RNG(item.value)) items.add(item.key)
+            }
+        }
+        while (items.size > Util.MAX_LOOT) items.remove(items.random())
+        return items
     }
 
     override fun inputUp(x: Int, y: Int) {

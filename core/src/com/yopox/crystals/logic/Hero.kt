@@ -6,12 +6,13 @@ import com.yopox.crystals.logic.fight.Stats
 import com.yopox.crystals.screens.Fight
 import com.yopox.crystals.ui.ActionIcon
 
-class Hero(job: Jobs.ID, name: String, initStats: Stats, val desc: String, icon: Icons.ID) : Fighter(Fighters.ID.HERO, name, icon, false) {
+class Hero(val job: Jobs.ID, name: String, initStats: Stats, val desc: String, icon: Icons.ID) : Fighter(Fighters.ID.HERO, name, icon, false) {
 
-    var crystals = arrayListOf(Crystal.baseCrystal(job))
-    var xp = 12000
+    var crystals = ArrayList<Crystal>()
+    var xp = 0
 
     init {
+        reset()
         baseStats = initStats.copy()
         stats = baseStats.copy()
     }
@@ -87,6 +88,12 @@ class Hero(job: Jobs.ID, name: String, initStats: Stats, val desc: String, icon:
         while (this.xp >= Progress.XP_LEVELS[level]) {
             level++
         }
+    }
+
+    fun reset() {
+        xp = 0
+        crystals.clear()
+        crystals.add(Crystal.baseCrystal(job))
     }
 
 }
