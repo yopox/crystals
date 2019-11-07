@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.yopox.crystals.Util
 import com.yopox.crystals.def.Events
+import com.yopox.crystals.def.RNG
+import com.yopox.crystals.def.weighedRandom
 import com.yopox.crystals.logic.Event
 import ktx.graphics.use
 
@@ -27,10 +29,7 @@ class Chunk(private var x: Float, private val y: Float) {
      * TODO: Real event generation
      */
     init {
-        repeat(3) {
-            events.add(Event(Events.ID.values().random()))
-            //events.add(Event(EVENT_TYPE.INN))
-        }
+        reroll()
     }
 
     fun draw(sR: ShapeRenderer, batch: SpriteBatch, icons: Texture) {
@@ -71,6 +70,13 @@ class Chunk(private var x: Float, private val y: Float) {
 
     fun step() {
         x -= Util.CHUNK_SEP
+    }
+
+    fun reroll() {
+        events.clear()
+        repeat(3) {
+            events.add(Event(RNG.chunks.weighedRandom()))
+        }
     }
 
 }

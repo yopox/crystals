@@ -32,7 +32,7 @@ class Display(private val game: Crystals) : KtxScreen {
     private val viewport = FitViewport(Util.WIDTH, Util.HEIGHT, camera)
     private val icons: Texture = Crystals.assetManager["icons.png"]
 
-    private var state = ScreenState.TRANSITION_OP
+    private var state = ScreenState.OPENING
     private var frame = 0
 
 
@@ -46,12 +46,12 @@ class Display(private val game: Crystals) : KtxScreen {
         }
 
         when (state) {
-            ScreenState.TRANSITION_OP -> {
+            ScreenState.OPENING -> {
                 if (Transition.drawWipe(shapeRenderer, leftToRight = false, reverse = true)) {
                     state = ScreenState.MAIN
                 }
             }
-            ScreenState.TRANSITION_EN -> {
+            ScreenState.ENDING -> {
                 if (Transition.drawWipe(shapeRenderer)) {
                     resetState()
                     when (event.id) {
@@ -67,6 +67,14 @@ class Display(private val game: Crystals) : KtxScreen {
                             game.getScreen<Temple>().setup(event)
                             game.setScreen<Temple>()
                         }
+                        Events.ID.SHOP -> {
+                            game.getScreen<Shop>().setup(event)
+                            game.setScreen<Shop>()
+                        }
+                        Events.ID.GARDEN -> {
+                            game.getScreen<Garden>().setup(event)
+                            game.setScreen<Garden>()
+                        }
                         else -> game.setScreen<Trip>()
                     }
                 }
@@ -74,7 +82,7 @@ class Display(private val game: Crystals) : KtxScreen {
             else -> {
                 frame++
                 if (frame == Transition.DISPLAY_LEN) {
-                    state = ScreenState.TRANSITION_EN
+                    state = ScreenState.ENDING
                 }
             }
         }
@@ -88,7 +96,7 @@ class Display(private val game: Crystals) : KtxScreen {
     }
 
     private fun resetState() {
-        state = ScreenState.TRANSITION_OP
+        state = ScreenState.OPENING
         frame = 0
     }
 

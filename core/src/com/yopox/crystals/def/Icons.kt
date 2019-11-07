@@ -17,6 +17,7 @@ object Icons {
         BARD,
         ROGUE,
         GEOMANCER,
+        SHOPKEEPER,
         SNAKE,
         DOG,
         SPIDER,
@@ -38,6 +39,14 @@ object Icons {
         PILLAR_TOP,
         PILLAR_MIDDLE,
         PILLAR_BOTTOM,
+        BENCH_LEFT,
+        BENCH_MIDDLE,
+
+        // Landscape
+        WEEDS,
+        TREE,
+        CACTUS,
+        ROCKS,
 
         // Items
         COINS,
@@ -51,6 +60,7 @@ object Icons {
         SWORD,
         CRYSTAL,
         CROWN,
+        LONG_SWORD,
 
         // Others
         EXCLAMATION,
@@ -66,6 +76,7 @@ object Icons {
     private val Bard = Pair(5, 32)
     private val Rogue = Pair(6, 32)
     private val Geomancer = Pair(7, 32)
+    private val Shopkeeper = Pair(30, 4)
     private val Snake = Pair(28, 8)
     private val Bat = Pair(26, 8)
     private val Dog = Pair(31, 7)
@@ -89,6 +100,14 @@ object Icons {
     private val PillarTop = Pair(3, 11)
     private val PillarMiddle = Pair(3, 12)
     private val PillarBottom = Pair(3, 13)
+    private val BenchLeft = Pair(3, 8)
+    private val BenchMiddle = Pair(4, 8)
+
+    // Landscape
+    private val Tree = Pair(0, 1)
+    private val Rocks = Pair(5, 2)
+    private val Cactus = Pair(6, 1)
+    private val Weeds = Pair(0, 2)
 
     // Items
     private val Coins = Pair(9, 26)
@@ -102,6 +121,7 @@ object Icons {
     private val Sword = Pair(0, 28)
     private val Crystal = Pair(18, 22)
     private val Crown = Pair(12, 24)
+    private val LongSword = Pair(0, 29)
 
     // Others
     private val Exclamation = Pair(20, 25)
@@ -116,6 +136,7 @@ object Icons {
         BARD -> Bard
         ROGUE -> Rogue
         GEOMANCER -> Geomancer
+        SHOPKEEPER -> Shopkeeper
 
         SNAKE -> Snake
         DOG -> Dog
@@ -137,6 +158,13 @@ object Icons {
         PILLAR_TOP -> PillarTop
         PILLAR_MIDDLE -> PillarMiddle
         PILLAR_BOTTOM -> PillarBottom
+        BENCH_LEFT -> BenchLeft
+        BENCH_MIDDLE -> BenchMiddle
+
+        WEEDS -> Weeds
+        ROCKS -> Rocks
+        TREE -> Tree
+        CACTUS -> Cactus
 
         POTION -> Potion
         CARROT -> Carrot
@@ -148,6 +176,7 @@ object Icons {
         SWORD -> Sword
         CRYSTAL -> Crystal
         CROWN -> Crown
+        LONG_SWORD -> LongSword
 
         EXCLAMATION -> Exclamation
         else -> Unknown

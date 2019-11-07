@@ -15,8 +15,8 @@ import ktx.graphics.use
 
 enum class ScreenState {
     MAIN,
-    TRANSITION_OP,
-    TRANSITION_EN
+    OPENING,
+    ENDING
 }
 
 /**
@@ -29,7 +29,13 @@ object Util {
     lateinit var font: BitmapFont
     lateinit var bigFont: BitmapFont
 
-    const val BUILD_NB = "build 0.1"
+    const val BUILD_NB = "Release 0.1"
+
+    /**
+     * Gameplay values
+     */
+    const val STARTING_COINS = 10
+    const val MAX_LOOT = 4
 
     const val WIDTH = 160f
     const val HEIGHT = 90f
@@ -64,12 +70,18 @@ object Util {
     const val TEXT_INN = "Inn"
     const val TEXT_SLEEP = "Sleep"
     const val TEXT_TEMPLE = "Temple"
+    const val TEXT_SHOP = "Shop"
+    const val TEXT_SELL = "Sell"
+    const val TEXT_BUY = "Buy"
+    const val TEXT_LEAVE = "Leave"
+    const val TEXT_GARDEN = "Garden"
+    const val TEXT_RESULTS = "Results"
     /**
      * Generates [BitmapFont] objects from `.ttf` files.
      */
     fun genFonts() {
-        val generator = FreeTypeFontGenerator(Gdx.files.internal("babyblocks.ttf"))
-        val generator2 = FreeTypeFontGenerator(Gdx.files.internal("bubbleTime.ttf"))
+        val generator = FreeTypeFontGenerator(Gdx.files.internal("fonts/babyblocks.ttf"))
+        val generator2 = FreeTypeFontGenerator(Gdx.files.internal("fonts/bubbleTime.ttf"))
         val parameter = FreeTypeFontGenerator.FreeTypeFontParameter()
         parameter.size = FONT_SIZE
         val parameter2 = FreeTypeFontGenerator.FreeTypeFontParameter()
@@ -129,9 +141,9 @@ object Util {
      * @param x X position (bottom-left)
      * @param y Y position (bottom-left)
      */
-    fun drawFilledRect(shapeRenderer: ShapeRenderer, x: Float, y: Float, w: Float, h: Float) {
+    fun drawFilledRect(shapeRenderer: ShapeRenderer, x: Float, y: Float, w: Float, h: Float, black: Boolean = false) {
         shapeRenderer.use(ShapeRenderer.ShapeType.Filled) {
-            it.color = Color.WHITE
+            it.color = if (black) Color.BLACK else Color.WHITE
             it.rect(x, y, w, h)
         }
     }

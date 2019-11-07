@@ -89,6 +89,40 @@ object Transition {
 
         // Draw
         Util.drawFilledRect(sR, x, y0, w, height)
+    }
 
+    /**
+     * Draws a [TRANSITION_TIME] frames black wipe transition.
+     */
+    fun drawInvertTransition(
+            sR: ShapeRenderer,
+            x0: Float,
+            y0: Float,
+            width: Float,
+            height: Float,
+            frame: Int,
+            stopTime: Int = 0,
+            onMid: () -> Unit = {}
+    ) {
+        var x = 0f
+        var w = 0f
+
+        // Update
+        if (frame < HALF_TT) {
+            w = width * (1 - easeOutQuad(frame.toFloat() / HALF_TT))
+            x = x0 + width - w
+        } else if (frame < TRANSITION_TIME + stopTime) {
+            val f2 = if (frame < HALF_TT + stopTime) HALF_TT else frame - stopTime
+            w = width * easeOutQuad((f2 - HALF_TT).toFloat() / HALF_TT)
+            x = x0
+        }
+
+        // Mid transition callback
+        if (frame == HALF_TT) {
+            onMid()
+        }
+
+        // Draw
+        Util.drawFilledRect(sR, x, y0, w, height, true)
     }
 }

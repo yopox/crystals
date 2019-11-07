@@ -8,9 +8,11 @@ import com.yopox.crystals.ui.ActionIcon
 
 class Hero(val job: Jobs.ID, name: String, initStats: Stats, val desc: String, icon: Icons.ID) : Fighter(Fighters.ID.HERO, name, icon, false) {
 
-    var crystals = arrayListOf(Crystal.baseCrystal(job))
+    var crystals = ArrayList<Crystal>()
+    var xp = 0
 
     init {
+        reset()
         baseStats = initStats.copy()
         stats = baseStats.copy()
     }
@@ -19,11 +21,11 @@ class Hero(val job: Jobs.ID, name: String, initStats: Stats, val desc: String, i
         stats to baseStats
     }
 
-    override fun getMove(fighters: ArrayList<Fighter>): Fight.Move {
+    override fun getMove(fighters: List<Fighter>): Fight.Move {
         return Fight.Move(this, Spells.map.getValue(Fight.Intent.action), Fight.Intent.targets)
     }
 
-    fun setActionsIcons(buttons: ArrayList<ActionIcon>) {
+    fun setActionsIcons(buttons: List<ActionIcon>) {
         // Show all buttons
         buttons.forEach { it.show() }
 
@@ -78,6 +80,20 @@ class Hero(val job: Jobs.ID, name: String, initStats: Stats, val desc: String, i
             freeSpell = true
         } else Unit
         else -> Unit
+    }
+
+    fun addXP(amount: Int) {
+        if (amount <= 0) return
+        this.xp += amount
+        while (this.xp >= Progress.XP_LEVELS[level]) {
+            level++
+        }
+    }
+
+    fun reset() {
+        xp = 0
+        crystals.clear()
+        crystals.add(Crystal.baseCrystal(job))
     }
 
 }

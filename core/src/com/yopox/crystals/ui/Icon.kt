@@ -18,6 +18,7 @@ import ktx.graphics.use
 open class Icon(var id: Icons.ID, pos: Pair<Float, Float>, onClick: () -> Unit = {}) : Button(pos, true, onClick) {
 
     var srcPos: Pair<Int, Int> = Icons(id)
+    var flip = false
 
     companion object {
         val icons: Texture = Crystals.assetManager["1BitPack.png"]
@@ -35,7 +36,8 @@ open class Icon(var id: Icons.ID, pos: Pair<Float, Float>, onClick: () -> Unit =
     override fun draw(sR: ShapeRenderer, batch: SpriteBatch) {
         if (visible) {
             if (clicked) batch.shader = Util.invertShader
-            batch.use { it.draw(icons, pos.first, pos.second, x, y, SIZE, SIZE) }
+
+            batch.use { it.draw(icons, pos.first, pos.second, SIZE.toFloat(), SIZE.toFloat(), x, y, SIZE, SIZE, flip, false) }
             batch.shader = Util.defaultShader
         }
     }
@@ -43,6 +45,10 @@ open class Icon(var id: Icons.ID, pos: Pair<Float, Float>, onClick: () -> Unit =
     fun setIcon(id: Icons.ID?) {
         this.id = id ?: Icons.ID.UNKNOWN
         srcPos = Icons(this.id)
+    }
+
+    fun flip() {
+        this.flip = !this.flip
     }
 
 }

@@ -31,9 +31,22 @@ class Tile(id: Icons.ID, pos: Pair<Float, Float>, onClick: Function0<Unit>) : Ic
             return Tile(icon, pos, onClick).apply { treasure = item }
         }
 
-        fun genTempleTile(pos: Pair<Float, Float>, onClick: Function0<Unit> = {}): Icon {
+        fun genTempleTile(pos: Pair<Float, Float>, onClick: Function0<Unit> = {}): Tile {
             val icon = RNG.temple.weighedRandom()
             return Tile(icon, pos, onClick)
+        }
+
+        fun genShopTile(pos: Pair<Float, Float>, onClick: Function0<Unit> = {}): Tile {
+            val id = RNG.shopItems.weighedRandom()
+            val item = Items(id)
+            return Tile(item.icon, pos, onClick).apply { treasure = item }
+        }
+
+        fun genGardenTile(pos: Pair<Float, Float>, onClick: Function0<Unit> = {}): Tile {
+            val icon = RNG.garden.weighedRandom()
+            val id = RNG.genTreasure(icon)
+            val item = if (id != null) Items(id) else null
+            return Tile(icon, pos, onClick).apply { treasure = item }
         }
 
     }
