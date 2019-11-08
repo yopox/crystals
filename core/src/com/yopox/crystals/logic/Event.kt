@@ -4,7 +4,6 @@ import com.yopox.crystals.def.Events
 import com.yopox.crystals.def.Events.ID.*
 
 
-
 class Event(val id: Events.ID = BATTLE) {
 
     val name: String = Events.name(id)

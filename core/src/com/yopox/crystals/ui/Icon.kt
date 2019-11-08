@@ -1,9 +1,7 @@
 package com.yopox.crystals.ui
 
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
-import com.yopox.crystals.Crystals
 import com.yopox.crystals.Util
 import com.yopox.crystals.def.Icons
 import com.yopox.crystals.logic.equipment.Sword

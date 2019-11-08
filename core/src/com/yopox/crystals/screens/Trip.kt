@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.yopox.crystals.Crystals
 import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
+import com.yopox.crystals.logic.Event
 import com.yopox.crystals.logic.Progress
 import com.yopox.crystals.screens.Trip.Destination.BAG
 import com.yopox.crystals.screens.Trip.Destination.DISPLAY
@@ -29,6 +30,7 @@ class Trip(game: Crystals) : Screen(Util.TEXT_TRIP, game) {
     private var statusX = arrayOf(0f, 0f)
     private var goldX = 0f
     private var destination = DISPLAY
+    private var event: Event? = null
 
     init {
         val x = 16f
@@ -43,6 +45,7 @@ class Trip(game: Crystals) : Screen(Util.TEXT_TRIP, game) {
         })
         buttons.add(TextButton(x + 2 * 40, y, Util.TEXT_CONTINUE, clickable = false) {
             destination = DISPLAY
+            event = chunks[0].getEvent()
             state = ScreenState.ENDING
             blockInput = true
         })
@@ -75,7 +78,7 @@ class Trip(game: Crystals) : Screen(Util.TEXT_TRIP, game) {
                     game.getScreen<Bag>().setup(); game.setScreen<Bag>()
                 }
                 else -> {
-                    game.getScreen<Display>().setup(chunks[0].getEvent()!!); game.setScreen<Display>()
+                    game.getScreen<Display>().setup(event!!); game.setScreen<Display>()
                 }
             }
 

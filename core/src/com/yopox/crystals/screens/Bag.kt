@@ -55,6 +55,7 @@ class Bag(game: Crystals) : Screen(Util.TEXT_BAG, game) {
     }
 
     override fun resetState() {
+        state = ScreenState.OPENING
         page = 0
         icons.forEach { it.setIcon(Icons.ID.DOT) }
     }
@@ -68,6 +69,5 @@ class Bag(game: Crystals) : Screen(Util.TEXT_BAG, game) {
         icons.forEach { it.touch(x, y) }
         buttons.forEach { it.touch(x, y) }
     }
-
 
 }

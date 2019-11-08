@@ -1,11 +1,11 @@
 package com.yopox.crystals.screens
 
+import com.badlogic.gdx.graphics.Texture
 import com.yopox.crystals.Crystals
 import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
 import com.yopox.crystals.def.Events
 import com.yopox.crystals.logic.Event
-import com.yopox.crystals.ui.ActionIcon.Companion.icons
 import com.yopox.crystals.ui.Transition
 import ktx.graphics.use
 
@@ -14,6 +14,10 @@ class Display(game: Crystals) : Screen("", game) {
     private var frame = 0
     private var textX: Float = 0f
     private var event = Event()
+
+    companion object {
+        val icons: Texture = Crystals.assetManager["icons.png"]
+    }
 
     fun setup(event: Event) {
         this.event = event
