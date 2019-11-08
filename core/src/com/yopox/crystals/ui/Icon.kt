@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.yopox.crystals.Crystals
 import com.yopox.crystals.Util
 import com.yopox.crystals.def.Icons
+import com.yopox.crystals.logic.equipment.Sword
 import ktx.graphics.use
 
 /**
@@ -15,40 +16,51 @@ import ktx.graphics.use
  * @param pos The icon position
  * @param onClick optional click callback
  */
-open class Icon(var id: Icons.ID, pos: Pair<Float, Float>, onClick: () -> Unit = {}) : Button(pos, true, onClick) {
+open class Icon : Button {
 
-    var srcPos: Pair<Int, Int> = Icons(id)
-    var flip = false
+    private var flip = false
+    private var texture: CompositeTexture
+    private var id = Icons.ID.UNKNOWN
+    override val size: Pair<Float, Float>
+        get() = texture.size
 
-    companion object {
-        val icons: Texture = Crystals.assetManager["1BitPack.png"]
-        private const val SIZE = 16
-        private const val BORDER = 1
+    constructor(id: Icons.ID, pos: Pair<Float, Float>, onClick: () -> Unit = {}) : super(pos, true, onClick) {
+        texture = CompositeTexture(Icons(id))
+        this.id = id
     }
 
-    val x: Int
-        get() = srcPos.first * (SIZE + BORDER)
-    val y: Int
-        get() = srcPos.second * (SIZE + BORDER)
-
-    override val size = Pair(SIZE.toFloat(), SIZE.toFloat())
+    constructor(id: Sword.Combination, pos: Pair<Float, Float>, onClick: () -> Unit = {}) : super(pos, true, onClick) {
+        texture = CompositeTexture(id)
+    }
 
     override fun draw(sR: ShapeRenderer, batch: SpriteBatch) {
         if (visible) {
             if (clicked) batch.shader = Util.invertShader
 
-            batch.use { it.draw(icons, pos.first, pos.second, SIZE.toFloat(), SIZE.toFloat(), x, y, SIZE, SIZE, flip, false) }
+            batch.use {
+                texture.draw(it, pos, flip)
+            }
             batch.shader = Util.defaultShader
         }
     }
 
     fun setIcon(id: Icons.ID?) {
         this.id = id ?: Icons.ID.UNKNOWN
-        srcPos = Icons(this.id)
+        texture.changeIcon(id)
+    }
+
+    fun setIcon(id: Sword.Combination) {
+        texture = CompositeTexture(id)
     }
 
     fun flip() {
         this.flip = !this.flip
     }
 
+    override fun clickCallback() {
+        super.clickCallback()
+        if (id in Icons.changingIcons.keys) {
+            setIcon(Icons.changingIcons[id])
+        }
+    }
 }

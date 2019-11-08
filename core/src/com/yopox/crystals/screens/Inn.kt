@@ -100,7 +100,7 @@ class Inn(game: Crystals) : Screen(Util.TEXT_INN, game) {
                 {
                     treasure = nextTreasure
                     icons.last().apply {
-                        setIcon(treasure?.icon)
+                        setIcon(treasure?.id)
                         show()
                     }
                 }
@@ -135,7 +135,6 @@ class Inn(game: Crystals) : Screen(Util.TEXT_INN, game) {
 
     private fun clickTile(i: Int) {
         val tile = icons[i + 1] as Tile
-        if (tile.id in Icons.changingIcons.keys) tile.setIcon(Icons.changingIcons[tile.id])
         if (!tile.firstTouched && (tile.treasure != null || tile.gold > 0)) {
             tile.firstTouched = true
             blockInput = true

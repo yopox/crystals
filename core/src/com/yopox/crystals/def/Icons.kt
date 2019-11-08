@@ -64,6 +64,7 @@ object Icons {
 
         // Others
         EXCLAMATION,
+        DOT,
         UNKNOWN
     }
 
@@ -121,10 +122,10 @@ object Icons {
     private val Sword = Pair(0, 28)
     private val Crystal = Pair(18, 22)
     private val Crown = Pair(12, 24)
-    private val LongSword = Pair(0, 29)
 
     // Others
     private val Exclamation = Pair(20, 25)
+    private val Dot = Pair(32, 31)
     private val Unknown = Pair(21, 25)
 
     operator fun invoke(id: ID) = when (id) {
@@ -176,9 +177,9 @@ object Icons {
         SWORD -> Sword
         CRYSTAL -> Crystal
         CROWN -> Crown
-        LONG_SWORD -> LongSword
 
         EXCLAMATION -> Exclamation
+        DOT -> Dot
         else -> Unknown
     }
 

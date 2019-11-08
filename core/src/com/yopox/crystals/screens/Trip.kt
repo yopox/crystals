@@ -1,15 +1,15 @@
 package com.yopox.crystals.screens
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.yopox.crystals.Crystals
 import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
 import com.yopox.crystals.logic.Progress
+import com.yopox.crystals.screens.Trip.Destination.BAG
+import com.yopox.crystals.screens.Trip.Destination.DISPLAY
 import com.yopox.crystals.ui.Chunk
 import com.yopox.crystals.ui.TextButton
 import ktx.graphics.use
-import kotlin.reflect.KClass
 
 /**
  * Trip Screen.
@@ -18,11 +18,17 @@ import kotlin.reflect.KClass
  */
 class Trip(game: Crystals) : Screen(Util.TEXT_TRIP, game) {
 
+    private enum class Destination {
+        STATUS,
+        BAG,
+        DISPLAY
+    }
+
     private val icons: Texture = Crystals.assetManager["icons.png"]
     private val chunks = ArrayList<Chunk>()
     private var statusX = arrayOf(0f, 0f)
     private var goldX = 0f
-    private var selector = 0
+    private var destination = DISPLAY
 
     init {
         val x = 16f
@@ -31,13 +37,12 @@ class Trip(game: Crystals) : Screen(Util.TEXT_TRIP, game) {
             chunks[0].reroll()
         })
         buttons.add(TextButton(x + 40, y, Util.TEXT_BAG) {
-            selector = 0
+            destination = BAG
             state = ScreenState.ENDING
             blockInput = true
         })
         buttons.add(TextButton(x + 2 * 40, y, Util.TEXT_CONTINUE, clickable = false) {
-            Display.changeEvent(chunks[0].getEvent()!!)
-            selector = 1
+            destination = DISPLAY
             state = ScreenState.ENDING
             blockInput = true
         })
@@ -65,9 +70,13 @@ class Trip(game: Crystals) : Screen(Util.TEXT_TRIP, game) {
     override fun stateChange(st: ScreenState) = when (st) {
         ScreenState.ENDING -> {
             resetState()
-            when (selector) {
-                0 -> game.setScreen<Bag>()
-                else -> game.setScreen<Display>()
+            when (destination) {
+                BAG -> {
+                    game.getScreen<Bag>().setup(); game.setScreen<Bag>()
+                }
+                else -> {
+                    game.getScreen<Display>().setup(chunks[0].getEvent()!!); game.setScreen<Display>()
+                }
             }
 
         }

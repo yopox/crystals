@@ -28,7 +28,11 @@ abstract class Button(var pos: Pair<Float, Float>, var clickable: Boolean = true
                 && x <= pos.first + size.first
                 && y >= pos.second - 1
                 && y <= pos.second + size.second)
-            clicked = true
+            clickCallback()
+    }
+
+    open fun clickCallback() {
+        clicked = true
     }
 
     /**

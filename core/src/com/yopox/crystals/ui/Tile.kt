@@ -39,7 +39,7 @@ class Tile(id: Icons.ID, pos: Pair<Float, Float>, onClick: Function0<Unit>) : Ic
         fun genShopTile(pos: Pair<Float, Float>, onClick: Function0<Unit> = {}): Tile {
             val id = RNG.shopItems.weighedRandom()
             val item = Items(id)
-            return Tile(item.icon, pos, onClick).apply { treasure = item }
+            return Tile(item.id, pos, onClick).apply { treasure = item }
         }
 
         fun genGardenTile(pos: Pair<Float, Float>, onClick: Function0<Unit> = {}): Tile {

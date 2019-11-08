@@ -116,7 +116,7 @@ class Results(game: Crystals) : Screen(Util.TEXT_RESULTS, game) {
         if (lootTransition) {
             if (lootTransitionFrame < Transition.TRANSITION_TIME) {
                 Transition.drawTransition(shapeRenderer, lootTransitionTile!!.pos.first, lootTransitionTile!!.pos.second, 16f, 16f, lootTransitionFrame) {
-                    lootTransitionTile?.apply { setIcon(treasure?.icon ?: Icons.ID.UNKNOWN) }
+                    lootTransitionTile?.apply { setIcon(treasure?.id ?: Icons.ID.UNKNOWN) }
                     lootName = lootTransitionTile?.treasure?.name ?: "LOOT"
                 }
                 lootTransitionFrame++

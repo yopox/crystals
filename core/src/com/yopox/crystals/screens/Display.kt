@@ -1,40 +1,24 @@
 package com.yopox.crystals.screens
 
-import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer
-import com.badlogic.gdx.utils.viewport.FitViewport
 import com.yopox.crystals.Crystals
 import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
 import com.yopox.crystals.def.Events
 import com.yopox.crystals.logic.Event
+import com.yopox.crystals.ui.ActionIcon.Companion.icons
 import com.yopox.crystals.ui.Transition
-import ktx.app.KtxScreen
 import ktx.graphics.use
 
-class Display(private val game: Crystals) : KtxScreen {
+class Display(game: Crystals) : Screen("", game) {
 
-    companion object {
-        fun changeEvent(event: Event) {
-            this.event = event
-            textX = Util.textOffsetX(Util.font, event.name, Util.WIDTH)
-        }
-
-        var event: Event = Event()
-        var textX: Float = 0f
-    }
-
-    private val batch = SpriteBatch()
-    private val camera = OrthographicCamera().also { it.position.set(Util.WIDTH / 2, Util.HEIGHT / 2, 0f) }
-    private val shapeRenderer = ShapeRenderer()
-    private val viewport = FitViewport(Util.WIDTH, Util.HEIGHT, camera)
-    private val icons: Texture = Crystals.assetManager["icons.png"]
-
-    private var state = ScreenState.OPENING
     private var frame = 0
+    private var textX: Float = 0f
+    private var event = Event()
 
+    fun setup(event: Event) {
+        this.event = event
+        textX = Util.textOffsetX(Util.font, event.name, Util.WIDTH)
+    }
 
     override fun render(delta: Float) {
         batch.projectionMatrix = camera.combined
@@ -89,15 +73,12 @@ class Display(private val game: Crystals) : KtxScreen {
 
     }
 
-    override fun resize(width: Int, height: Int) {
-        viewport.update(width, height)
-        camera.update()
-        camera.position.set(Util.WIDTH / 2, Util.HEIGHT / 2, 0f)
-    }
-
-    private fun resetState() {
+    override fun resetState() {
         state = ScreenState.OPENING
         frame = 0
     }
+
+    override fun inputUp(x: Int, y: Int) {}
+    override fun inputDown(x: Int, y: Int) {}
 
 }
