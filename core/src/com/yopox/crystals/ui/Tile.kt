@@ -4,7 +4,7 @@ import com.yopox.crystals.def.Icons
 import com.yopox.crystals.def.Items
 import com.yopox.crystals.def.RNG
 import com.yopox.crystals.def.weighedRandom
-import com.yopox.crystals.logic.Item
+import com.yopox.crystals.logic.equipment.Item
 import com.yopox.crystals.ui.Content.NONE
 
 enum class Content {

@@ -1,4 +1,4 @@
-package com.yopox.crystals.logic
+package com.yopox.crystals.logic.equipment
 
 import com.yopox.crystals.def.Actions
 import com.yopox.crystals.def.Jobs

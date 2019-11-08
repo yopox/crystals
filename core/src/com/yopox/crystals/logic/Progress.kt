@@ -1,7 +1,7 @@
 package com.yopox.crystals.logic
 
 import com.yopox.crystals.def.Fighters
-import com.yopox.crystals.def.Jobs
+import com.yopox.crystals.logic.equipment.Item
 import kotlin.math.exp
 import kotlin.math.floor
 import kotlin.math.sqrt

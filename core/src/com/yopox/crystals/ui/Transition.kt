@@ -10,9 +10,9 @@ object Transition {
     /**
      * Transition time (in frames).
      */
-    const val TRANSITION_TIME = 30
+    const val TRANSITION_TIME = 26
     const val HALF_TT = TRANSITION_TIME / 2
-    const val DISPLAY_LEN = 40
+    const val DISPLAY_LEN = 60
     private const val TRANSITION_STUN = 2
     private var TRANSITION_FRAME = 0
 

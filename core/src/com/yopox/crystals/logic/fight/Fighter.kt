@@ -1,13 +1,11 @@
 package com.yopox.crystals.logic.fight
 
-import com.badlogic.gdx.Gdx
 import com.yopox.crystals.Util
 import com.yopox.crystals.def.Fighters
 import com.yopox.crystals.def.Fighters.ID.*
 import com.yopox.crystals.def.Icons
 import com.yopox.crystals.def.Jobs
 import com.yopox.crystals.def.Spells
-import com.yopox.crystals.logic.Crystal
 import com.yopox.crystals.screens.Fight
 import kotlin.math.max
 import kotlin.math.min

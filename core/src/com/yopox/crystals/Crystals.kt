@@ -29,6 +29,7 @@ class Crystals : KtxGame<Screen>() {
             load("Base_Attacks.png", Texture::class.java)
             load("temple.png", Texture::class.java)
             load("circle.png", Texture::class.java)
+            load("swords_sheet.png", Texture::class.java)
             finishLoading()
         }
 
@@ -46,6 +47,7 @@ class Crystals : KtxGame<Screen>() {
         addScreen(Shop(this))
         addScreen(Garden(this))
         addScreen(Results(this))
+        addScreen(Bag(this))
         setScreen<TitleScreen>()
     }
 

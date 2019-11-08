@@ -9,6 +9,7 @@ import com.yopox.crystals.logic.Progress
 import com.yopox.crystals.ui.Chunk
 import com.yopox.crystals.ui.TextButton
 import ktx.graphics.use
+import kotlin.reflect.KClass
 
 /**
  * Trip Screen.
@@ -21,6 +22,7 @@ class Trip(game: Crystals) : Screen(Util.TEXT_TRIP, game) {
     private val chunks = ArrayList<Chunk>()
     private var statusX = arrayOf(0f, 0f)
     private var goldX = 0f
+    private var selector = 0
 
     init {
         val x = 16f
@@ -29,10 +31,13 @@ class Trip(game: Crystals) : Screen(Util.TEXT_TRIP, game) {
             chunks[0].reroll()
         })
         buttons.add(TextButton(x + 40, y, Util.TEXT_BAG) {
-            Gdx.app.log("trip", "Bag")
+            selector = 0
+            state = ScreenState.ENDING
+            blockInput = true
         })
         buttons.add(TextButton(x + 2 * 40, y, Util.TEXT_CONTINUE, clickable = false) {
             Display.changeEvent(chunks[0].getEvent()!!)
+            selector = 1
             state = ScreenState.ENDING
             blockInput = true
         })
@@ -59,7 +64,12 @@ class Trip(game: Crystals) : Screen(Util.TEXT_TRIP, game) {
 
     override fun stateChange(st: ScreenState) = when (st) {
         ScreenState.ENDING -> {
-            resetState(); game.setScreen<Display>()
+            resetState()
+            when (selector) {
+                0 -> game.setScreen<Bag>()
+                else -> game.setScreen<Display>()
+            }
+
         }
         ScreenState.OPENING -> {
             state = ScreenState.MAIN; blockInput = false

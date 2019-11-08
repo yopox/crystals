@@ -2,7 +2,7 @@ package com.yopox.crystals.logic.fight
 
 import com.yopox.crystals.def.Fighters
 import com.yopox.crystals.def.Icons
-import com.yopox.crystals.logic.Item
+import com.yopox.crystals.logic.equipment.Item
 import com.yopox.crystals.screens.Fight
 
 enum class Behavior {

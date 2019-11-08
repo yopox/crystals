@@ -6,7 +6,7 @@ import com.yopox.crystals.ScreenState
 import com.yopox.crystals.Util
 import com.yopox.crystals.def.Icons
 import com.yopox.crystals.logic.Event
-import com.yopox.crystals.logic.Item
+import com.yopox.crystals.logic.equipment.Item
 import com.yopox.crystals.logic.Progress
 import com.yopox.crystals.ui.*
 import ktx.graphics.use

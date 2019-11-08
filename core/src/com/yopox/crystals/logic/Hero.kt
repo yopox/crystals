@@ -1,6 +1,7 @@
 package com.yopox.crystals.logic
 
 import com.yopox.crystals.def.*
+import com.yopox.crystals.logic.equipment.Crystal
 import com.yopox.crystals.logic.fight.Fighter
 import com.yopox.crystals.logic.fight.Stats
 import com.yopox.crystals.screens.Fight

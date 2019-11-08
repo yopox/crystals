@@ -1,7 +1,7 @@
 package com.yopox.crystals.def
 
 import com.yopox.crystals.def.Items.ID.*
-import com.yopox.crystals.logic.Item
+import com.yopox.crystals.logic.equipment.Item
 
 object Items {
 
