@@ -21,10 +21,13 @@ class Temple(game: Crystals) : Screen(Util.TEXT_TEMPLE, game) {
     }
 
     override fun render(delta: Float) {
-        super.render(delta)
+        batch.projectionMatrix = camera.combined
+        shapeRenderer.projectionMatrix = camera.combined
+
 
         batch.use {
             it.draw(ray, 0f, 0f)
+            Util.bigFont.draw(it, name, 10f, Util.HEIGHT - Util.TITLE_OFFSET)
         }
 
         frame = (frame + 1) % 240
