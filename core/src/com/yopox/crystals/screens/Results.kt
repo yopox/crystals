@@ -135,7 +135,7 @@ class Results(game: Crystals) : Screen(Util.TEXT_RESULTS, game) {
             // Add revealed items
             loot.forEach { l ->
                 l.treasure?.let {
-                    Progress.items[it] = Progress.items[it]?.plus(1) ?: 1
+                    Progress.addItem(it)
                 }
             }
             // Add coins

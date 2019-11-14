@@ -18,7 +18,8 @@ open class Icon : Button {
 
     private var flip = false
     private var texture: CompositeTexture
-    private var id = Icons.ID.UNKNOWN
+    var id = Icons.ID.UNKNOWN
+        get() = field
     override val size: Pair<Float, Float>
         get() = texture.size
 
@@ -49,6 +50,7 @@ open class Icon : Button {
 
     fun setIcon(id: Sword.Combination) {
         texture = CompositeTexture(id)
+        this.id = Icons.ID.SWORD
     }
 
     fun flip() {

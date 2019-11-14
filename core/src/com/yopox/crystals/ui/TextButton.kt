@@ -8,14 +8,14 @@ import ktx.graphics.use
 /**
  * TextButton class.
  */
-class TextButton(x: Float, y: Float, private val text: String, xl: Boolean = false, clickable: Boolean = true, onClick: () -> Unit) : Button(Pair(x, y), clickable, onClick) {
+class TextButton(x: Float, y: Float, private var text: String, xl: Boolean = false, clickable: Boolean = true, onClick: () -> Unit) : Button(Pair(x, y), clickable, onClick) {
 
     private val width: Float = when (xl) {
         true -> 2 * Util.BUTTON_WIDTH
         else -> Util.BUTTON_WIDTH
     }
     override val size = Pair(width, Util.BUTTON_HEIGHT)
-    private val textX = Util.textOffsetX(Util.font, text, width)
+    private var textX = Util.textOffsetX(Util.font, text, width)
 
     override fun draw(sR: ShapeRenderer, batch: SpriteBatch) {
         when (clicked) {
@@ -27,6 +27,11 @@ class TextButton(x: Float, y: Float, private val text: String, xl: Boolean = fal
                 }
             }
         }
+    }
+
+    fun editText(text: String) {
+        this.text = text
+        textX = Util.textOffsetX(Util.font, text, width)
     }
 
 }

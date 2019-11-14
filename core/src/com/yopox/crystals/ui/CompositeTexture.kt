@@ -16,7 +16,7 @@ enum class TextureType {
 
 class CompositeTexture {
 
-    private val type: TextureType
+    private var type: TextureType
     private val texture: Texture?
     val size = Pair(ICON_SIZE.toFloat(), ICON_SIZE.toFloat())
     var sheetId: Pair<Int, Int> = Pair(0, 0)
@@ -60,7 +60,7 @@ class CompositeTexture {
         return Texture(subPixmap)
     }
 
-    fun draw(batch: SpriteBatch, pos: Pair<Float, Float>, flip: Boolean) {
+    fun draw(batch: SpriteBatch, pos: Pair<Float, Float>, flip: Boolean = false) {
         when (type) {
             SHEET -> {
                 batch.draw(iconsSheet,
@@ -75,6 +75,7 @@ class CompositeTexture {
     }
 
     fun changeIcon(id: Icons.ID?) {
+        type = SHEET
         sheetId = Icons(id ?: Icons.ID.UNKNOWN)
     }
 

@@ -16,6 +16,7 @@ import ktx.graphics.use
 enum class ScreenState {
     MAIN,
     OPENING,
+    POPUP,
     ENDING
 }
 
@@ -76,6 +77,10 @@ object Util {
     const val TEXT_LEAVE = "Leave"
     const val TEXT_GARDEN = "Garden"
     const val TEXT_RESULTS = "Results"
+    const val TEXT_DISCARD = "Discard"
+    const val TEXT_EQUIP = "Equip"
+    const val TEXT_USE = "Use"
+    const val TEXT_OK = "Ok"
     /**
      * Generates [BitmapFont] objects from `.ttf` files.
      */

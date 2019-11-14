@@ -97,8 +97,7 @@ object RNG {
             Items.ID.SCROLL to 2,
             Items.ID.CARROT to 3,
             Items.ID.CRYSTAL to 1,
-            Items.ID.SWORD to 6,
-            Items.ID.LONG_SWORD to 3
+            Items.ID.SWORD to 6
     )
 
     private val treasures = mapOf(

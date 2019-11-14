@@ -54,6 +54,7 @@ class Shop(game: Crystals) : Screen(Util.TEXT_SHOP, game) {
             val cost = it.treasure!!.value
             if (cost <= Progress.gold) {
                 Progress.gold -= cost
+                Progress.addItem(it.treasure!!)
                 goldX = Util.WIDTH - 5f - Util.textSize("${Progress.gold} GOLD", Util.font).first
                 nextItem = null
                 itemTransition = true
